@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<ui:composition template="/masterPage.xhtml"
+ xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:p="http://primefaces.org/ui"> 
+
+	<ui:define name="content">
+		
+			<h:form id="frm" onkeypress="if (event.keyCode == 13) { return false; }">
+			
+				<p:growl id="msg" showDetail="true"/>
+				<p:blockUI block="frm" trigger="btnSave" />
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
+
+					<div class="ui-g-12 ui-fluid card">
+						<div class="ui-g-12 ui-md-4">
+							<p:commandButton value="Liste des exercices"
+								icon="fa fa-search" style="border-radius:10px"
+								action="#{exerciceVew.allExercises()}" update="frmRecherche"
+								oncomplete="PF('dlgResearch').show();" />
+						</div>
+					</div>
+					<div class="ui-g-12 ui-fluid card">
+								
+								<p:panelGrid columns="4" 
+								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-1,ui-grid-col-6"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+									<p:outputLabel value="Exercice encours"/>
+									<p:inputText id="txtCode" value="#{exerciceVew.code}"  >
+										<p:ajax event="blur" listener="#{exerciceVew.searchExercice()}" update=":frm" />
+									</p:inputText>
+								
+									<p:outputLabel value="Libellé"/>
+									<p:inputText id="txtDesignation" value="#{exerciceVew.designation}"/>
+								
+								
+								</p:panelGrid>
+								
+								<p:panelGrid columns="2"
+								columnClasses="ui-grid-col-2,ui-grid-col-2"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+									<p:outputLabel value="Date début"/>
+									<p:inputMask id="txtDateDebut" value="#{exerciceVew.printDateDebut}" mask="99/99/9999">
+										<p:ajax event="blur" listener="#{exerciceVew.changeDateDebut()}" update=":frm:msg,:frm:txtDateDebut" />
+									</p:inputMask>
+								
+									<p:outputLabel value="Date fin"/>
+									<p:inputMask id="txtDateFin" value="#{exerciceVew.printDateFin}" mask="99/99/9999">
+										<p:ajax event="blur" listener="#{exerciceVew.changeDateFin()}" update=":frm:msg,:frm:txtDateFin" />
+									</p:inputMask>
+								</p:panelGrid>
+							</div>
+					
+				
+					<div class="ui-g-12 ui-fluid card">
+								<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-1,ui-grid-col-6"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+									<p:outputLabel value="Exercice précédent"/>
+									<p:inputText id="txtCodeExercicePrecedent" value="#{exerciceVew.codePrcd}"  >
+										<p:ajax event="blur" listener="#{exerciceVew.searchExercicePrcd()}" 
+										update=":frm" />
+									</p:inputText>
+								
+									<p:outputLabel value="Libellé"/>
+									<p:inputText id="txtLibellePrecedent" value="#{exerciceVew.libelleExPrcd}" readonly="true" />
+								
+									
+								</p:panelGrid>		
+								
+								<p:panelGrid columns="2"
+								columnClasses="ui-grid-col-2,ui-grid-col-2"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								<p:outputLabel value="Date début"/>
+									<p:inputMask id="txtDateDebutExercicePrecedent" value="#{exerciceVew.printDateDbPrcd}" 
+										readonly="true" mask="99/99/9999" />
+								
+									<p:outputLabel value="Date fin"/>
+									<p:inputMask id="txtDateFinExercicePrecedent" value="#{exerciceVew.printDateFnPrcd}" 
+										readonly="true" mask="99/99/9999"	/>
+								</p:panelGrid>						
+							</div>
+				
+				
+						<div class="ui-g-12 ui-fluid card">
+								<div class="ui-g-12 ui-md-1"/>
+								<div class="ui-g-12 ui-md-3">
+									<p:commandButton value="Enregistrer" action="#{exerciceVew.save()}" 
+									icon="fa fa-save" update=":frm" id="btnSave"
+									style="border-radius:10px" disabled="#{exerciceVew.disableSave}"/>
+								</div>
+								
+								<div class="ui-g-12 ui-md-3">
+									<p:commandButton value="Supprimer" action="#{exerciceVew.delete()}" 
+										style="border-radius:10px" id="btnDelete"
+										icon="fa fa-trash-o" styleClass="orange-btn" update=":frm">	
+											<p:confirm header="Confirmation" disabled="#{exerciceVew.disableMsg}"
+												message="Voulez vous vraiment supprimer ?"
+												icon="ui-icon-alert"/>
+										</p:commandButton>
+								</div>
+								
+								<div class="ui-g-12 ui-md-3">
+									<p:commandButton value="Initialiser" action="#{exerciceVew.initialiseControls()}" 
+										icon="fa fa-refresh" update=":frm" style="border-radius:10px" id="btnClean"/>
+								</div>
+							</div>
+					</div>
+					</div>
+				
+							
+			</h:form>
+			<h:form>
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade" widgetVar="cd" >
+					<p:commandButton value="Oui" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Non" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+			</h:form>
+			<p:dialog widgetVar="dlgResearch" header="Liste des exercices"
+			modal="true" appendTo="@(body)" width="600" responsive="true">
+			<h:form id="frmRecherche">
+
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+						
+						<p:dataTable value="#{exerciceVew.listExercice}"
+							var="ex" selectionMode="single" id="tbl"
+							selection="#{exerciceVew.selectedExercice}" rowKey="#{ex.id}"
+							reflow="true" scrollable="true" scrollHeight="200"
+							emptyMessage="">
+
+							<p:ajax event="rowSelect"
+								listener="#{exerciceVew.getSelectedExercise()}"
+								update=":frm"/>
+
+							<p:column headerText="Code" width="10%">
+								<h:outputText value="#{ex.exCode}" />
+							</p:column>
+
+							<p:column headerText="Date debut">
+								<h:outputText value="#{ex.printDeb}" />
+							</p:column>
+
+							<p:column headerText="Date fin">
+								<h:outputText value="#{ex.printFin}" />
+							</p:column>
+							
+
+						</p:dataTable>
+
+
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

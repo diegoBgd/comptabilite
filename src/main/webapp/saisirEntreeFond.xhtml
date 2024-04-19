@@ -1,0 +1,307 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/masterPage.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+		<h:head>
+			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
+			<title>Reglements clients</title>
+		</h:head>
+		<body>
+			<h:form id="frmEF"
+				onkeypress="if (event.keyCode == 13) { return false; }">
+				<p:blockUI block="frmEF" trigger="btnSave" />
+				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
+					
+						<div class="ui-g-12 ui-fluid card">
+							<div class="ui-g-12 ui-md-1"/>
+							<div class="ui-g-12 ui-md-4">
+							<p:commandButton value="Recherche des encaissements"
+								icon="fa fa-search" style="border-radius:10px"
+								oncomplete="PF('dlgEf').show();" />
+						</div>
+						
+						</div>
+						<div class="ui-g-12 ui-fluid card">
+
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<h:outputText value="N° Entrée"/>								
+								<p:inputText value="#{encaissementVew.numEnc}"/>
+								
+								
+							</p:panelGrid> 
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-7,ui-grid-col-1"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+																
+								<p:outputLabel value="Source" />
+								<p:inputText id="txtCdRc" value="#{encaissementVew.codeRec}">
+									<p:ajax event="blur" listener="#{encaissementVew.searchRecette()}"
+										update="txtLblRc"/>
+								</p:inputText>
+								<p:inputText id="txtLblRc" value="#{encaissementVew.libelleRec}"/>
+								<p:commandButton icon="fa fa-search" style="border-radius:10px"
+									onclick="PF('dlgRec').show();" />
+								
+								
+								
+							</p:panelGrid>
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-2,ui-grid-col-5,ui-grid-col-2,ui-grid-col-2"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								
+								<p:outputLabel value="Mode règlement" />
+								<p:selectOneMenu id="txtMod" value="#{encaissementVew.modePmt}">
+								<f:selectItem itemLabel="Cach" itemValue="1" />
+								<f:selectItem itemLabel="Chèque" itemValue="2" />
+								<f:selectItem itemLabel="Virement" itemValue="3" />								
+								<p:ajax event="change" update="txtMod" />
+								</p:selectOneMenu>
+								
+								<p:outputLabel value="Montant" />
+								<p:inputNumber id="txtMt" value="#{encaissementVew.montantHt}"
+										thousandSeparator="&nbsp;" inputStyle="text-align:right"
+										decimalPlaces="0">										
+								</p:inputNumber>
+								
+								<p:outputLabel value="Devise" />
+								<p:selectOneMenu id="txtDev" value="#{encaissementVew.idDevise}"
+								valueChangeListener="#{encaissementVew.changeDeviseElement}">
+								<f:selectItem itemLabel=" " itemValue="" />
+								<f:selectItems value="#{encaissementVew.listDevise}" />
+								<p:ajax event="change" update="txtDev" />
+								</p:selectOneMenu>
+								
+								<p:outputLabel value="Cours" />
+								<p:inputNumber id="txtCrs" value="#{encaissementVew.tauxDevise}"
+										thousandSeparator="&nbsp;" inputStyle="text-align:right"
+										decimalPlaces="2" />
+							
+								
+								<p:outputLabel value="Banque" />
+								<p:selectOneMenu id="txtBk" value="#{encaissementVew.idCaisse}"
+								valueChangeListener="#{encaissementVew.changeBankElement}">
+								<f:selectItem itemLabel=" " itemValue="" />
+								<f:selectItems value="#{encaissementVew.listCaisse}" />
+								<p:ajax event="change" update="txtBk,txtCpt" />
+								</p:selectOneMenu>
+								
+									<p:outputLabel value="Pièce"/>
+								<p:inputText value="#{encaissementVew.pieceOper}">
+									
+								</p:inputText>
+								
+								<p:outputLabel value="Compte" />
+								<p:selectOneMenu id="txtCpt" value="#{encaissementVew.idCompte}"
+								valueChangeListener="#{encaissementVew.changeCompteElement}">
+								<f:selectItem itemLabel=" " itemValue="0" />
+								<f:selectItems value="#{encaissementVew.listCompte}" />
+								<p:ajax event="change" update="txtCpt" />
+								</p:selectOneMenu>
+								
+							<p:outputLabel value="Date "/>
+									<p:inputMask id="txtDateReg" value="#{encaissementVew.printDate}" mask="99/99/9999">
+										<p:ajax event="blur" listener="#{encaissementVew.changeDate()}" 
+										update=":frmEF:msg,:frmEF:txtDateReg,:frmEF:btnSave" />
+									</p:inputMask>
+								
+							</p:panelGrid>
+							<p:panelGrid columns="2"
+								columnClasses="ui-grid-col-2,ui-grid-col-9"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+										
+								<p:outputLabel value="Commentaire" />
+								<p:inputTextarea id="txtCmt" value="#{encaissementVew.comment}"/>
+						
+								</p:panelGrid>
+							</div>
+							
+							
+					
+
+						<div class="ui-g-12 ui-fluid card">
+							<div class="ui-g-12 ui-md-1" />
+							<div class="ui-g-3">
+								<p:commandButton value="Enregistrer"
+									action="#{encaissementVew.save()}" icon="ui-icon-disk" update="frmEF"
+									style="border-radius:10px" id="btnSave" />
+							</div> 
+							<div class="ui-g-3">
+								<p:commandButton value="Supprimer"
+									action="#{encaissementVew.delete()}" icon="ui-icon-trash" id="btnDelete"
+									update="frmEF" styleClass="orange-btn" style="border-radius:10px">
+									<p:confirm header="Confirmation"
+										disabled="#{encaissementVew.disableMsg}"
+										message="Voulez vous vraiment supprimer ?"
+										icon="ui-icon-alert" />
+								</p:commandButton>
+							</div>
+							<div class="ui-g-3">  
+								<p:commandButton value="Initialiser" id="btnClean"
+									action="#{encaissementVew.initializeControl()}"
+									icon="ui-icon ui-icon-refresh" update="frmEF"
+									style="border-radius:10px" />
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</h:form>
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+				widgetVar="cd">
+				<p:commandButton value="Oui" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Non" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+			
+			
+		
+		
+		<p:dialog widgetVar="dlgRec" header="Listes des types de dépense"
+			modal="true" appendTo="@(body)" width="700" responsive="true">
+			<h:form id="frmEFRc"> 
+
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+						<p:panelGrid columns="3"
+							columnClasses="ui-grid-col-2,ui-grid-col-6,ui-grid-col-3"
+							layout="grid" styleClass="ui-panelgrid-blank"
+							style="background-color:transparent;">
+
+							
+							
+							<p:outputLabel value="Libellé" />
+							<p:inputText value="#{encaissementVew.rechLblRec}"/>
+	
+							<p:commandButton value="Rechercher"
+								style="border-radius:10px"
+								action="#{encaissementVew.chargerRecette()}"
+								update="tblRec"/>
+								
+						
+						
+						</p:panelGrid>
+						
+						<p:dataTable var="rec" value="#{encaissementVew.listeRecette}" id="tblRec" emptyMessage=""
+							selectionMode="single" selection="#{encaissementVew.selectedRecette}"
+							rowKey="#{rec.id}" reflow="true" scrollable="true" scrollHeight="200">
+
+							<p:ajax event="rowSelect" listener="#{encaissementVew.getSelectedRecetteValue()}"
+								update="frmEF" />
+
+							<p:column headerText="Référence" width="10%">
+								<h:outputText value="#{rec.codeRec}" />
+							</p:column>
+
+							<p:column headerText="Libellé">
+								<h:outputText value="#{rec.libelle}" />
+							</p:column>
+
+						</p:dataTable>
+
+
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+		<p:dialog widgetVar="dlgEf" header="Liste règlements"
+			modal="true" appendTo="@(body)" width="1200" responsive="true">
+			<h:form id="frmEFReg">
+
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+						<p:panelGrid columns="6"
+							columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,
+										  ui-grid-col-1,ui-grid-col-2"
+							layout="grid" styleClass="ui-panelgrid-blank"
+							style="background-color:transparent;">
+
+							
+						
+							<p:outputLabel value="Date début"/>
+									<p:inputMask id="txtDateDebut" value="#{encaissementVew.rechDateDeb}" mask="99/99/9999">
+										<p:ajax event="blur" listener="#{encaissementVew.changeDateDebut()}" update=":frmEFReg:txtMsg,:frmEFReg:txtDateDebut" />
+									</p:inputMask>
+								
+									<p:outputLabel value="Date fin"/>
+									<p:inputMask id="txtDateFin" value="#{encaissementVew.rechDateFin}" mask="99/99/9999">
+										<p:ajax event="blur" listener="#{encaissementVew.changeDateFin()}" update=":frmEFReg:txtMsg,:frmEFReg:txtDateFin" />
+									</p:inputMask>
+							<p:spacer/>
+							<p:commandButton value="Rechercher"
+								style="border-radius:10px"
+								action="#{encaissementVew.chargerEncaissement()}"
+								update="tbl"/>
+						
+						</p:panelGrid>
+						<p:panelGrid columns="1"
+							columnClasses="ui-grid-col-6"
+							layout="grid" styleClass="ui-panelgrid-blank"
+							style="background-color:transparent;">
+							<p:outputLabel value="#{encaissementVew.infoMsg}" id="txtMsg" style="color:red"/>
+							
+							</p:panelGrid>
+							
+						<p:dataTable var="rec" value="#{encaissementVew.listEncaissement}" id="tbl"
+								selectionMode="single" selection="#{encaissementVew.selectedEncaissement}"
+								rowKey="#{rec.id}" reflow="true" 
+								scrollable="true" scrollHeight="250" emptyMessage="">
+
+								<p:ajax event="rowSelect" listener="#{encaissementVew.getSelectedEntreeFond()}"
+									update=":frmEF" />
+
+								<p:column headerText="Date" width="8%">
+									<h:outputText value="#{rec.dateToPrint}" />
+								</p:column>
+
+								<p:column headerText="Piece"  width="15%">
+									<h:outputText value="#{rec.piece}"/>
+								</p:column>
+								
+								<p:column headerText="Libellé"  width="45%">
+									<h:outputText value="#{rec.commentaire}"/>
+								</p:column>
+								
+								<p:column headerText="Montant"  width="10%">
+									<h:outputText value="#{rec.amountToPrint}"  style="float:right"/>
+								</p:column>
+								
+								
+								
+								<p:columnGroup type="footer">
+									<p:row>
+										<p:column footerText="Total" colspan="3" 
+											style="text-align:left;color:brown" />
+											
+										<p:column footerText="#{encaissementVew.printTot}"
+											style="text-align:right;color:brown"/>
+										
+										
+									</p:row>
+									
+								</p:columnGroup>
+							</p:dataTable>
+
+
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+		</body>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,356 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/masterPage.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+		<h:head>
+			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
+			<title>Factures fournisseurs</title>
+		</h:head>
+		<body>
+			<h:form id="frmFF"
+				onkeypress="if (event.keyCode == 13) { return false; }">
+				<p:blockUI block="frmFF" trigger="btnSave" />
+				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
+					
+						<div class="ui-g-12 ui-fluid card">
+							<div class="ui-g-12 ui-md-1"/>
+							<div class="ui-g-12 ui-md-4">
+							<p:commandButton value="Recherche des factures"
+								icon="fa fa-search" style="border-radius:10px"
+								oncomplete="PF('dlgDep').show();" />
+						</div>
+						</div>
+						<div class="ui-g-12 ui-fluid card">
+ 
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-2,ui-grid-col-5,ui-grid-col-2,ui-grid-col-2"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<h:outputText value="N° facture"/>								
+								<p:inputText value="#{depenseVew.pieceCmpt}"/>
+								
+								<p:outputLabel value="Date"/>
+									<p:inputMask id="txtDate" value="#{depenseVew.printDate}" mask="99/99/9999">
+										<p:ajax event="blur" listener="#{depenseVew.changeDate()}" 
+										update=":frmFF:msg,:frmFF:txtDate,:frmFF:btnSave" />
+									</p:inputMask>
+									
+							</p:panelGrid>
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-7,ui-grid-col-1"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<h:outputText value="Fournisseur"/>
+								<p:inputText id="txtCodFrn" value="#{depenseVew.codeFrn}">
+									<p:ajax event="blur" listener="#{depenseVew.searchFournisseur()}"
+										update="txtLblFrn"/>
+								</p:inputText>	
+												
+								<p:inputText id="txtLblFrn" value="#{depenseVew.libelleFrn}"/>
+								<p:commandButton icon="fa fa-search" style="border-radius:10px"
+									onclick="PF('dlgFrn').show();" />
+									
+								<p:outputLabel value="Type dépense" />
+								<p:inputText id="txtCdCh" value="#{depenseVew.codeChrg}">
+									<p:ajax event="blur" listener="#{depenseVew.searchCharge()}"
+										update="txtLblChg"/>
+								</p:inputText>
+								<p:inputText id="txtLblChg" value="#{depenseVew.libelleChrg}"/>
+								<p:commandButton icon="fa fa-search" style="border-radius:10px"
+									onclick="PF('dlgChg').show();" />
+								
+							</p:panelGrid>
+							
+							
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-2,ui-grid-col-5,ui-grid-col-2,ui-grid-col-2"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<p:outputLabel value="Centre coût" />
+								<p:selectOneMenu id="txtCentre" value="#{depenseVew.idCentre}"
+								valueChangeListener="#{depenseVew.changeCentreElement}">
+								<f:selectItem itemLabel=" " itemValue="" />
+								<f:selectItems value="#{depenseVew.listCentre}" />
+								<p:ajax event="change" update="txtCentre" />
+								</p:selectOneMenu>
+								
+								<p:outputLabel value="Montant H.T" />
+								<p:inputNumber id="txtMt" value="#{depenseVew.montantHt}"
+										thousandSeparator="&nbsp;" inputStyle="text-align:right"
+										decimalPlaces="2">
+										<p:ajax event="blur" listener="#{depenseVew.calculerMontantTTC()}"
+										update="txtTvc"/>
+								</p:inputNumber>
+								
+								<p:outputLabel value="Devise" />
+								<p:selectOneMenu id="txtDev" value="#{depenseVew.idDevise}"
+								valueChangeListener="#{depenseVew.changeDeviseElement}">
+								<f:selectItem itemLabel=" " itemValue="" />
+								<f:selectItems value="#{depenseVew.listDevise}" />
+								<p:ajax event="change" update="txtDev" />
+								</p:selectOneMenu>
+								
+								<p:outputLabel value="Cours" />
+								<p:inputNumber id="txtCrs" value="#{depenseVew.tauxDevise}"
+										thousandSeparator="&nbsp;" inputStyle="text-align:right"
+										decimalPlaces="2" />
+								
+								
+								<p:outputLabel value="Taxes" />
+								<p:selectOneMenu id="txtTx" value="#{depenseVew.idTaxe}"
+								valueChangeListener="#{depenseVew.changeTaxeElement}">
+								<f:selectItem itemLabel=" " itemValue="" />
+								<f:selectItems value="#{depenseVew.listTaxe}" />
+								<p:ajax event="change" update="txtTx,txtRt,txtTvc,txtMt" />
+								</p:selectOneMenu>
+								
+								<p:outputLabel value="Taux" />
+								<p:inputNumber id="txtRt" value="#{depenseVew.tauxTva}"
+										thousandSeparator="&nbsp;" inputStyle="text-align:right"
+										decimalPlaces="2" />
+								
+								<p:outputLabel value="Commentaire" />
+								<p:inputTextarea id="txtCmt" value="#{depenseVew.comment}"/>
+								
+								<p:outputLabel value="Montant TTC" />
+								<p:inputNumber id="txtTvc" value="#{depenseVew.montantTvac}"
+										thousandSeparator="&nbsp;" inputStyle="text-align:right"
+										decimalPlaces="2">
+									<p:ajax event="blur" listener="#{depenseVew.calculerMontantHT()}"
+										update="txtMt"/>
+								</p:inputNumber>
+										
+							</p:panelGrid>
+							
+					</div>
+
+					
+
+						<div class="ui-g-12 ui-fluid card">
+							<div class="ui-g-12 ui-md-1" />
+							<div class="ui-g-3">
+								<p:commandButton value="Enregistrer"
+									action="#{depenseVew.save()}" icon="ui-icon-disk" update="frmFF"
+									style="border-radius:10px" id="btnSave" />
+							</div> 
+							<div class="ui-g-3">
+								<p:commandButton value="Supprimer"
+									action="#{depenseVew.delete()}" icon="ui-icon-trash" id="btnDelete"
+									update="frmFF" styleClass="orange-btn" style="border-radius:10px">
+									<p:confirm header="Confirmation"
+										disabled="#{depenseVew.disableMsg}"
+										message="Voulez vous vraiment supprimer ?"
+										icon="ui-icon-alert" />
+								</p:commandButton>
+							</div>
+							<div class="ui-g-3">  
+								<p:commandButton value="Initialiser" id="btnClean"
+									action="#{depenseVew.initializeControl()}"
+									icon="ui-icon ui-icon-refresh" update="frmFF"
+									style="border-radius:10px" />
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</h:form>
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+				widgetVar="cd">
+				<p:commandButton value="Oui" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Non" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+			
+			
+		
+		<p:dialog widgetVar="dlgFrn" header="Liste fournisseur"
+			modal="true" appendTo="@(body)" width="700" responsive="true">
+			<h:form id="frmFFFrn">
+
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+						<p:panelGrid columns="3"
+							columnClasses="ui-grid-col-1,ui-grid-col-6,ui-grid-col-3"
+							layout="grid" styleClass="ui-panelgrid-blank"
+							style="background-color:transparent;">
+							
+							<p:outputLabel value="Libellé" />
+							<p:inputText value="#{depenseVew.rechLblFrn}"/>
+	
+							<p:commandButton value="Rechercher"
+								style="border-radius:10px"
+								action="#{depenseVew.chargerFournisseur()}"
+								update="tblFrn"/>
+
+						</p:panelGrid>
+
+						<p:dataTable value="#{depenseVew.listFournisseur}"
+							var="frn" selectionMode="single" id="tblFrn"
+							selection="#{depenseVew.selectedFourn}" rowKey="#{frn.id}"
+							reflow="true" scrollable="true" scrollHeight="200"
+							emptyMessage="">
+
+							<p:ajax event="rowSelect"
+								listener="#{depenseVew.getSelectedFrnValue()}"
+								update=":frmFF:txtCodFrn,:frmFF:txtLblFrn"/>
+
+							<p:column headerText="Référence" width="15%">
+								<h:outputText value="#{frn.codeFrn}" />
+							</p:column>
+
+							<p:column headerText="Fournisseur">
+								<h:outputText value="#{frn.nameFrn}" />
+							</p:column>
+
+						</p:dataTable>
+
+
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog widgetVar="dlgChg" header="Listes des types de dépense"
+			modal="true" appendTo="@(body)" width="700" responsive="true">
+			<h:form id="frmCh"> 
+
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+						<p:panelGrid columns="3"
+							columnClasses="ui-grid-col-2,ui-grid-col-6,ui-grid-col-3"
+							layout="grid" styleClass="ui-panelgrid-blank"
+							style="background-color:transparent;">
+
+							
+							
+							<p:outputLabel value="Libellé" />
+							<p:inputText value="#{depenseVew.rechLblChg}"/>
+	
+							<p:commandButton value="Rechercher"
+								style="border-radius:10px"
+								action="#{depenseVew.chargerCharge()}"
+								update="tblCgh"/>
+								
+						
+						
+						</p:panelGrid>
+						
+						<p:dataTable var="chg" value="#{depenseVew.listCharge}" id="tblCgh" emptyMessage=""
+							selectionMode="single" selection="#{depenseVew.selectedCharg}"
+							rowKey="#{chg.id}" reflow="true" scrollable="true" scrollHeight="200">
+
+							<p:ajax event="rowSelect" listener="#{depenseVew.getSelectedChrValue()}"
+								update="frmFF" />
+
+							<p:column headerText="Référence" width="10%">
+								<h:outputText value="#{chg.codeChg}" />
+							</p:column>
+
+							<p:column headerText="Libellé">
+								<h:outputText value="#{chg.libelle}" />
+							</p:column>
+
+						</p:dataTable>
+
+
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+		<p:dialog widgetVar="dlgDep" header="Liste des dépenses"
+			modal="true" appendTo="@(body)" width="1200" responsive="true">
+			<h:form id="frmDep">
+
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+						<p:panelGrid columns="6"
+							columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,
+										  ui-grid-col-1,ui-grid-col-2"
+							layout="grid" styleClass="ui-panelgrid-blank"
+							style="background-color:transparent;">
+
+							
+						
+							<p:outputLabel value="Date début"/>
+									<p:inputMask id="txtDateDebut" value="#{depenseVew.rechDateDeb}" mask="99/99/9999">
+										<p:ajax event="blur" listener="#{depenseVew.changeDateDebut()}" update="txtMsg,txtDateDebut" />
+									</p:inputMask>
+								
+									<p:outputLabel value="Date fin"/>
+									<p:inputMask id="txtDateFin" value="#{depenseVew.rechDateFin}" mask="99/99/9999">
+										<p:ajax event="blur" listener="#{depenseVew.changeDateFin()}" update="txtMsg,txtDateFin" />
+									</p:inputMask>
+							<p:spacer/>
+							<p:commandButton value="Rechercher"
+								style="border-radius:10px"
+								action="#{depenseVew.chargerDepense()}"
+								update="tbl"/>
+						
+						</p:panelGrid>
+						<p:panelGrid columns="1"
+							columnClasses="ui-grid-col-6"
+							layout="grid" styleClass="ui-panelgrid-blank"
+							style="background-color:transparent;">
+							<p:outputLabel value="#{depenseVew.infoMsg}" id="txtMsg" style="color:red"/>
+							
+							</p:panelGrid>
+							
+						<p:dataTable var="dep" value="#{depenseVew.listDepense}" id="tbl"
+								selectionMode="single" selection="#{depenseVew.selectedDepense}"
+								rowKey="#{dep.id}" reflow="true" 
+								scrollable="true" scrollHeight="250" emptyMessage="">
+
+								<p:ajax event="rowSelect" listener="#{depenseVew.getSelectedDepenseValue()}"
+									update=":frmFF" />
+
+								<p:column headerText="Date" width="8%">
+									<h:outputText value="#{dep.dateToPrint}" />
+								</p:column>
+
+								<p:column headerText="N° facture"  width="15%">
+									<h:outputText value="#{dep.piece}"/>
+								</p:column>
+								
+								<p:column headerText="Libellé"  width="45%">
+									<h:outputText value="#{dep.libelle}"/>
+								</p:column>
+								
+								<p:column headerText="Montant"  width="10%">
+									<h:outputText value="#{dep.amountToPrint}"  style="float:right"/>
+								</p:column>
+								
+								
+								
+								<p:columnGroup type="footer">
+									<p:row>
+										<p:column footerText="Total" colspan="3" 
+											style="text-align:left;color:brown" />
+											
+										<p:column footerText="#{depenseVew.printTot}"
+											style="text-align:right;color:brown"/>
+										
+										
+									</p:row>
+									
+								</p:columnGroup>
+							</p:dataTable>
+
+
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+		</body>
+	</ui:define>
+</ui:composition>

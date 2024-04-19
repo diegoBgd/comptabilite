@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+	</f:facet>
+	<title>Page Identification</title>
+	<style type="text/css">
+#mydiv {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 50%;
+	height: auto;
+	transform: translate(-50%, -50%);
+	box-shadow: 5px 10px 18px #888888;
+	border-radius: 15px;
+}
+
+.myBack {
+	background-color: white
+}
+
+#cercle {
+	position: absolute;
+	height: 30%;
+	width: 15%;
+	border-radius: 100%;
+	left: 40%;
+	margin-left: 15px;
+	top: -70px;
+	background: transparent;
+}
+
+#info {
+	text-align: center;
+	font-size: 20px;
+	color: white;
+	height:auto;
+	/*background-color: #118baa;*/
+	border-radius: 15px;
+}
+</style>
+</h:head>
+
+<h:body styleClass="myBack">
+	<h:form>
+		<p:growl id="msgs" showDetail="true" />
+
+
+		<div id="mydiv" style="text-align: center">
+
+			<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
+				<div class="ui-g-12 ui-md-12 ui-lg-6 ui-fluid contact-form">
+					<div class="ui-g" id="info">
+					
+					<h:graphicImage url="/resources/Images/gatech.png" height="90%" width="70%"/>
+					
+					</div>
+					<div class="ui-g-12">
+					<h:outputLabel value="GATECH COMPTA" style="color:#118baa;font-weight:bold;font-size:18px"/>
+					</div>
+				</div>
+
+				<div class="ui-g-12 ui-md-12 ui-lg-6 ui-fluid contact-form" style="border-left: 0.25rem solid  #118baa">
+					<div class="ui-g">
+						<div class="ui-g-12 ui-md-12">
+							<div class="ui-inputgroup">
+								<p:commandButton icon="fa fa-calendar" />
+								<p:selectOneMenu
+									valueChangeListener="#{loginView.changeExercice}"
+									id="smExerc" placeholder="exercice"
+									value="#{loginView.idExercice}"
+									disabled="false">
+									<f:selectItems value="#{loginView.listExerc}" />
+									<p:ajax event="change" update="smExerc" />
+								</p:selectOneMenu>
+							</div>
+						</div>
+
+						<div class="ui-g-12 ui-md-12">
+							<div class="ui-inputgroup">
+
+								<p:commandButton icon="fa fa-user" />
+								<p:inputText placeholder="Code utilisateur"
+									value="#{loginView.code}"
+									disabled="false" autocomplete="off" />
+
+							</div>
+						</div>
+						<div class="ui-g-12 ui-md-12">
+							<div class="ui-inputgroup">
+
+								<p:commandButton icon="fa fa-key" />
+								<p:password placeholder="Mot de passe"
+									value="#{loginView.pwd}" autocomplete="off"
+									disabled="false" />
+
+
+							</div>
+						</div>
+						<div class="ui-g-12" />
+						<div class="ui-g-12" />
+						<div class="ui-g-12">
+							<p:commandButton value="Entrer"
+								disabled="false"
+								icon="fa fa-unlock-alt" action="#{loginView.login()}"
+								style="border-radius:10px" update="msgs" />
+						</div>
+
+						<div class="ui-g-12">
+							<p:commandLink value="Mot de passe oublié ?"
+								action="a"
+								disabled="false" />
+						</div>
+					</div>
+					<div class="ui-g-12"></div>
+				</div>
+
+
+			</div>
+			<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
+				<p:panel visible="false">
+					<p:panelGrid columns="1" columnClasses="ui-grid-col-12"
+						layout="grid" styleClass="ui-panelgrid-blank"
+						style="border:0px none; background-color:transparent;">
+						<p:outputLabel value=" "
+							style="color:red" />
+
+						<p:commandLink value="Connexion à la base de données"
+							action="a" />
+					</p:panelGrid>
+				</p:panel>
+			</div>
+		</div>
+
+
+
+		<h:outputStylesheet name="css/layout-cyan-light.css"
+			library="apollo-layout" />
+	</h:form>
+
+
+</h:body>
+
+</html>

@@ -1,0 +1,444 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/masterPage.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+		<h:head>
+			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
+			<title>Produit</title>
+		</h:head>
+		<body>
+			<h:form id="frm"
+				onkeypress="if (event.keyCode == 13) { return false; }">
+				<p:blockUI block="frm" trigger="btnSave" />
+				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
+
+						<div class="ui-g-12 ui-fluid card">
+							<div class="ui-g-12 ui-md-1" />
+							<div class="ui-g-12 ui-md-4">
+								<p:commandButton value="Recherche des produits"
+									icon="fa fa-search" style="border-radius:10px"
+									oncomplete="PF('dlgPrd').show();" />
+							</div>
+ 
+						</div>
+						<div class="ui-g-12 ui-fluid card">
+
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-1,ui-grid-col-5"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								<h:outputText value="Référence" />
+								<p:inputText id="txtRef" value="#{produitVew.code}">
+									<p:ajax event="blur" listener="#{produitVew.searchProduit()}"
+										update=":frm" />
+								</p:inputText>
+
+
+
+							</p:panelGrid>
+							<p:panelGrid columns="2"
+								columnClasses="ui-grid-col-2,ui-grid-col-8" layout="grid"
+								styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+
+								<p:outputLabel value="Libelle" />
+								<p:inputText id="txtLibelle" value="#{produitVew.designation}" />
+
+								<p:outputLabel value="Sous famille" />
+								<p:selectOneMenu id="txtSF" value="#{produitVew.idSfmille}"
+									valueChangeListener="#{produitVew.changeSfmilElement}">
+									<f:selectItem itemLabel=" " itemValue="" />
+									<f:selectItems value="#{produitVew.listSfmille}" />
+									<p:ajax event="change" update="txtSF" />
+								</p:selectOneMenu>
+
+							</p:panelGrid>
+							<p:panelGrid columns="4" rendered="false"
+								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-2"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+
+								<p:outputLabel value="Unité" />
+								<p:inputText id="txtUnite" value="#{produitVew.mesureUnit}" />
+
+								<p:outputLabel value="Nombre unité" />
+								<p:inputNumber id="txtNu" value="#{produitVew.unitNumber}"
+									thousandSeparator="&nbsp;" inputStyle="text-align:right"
+									decimalPlaces="0" />
+
+								<p:outputLabel value="Gérer stock" />
+								<p:selectBooleanCheckbox value="#{produitVew.stockElement}" />
+
+							</p:panelGrid>
+							<p:tabView id="prd" style="font-size:13px">
+								<p:tab id="tab1" title="Prix et taxes">
+									<p:panelGrid columns="4"
+										columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-2"
+										layout="grid" styleClass="ui-panelgrid-blank"
+										style="border:0px none; background-color:transparent;">
+
+										<p:outputLabel value="Prix de revien" />
+										<p:inputNumber id="txtPR" value="#{produitVew.montantUnitaire}"
+											thousandSeparator="&nbsp;" inputStyle="text-align:right"
+											decimalPlaces="0">
+											<p:ajax event="blur" update="txtPR" />
+										</p:inputNumber>
+
+
+										<p:outputLabel value="Marge bénéficiaire" />
+										<p:inputNumber id="txtMrg" value="#{produitVew.marge}"
+											thousandSeparator="&nbsp;" inputStyle="text-align:right"
+											decimalPlaces="0">
+											
+										</p:inputNumber>
+
+										<p:outputLabel value="Prix de vente H.T" />
+										<p:inputNumber id="txtPHT" value="#{produitVew.montantHT}"
+											thousandSeparator="&nbsp;" inputStyle="text-align:right"
+											decimalPlaces="0" />
+
+										<p:outputLabel value="Marge bénéficiaire(%)" />
+										<p:inputNumber id="txtMrgTx" value="#{produitVew.margePrcent}"
+											thousandSeparator="&nbsp;" inputStyle="text-align:right"
+											decimalPlaces="2">
+											
+										</p:inputNumber>
+
+										<p:outputLabel value="Prix de vente TTC" />
+										<p:inputNumber id="txtPTTC" value="#{produitVew.montantTTC}"
+											thousandSeparator="&nbsp;" inputStyle="text-align:right"
+											decimalPlaces="0" />
+
+
+									</p:panelGrid>
+
+
+									<p:dataTable value="#{produitVew.listTaxes}" var="tx"
+										selectionMode="single" id="tblTx"
+										selection="#{produitVew.selectedTxe}" rowKey="#{tx.taxe.id}"
+										reflow="true" scrollable="true" scrollHeight="100"
+										emptyMessage="">
+
+										<p:ajax event="rowSelect"
+											listener="#{produitVew.takeSelectedTaxe()}"
+											update=":frm:prd:txtTx,:frm:prd:txtTauxTx" />
+										<p:column headerText="Taxe">
+											<h:outputText value="#{tx.taxe.libelle}" width="50%" />
+										</p:column>
+
+										<p:column headerText="Taux">
+											<h:outputText value="#{tx.taux}" />
+										</p:column>
+
+										<p:column headerText="Valeur" width="30%">
+											<h:outputText value="#{tx.valeurTaxe}" style="float:right" />
+
+										</p:column>
+
+
+
+									</p:dataTable>
+									<p:panelGrid columns="4"
+										columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-1,ui-grid-col-1"
+										layout="grid" styleClass="ui-panelgrid-blank"
+										style="border:0px none; background-color:transparent;">
+
+										<p:selectOneMenu id="txtTx" value="#{produitVew.idTaxe}"
+											valueChangeListener="#{produitVew.changeTaxElement}">
+											<f:selectItem itemLabel=" " itemValue="" />
+											<f:selectItems value="#{produitVew.listTax}" />
+											<p:ajax event="change" update="txtTx,txtTauxTx" />
+										</p:selectOneMenu>
+
+
+										<p:inputNumber id="txtTauxTx" value="#{produitVew.tauxTaxe}"
+											thousandSeparator="&nbsp;" inputStyle="text-align:right"
+											decimalPlaces="2" />
+
+										<p:commandButton icon="fa fa-plus-circle"
+											action="#{produitVew.addTaxe()}"
+											update="tblTx,txtTx,txtTauxTx,txtPHT,txtPTTC"
+											style="border-radius:10px" />
+										<p:commandButton icon="fa fa-minus-circle"
+											action="#{produitVew.removeTaxe()}"
+											update="tblTx,txtTx,txtTauxTx,txtPHT,txtPTTC"
+											style="border-radius:10px" />
+
+									</p:panelGrid>
+
+								</p:tab>
+
+								<p:tab id="tab3" title="Compte">
+							
+									<p:panelGrid columns="4" 
+										columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-6,ui-grid-col-1"
+										layout="grid" styleClass="ui-panelgrid-blank"
+										style="border:0px none; background-color:transparent;">
+
+										<p:outputLabel value="Compte stock" />
+										<p:inputText id="txtCptStk" value="#{produitVew.compteStock}">
+											<p:ajax event="blur"
+												listener="#{produitVew.searchCompteStock()}"
+												update="txtLblCptStk" />
+										</p:inputText>
+										<p:inputText id="txtLblCptStk"
+											value="#{produitVew.lblCptStck}" />
+										<p:commandButton icon="fa fa-search"
+											style="border-radius:10px" onclick="PF('dlgCptStk').show();" />
+
+										<p:outputLabel value="Compte sortie" />
+										<p:inputText id="txtCptSrt" value="#{produitVew.compteSortie}">
+											<p:ajax event="blur"
+												listener="#{produitVew.searchCompteSortie()}"
+												update="txtLblCptSrt" />
+										</p:inputText>
+										<p:inputText id="txtLblCptSrt" value="#{produitVew.lblCptSrt}" />
+										<p:commandButton icon="fa fa-search"
+											style="border-radius:10px" onclick="PF('dlgCptSrt').show();" />
+
+										<p:outputLabel value="Compte vente" />
+										<p:inputText id="txtCptVt" value="#{produitVew.compteVente}">
+											<p:ajax event="blur"
+												listener="#{produitVew.searchCompteVente()}"
+												update="txtLblCptVt" />
+										</p:inputText>
+										<p:inputText id="txtLblCptVt" value="#{produitVew.lblCptVnt}" />
+										<p:commandButton icon="fa fa-search"
+											style="border-radius:10px" onclick="PF('dlgCptVt').show();" />
+
+									</p:panelGrid>
+
+								</p:tab>
+							</p:tabView>
+
+						</div>
+
+						<div class="ui-g-12 ui-fluid card">
+							<div class="ui-g-12 ui-md-1" />
+							<div class="ui-g-3">
+								<p:commandButton value="Enregistrer"
+									action="#{produitVew.save()}" icon="ui-icon-disk" update="frm"
+									style="border-radius:10px" id="btnSave" />
+							</div>
+							<div class="ui-g-3">
+								<p:commandButton value="Supprimer"
+									action="#{produitVew.delete()}" icon="ui-icon-trash"
+									id="btnDelete" update="frm" styleClass="orange-btn"
+									style="border-radius:10px">
+									<p:confirm header="Confirmation"
+										disabled="#{produitVew.disableMsg}"
+										message="Voulez vous vraiment supprimer ?"
+										icon="ui-icon-alert" />
+								</p:commandButton>
+							</div>
+							<div class="ui-g-3">
+								<p:commandButton value="Initialiser" id="btnClean"
+									action="#{produitVew.initializeControl()}"
+									icon="ui-icon ui-icon-refresh" update="frm"
+									style="border-radius:10px" />
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</h:form>
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+				widgetVar="cd">
+				<p:commandButton value="Oui" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Non" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+
+			<p:dialog widgetVar="dlgCptStk" header="Plan comptable" modal="true"
+				appendTo="@(body)" width="700" responsive="true">
+				<h:form id="frmCpt">
+
+					<div class="ui-g">
+						<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+							<p:panelGrid columns="3"
+								columnClasses="ui-grid-col-1,ui-grid-col-6,ui-grid-col-3"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="background-color:transparent;">
+
+								<p:outputLabel value="Libellé" />
+								<p:inputText value="#{produitVew.rechLblCpt}" />
+
+								<p:commandButton value="Rechercher" style="border-radius:10px"
+									action="#{produitVew.chargerCompte()}" update="tblCpt" />
+
+							</p:panelGrid>
+
+							<p:dataTable value="#{produitVew.listCompte}" var="cpt"
+								selectionMode="single" id="tblCpt"
+								selection="#{produitVew.cptStock}" rowKey="#{cpt.id}"
+								reflow="true" scrollable="true" scrollHeight="200"
+								emptyMessage="">
+
+								<p:ajax event="rowSelect"
+									listener="#{produitVew.getSelectedCptStkValue()}"
+									update=":frm:prd:txtLblCptStk,:frm:prd:txtCptStk" />
+
+								<p:column headerText="Compte" width="15%">
+									<h:outputText value="#{cpt.compteCod}" />
+								</p:column>
+
+								<p:column headerText="Libelle">
+									<h:outputText value="#{cpt.libelle}" />
+								</p:column>
+
+							</p:dataTable>
+
+
+						</div>
+					</div>
+				</h:form>
+			</p:dialog>
+
+			<p:dialog widgetVar="dlgCptSrt" header="Plan comptable" modal="true"
+				appendTo="@(body)" width="700" responsive="true">
+				<h:form id="frmCptSrt">
+
+					<div class="ui-g">
+						<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+							<p:panelGrid columns="3"
+								columnClasses="ui-grid-col-1,ui-grid-col-6,ui-grid-col-3"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="background-color:transparent;">
+
+								<p:outputLabel value="Libellé" />
+								<p:inputText value="#{produitVew.rechLblCpt}" />
+
+								<p:commandButton value="Rechercher" style="border-radius:10px"
+									action="#{produitVew.chargerCompte()}" update="tblCptSrt" />
+
+							</p:panelGrid>
+
+							<p:dataTable value="#{produitVew.listCompte}" var="cpt"
+								selectionMode="single" id="tblCptSrt"
+								selection="#{produitVew.cptSrt}" rowKey="#{cpt.id}"
+								reflow="true" scrollable="true" scrollHeight="200"
+								emptyMessage="">
+
+								<p:ajax event="rowSelect"
+									listener="#{produitVew.getSelectedCptSrtValue()}"
+									update=":frm:prd:txtCptSrt,:frm:prd:txtLblCptSrt" />
+
+								<p:column headerText="Compte" width="15%">
+									<h:outputText value="#{cpt.compteCod}" />
+								</p:column>
+
+								<p:column headerText="Libelle">
+									<h:outputText value="#{cpt.libelle}" />
+								</p:column>
+
+							</p:dataTable>
+
+
+						</div>
+					</div>
+				</h:form>
+			</p:dialog>
+
+			<p:dialog widgetVar="dlgCptVt" header="Plan comptable" modal="true"
+				appendTo="@(body)" width="700" responsive="true">
+				<h:form id="frmCptVt">
+
+					<div class="ui-g">
+						<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+							<p:panelGrid columns="3"
+								columnClasses="ui-grid-col-1,ui-grid-col-6,ui-grid-col-3"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="background-color:transparent;">
+
+								<p:outputLabel value="Libellé" />
+								<p:inputText value="#{produitVew.rechLblCpt}" />
+
+								<p:commandButton value="Rechercher" style="border-radius:10px"
+									action="#{produitVew.chargerCompte()}" update="tblCptVt" />
+
+							</p:panelGrid>
+
+							<p:dataTable value="#{produitVew.listCompte}" var="cpt"
+								selectionMode="single" id="tblCptVt"
+								selection="#{produitVew.cptVente}" rowKey="#{cpt.id}"
+								reflow="true" scrollable="true" scrollHeight="200"
+								emptyMessage="">
+
+								<p:ajax event="rowSelect"
+									listener="#{produitVew.getSelecedCptVtValue()}"
+									update=":frm:prd:txtCptVt,:frm:prd:txtLblCptVt" />
+
+								<p:column headerText="Compte" width="15%">
+									<h:outputText value="#{cpt.compteCod}" />
+								</p:column>
+
+								<p:column headerText="Libelle">
+									<h:outputText value="#{cpt.libelle}" />
+								</p:column>
+
+							</p:dataTable>
+
+
+						</div>
+					</div>
+				</h:form>
+			</p:dialog>
+
+			<p:dialog widgetVar="dlgPrd" header="Listes des produits"
+				modal="true" appendTo="@(body)" width="700" responsive="true">
+				<h:form id="frmPrd">
+
+					<div class="ui-g">
+						<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+							<p:panelGrid columns="3"
+								columnClasses="ui-grid-col-2,ui-grid-col-6,ui-grid-col-3"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="background-color:transparent;">
+
+
+
+								<p:outputLabel value="Libellé" />
+								<p:inputText value="#{produitVew.rechPrd}" />
+
+								<p:commandButton value="Rechercher" style="border-radius:10px"
+									action="#{produitVew.chargerProduit()}" update="tblPrd" />
+
+
+
+							</p:panelGrid>
+
+							<p:dataTable var="prd" value="#{produitVew.listProd}" id="tblPrd"
+								emptyMessage="" selectionMode="single"
+								selection="#{produitVew.selectedProd}" rowKey="#{prd.id}"
+								reflow="true" scrollable="true" scrollHeight="200">
+
+								<p:ajax event="rowSelect"
+									listener="#{produitVew.getselectedProduct()}" update="frm" />
+
+								<p:column headerText="Référence" width="10%">
+									<h:outputText value="#{prd.codePrd}" />
+								</p:column>
+
+								<p:column headerText="Libellé">
+									<h:outputText value="#{prd.libelle}" />
+								</p:column>
+
+							</p:dataTable>
+
+
+						</div>
+					</div>
+				</h:form>
+			</p:dialog>
+		</body>
+	</ui:define>
+</ui:composition>

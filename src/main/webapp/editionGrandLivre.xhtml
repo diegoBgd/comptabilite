@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/masterPage.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+		<h:head>
+			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
+			<title>journal</title>
+		</h:head>
+		<body>
+			<h:form id="frm"
+				onkeypress="if (event.keyCode == 13) { return false; }">
+				<p:blockUI block="frm" trigger="" />
+				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
+						<div class="ui-g-12 ui-fluid card no-margin">
+
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-6,ui-grid-col-1"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<h:outputText value="Compte début" />
+								<p:inputText id="txtCdDb" value="#{grandLivre.compteDeb}">
+									<p:ajax event="blur"
+										listener="#{grandLivre.searchCptDeb()}" update="txtDsnDb" />
+								</p:inputText>
+								<p:inputText id="txtDsnDb"
+									value="#{grandLivre.libelleCptDb}" readonly="true" />
+
+								<p:commandButton icon="fa fa-search" style="border-radius:10px"
+									onclick="PF('dlgCptDb').show();" />
+									
+									<h:outputText value="Compte fin" />
+								<p:inputText id="txtCdFn" value="#{grandLivre.compteFin}">
+									<p:ajax event="blur"
+										listener="#{grandLivre.searchCptFn()}" update="txtDsnFn" />
+								</p:inputText>
+								<p:inputText id="txtDsnFn"
+									value="#{grandLivre.libelleCptFin}" readonly="true" />
+
+								<p:commandButton icon="fa fa-search" style="border-radius:10px"
+									onclick="PF('dlgCptFn').show();" />
+							</p:panelGrid>
+
+
+							<p:panelGrid columns="2"
+								columnClasses="ui-grid-col-2,ui-grid-col-2"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								<p:outputLabel value="Date début" />
+								<p:inputMask id="txtDateDebut"
+									value="#{grandLivre.rechDateDeb}" mask="99/99/9999">
+									<p:ajax event="blur"
+										listener="#{grandLivre.changeDateDebut()}"
+										update="txtMsg,txtDateDebut" />
+								</p:inputMask>
+
+								<p:outputLabel value="Date fin" />
+								<p:inputMask id="txtDateFin"
+									value="#{grandLivre.rechDateFin}" mask="99/99/9999">
+									<p:ajax event="blur"
+										listener="#{grandLivre.changeDateFin()}"
+										update="txtMsg,txtDateFin" />
+								</p:inputMask>
+
+							<p:outputLabel value="#{grandLivre.infoMsg}" id="txtMsg"
+									style="color:red" />
+								
+							</p:panelGrid>
+
+							<p:panelGrid columns="3" columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="background-color:transparent;">
+								
+								<p:spacer/>
+								
+								<p:commandButton value="Editer en pdf" icon="fa fa-file-pdf-o"
+									style="border-radius:10px" ajax="false"
+									action="#{grandLivre.printPdf()}" /> 
+								<p:commandButton value="Editer en excel"
+									icon="fa fa-file-excel-o" style="border-radius:10px"
+									action="#{grandLivre.printExcel()}" ajax="false" />
+
+							</p:panelGrid>
+						</div>
+
+						
+					</div>
+				</div>
+			</h:form>
+
+
+			<p:dialog widgetVar="dlgCptDb" header="Plan comptable" modal="true"
+				appendTo="@(body)" width="600" responsive="true">
+				<h:form id="frmCptDb">
+
+					<div class="ui-g">
+						<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+							<p:panelGrid columns="3"
+								columnClasses="ui-grid-col-2,ui-grid-col-8" layout="grid"
+								styleClass="ui-panelgrid-blank"
+								style="background-color:transparent;">
+
+								<p:inputText value="#{grandLivre.rechCodCpt}" />
+								<p:inputText value="#{grandLivre.rechLblCpt}" />
+
+								<p:commandButton value="Rechercher" style="border-radius:10px"
+									action="#{grandLivre.chargerCompte()}" update="tblCpt" />
+
+							</p:panelGrid>
+
+							<p:dataTable value="#{grandLivre.listeCpte}" var="cpt"
+								selectionMode="single" id="tblCpt"
+								selection="#{grandLivre.selectedCpteDb}"
+								rowKey="#{cpt.id}" reflow="true" scrollable="true"
+								scrollHeight="200" emptyMessage="">
+
+								<p:ajax event="rowSelect"
+									listener="#{grandLivre.getSelecedCptDbValue()}"
+									update=":frm:txtCdDb,:frm:txtDsnDb" />
+
+								<p:column headerText="Reference" width="10%">
+									<h:outputText value="#{cpt.compteCod}" />
+								</p:column>
+
+								<p:column headerText="Libelle">
+									<h:outputText value="#{cpt.libelle}" />
+								</p:column>
+
+
+
+							</p:dataTable>
+
+
+						</div>
+					</div>
+				</h:form>
+			</p:dialog>
+			
+			<p:dialog widgetVar="dlgCptFn" header="Plan comptable" modal="true"
+				appendTo="@(body)" width="600" responsive="true">
+				<h:form id="frmCptFn">
+
+					<div class="ui-g">
+						<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+							<p:panelGrid columns="3"
+								columnClasses="ui-grid-col-2,ui-grid-col-8" layout="grid"
+								styleClass="ui-panelgrid-blank"
+								style="background-color:transparent;">
+
+								<p:inputText value="#{grandLivre.rechCodCpt}" />
+								<p:inputText value="#{grandLivre.rechLblCpt}" />
+
+								<p:commandButton value="Rechercher" style="border-radius:10px"
+									action="#{grandLivre.chargerCompte()}" update="tblCpt" />
+
+							</p:panelGrid>
+
+							<p:dataTable value="#{grandLivre.listeCpte}" var="cpt"
+								selectionMode="single" id="tblCpt"
+								selection="#{grandLivre.selectedCpteFn}"
+								rowKey="#{cpt.id}" reflow="true" scrollable="true"
+								scrollHeight="200" emptyMessage="">
+
+								<p:ajax event="rowSelect"
+									listener="#{grandLivre.getSelecedCptFnValue()}"
+									update=":frm:txtCdFn,:frm:txtDsnFn" />
+
+								<p:column headerText="Reference" width="10%">
+									<h:outputText value="#{cpt.compteCod}" />
+								</p:column>
+
+								<p:column headerText="Libelle">
+									<h:outputText value="#{cpt.libelle}" />
+								</p:column>
+
+
+
+							</p:dataTable>
+
+
+						</div>
+					</div>
+				</h:form>
+			</p:dialog>
+		</body>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,397 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/masterPage.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+		<h:head>
+			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
+			<title>Reglements clients</title>
+		</h:head>
+		<body>
+			<h:form id="frm"
+				onkeypress="if (event.keyCode == 13) { return false; }">
+				<p:blockUI block="frm" trigger="btnSave" />
+				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
+					
+						<div class="ui-g-12 ui-fluid card">
+							<div class="ui-g-12 ui-md-1"/>
+							<div class="ui-g-12 ui-md-4">
+							<p:commandButton value="Recherche des factures client"
+								icon="fa fa-search" style="border-radius:10px"
+								oncomplete="PF('dlgFclt').show();" />
+						</div>
+						<div class="ui-g-12 ui-md-4">
+							<p:commandButton value="Recherche des règlements client"
+								icon="fa fa-search" style="border-radius:10px"
+								oncomplete="PF('dlgRglClt').show();" />
+						</div>
+						</div>
+						<div class="ui-g-12 ui-fluid card">
+ 
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-2,ui-grid-col-5,ui-grid-col-2,ui-grid-col-2"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<h:outputText value="N° Facture"/>								
+								<p:inputText value="#{reglementCltVew.pieceOper}"/>
+								
+								<p:outputLabel value="Montat de la facture"/>
+								<p:inputNumber id="txtTotDep" value="#{reglementCltVew.montantFacture}"
+										thousandSeparator="&nbsp;" inputStyle="text-align:right"
+										decimalPlaces="2"/>
+									
+							</p:panelGrid>
+							<p:panelGrid columns="3"
+								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-7"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<h:outputText value="Client"/>
+								<p:inputText id="txtCodClt" value="#{reglementCltVew.codeClt}"/>
+									
+								
+												
+								<p:inputText id="txtLblClt" value="#{reglementCltVew.libelleClt}"/>
+									
+								<p:outputLabel value="Type recette" />
+								<p:inputText id="txtCdRc" value="#{reglementCltVew.codeRec}"/>
+								<p:inputText id="txtLblRc" value="#{reglementCltVew.libelleRec}"/>
+								 
+							</p:panelGrid>
+							
+							<p:panelGrid columns="2"
+								columnClasses="ui-grid-col-2,ui-grid-col-9"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<p:outputLabel value="Centre coût" />
+								<p:selectOneMenu id="txtCentre" value="#{reglementCltVew.idCentre}"
+								valueChangeListener="#{reglementCltVew.changeCentreElement}">
+								<f:selectItem itemLabel=" " itemValue="" />
+								<f:selectItems value="#{reglementCltVew.listCentre}" />
+								<p:ajax event="change" update="txtCentre" />
+								</p:selectOneMenu>
+								
+							</p:panelGrid>
+							</div>
+							
+							<div class="ui-g-12 ui-fluid card">
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-2,ui-grid-col-5,ui-grid-col-2,ui-grid-col-2"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<p:outputLabel value="Mode règlement" />
+								<p:selectOneMenu id="txtMod" value="#{reglementCltVew.modePmt}">
+								<f:selectItem itemLabel="Cach" itemValue="1" />
+								<f:selectItem itemLabel="Chèque" itemValue="2" />
+								<f:selectItem itemLabel="Virement" itemValue="3" />								
+								<p:ajax event="change" update="txtMod" />
+								</p:selectOneMenu>
+								
+								<p:outputLabel value="Date règlement"/>
+									<p:inputMask id="txtDateReg" value="#{reglementCltVew.printDate}" mask="99/99/9999">
+										<p:ajax event="blur" listener="#{reglementCltVew.changeDate()}" 
+										update=":frm:msg,:frm:txtDateReg,:frm:btnSave" />
+									</p:inputMask>
+								
+								<p:outputLabel value="Pièce règlement"/>
+								<p:inputText value="#{reglementCltVew.pieceOper}">
+									
+								</p:inputText>
+								
+								
+								
+								<p:outputLabel value="Montant H.T" />
+								<p:inputNumber id="txtMt" value="#{reglementCltVew.montantHt}"
+										thousandSeparator="&nbsp;" inputStyle="text-align:right"
+										decimalPlaces="2">
+										<p:ajax event="blur" listener="#{reglementCltVew.calculerMontantTTC()}"
+										update="txtTvc"/>
+								</p:inputNumber>
+								
+								<p:outputLabel value="Devise" />
+								<p:selectOneMenu id="txtDev" value="#{reglementCltVew.idDevise}"
+								valueChangeListener="#{reglementCltVew.changeDeviseElement}">
+								<f:selectItem itemLabel=" " itemValue="" />
+								<f:selectItems value="#{reglementCltVew.listDevise}" />
+								<p:ajax event="change" update="txtDev" />
+								</p:selectOneMenu>
+								
+								<p:outputLabel value="Cours" />
+								<p:inputNumber id="txtCrs" value="#{reglementCltVew.tauxDevise}"
+										thousandSeparator="&nbsp;" inputStyle="text-align:right"
+										decimalPlaces="2" />
+								
+								
+								<p:outputLabel value="Taxes" />
+								<p:selectOneMenu id="txtTx" value="#{reglementCltVew.idTaxe}"
+								valueChangeListener="#{reglementCltVew.changeTaxeElement}">
+								<f:selectItem itemLabel=" " itemValue="" />
+								<f:selectItems value="#{reglementCltVew.listTaxe}" />
+								<p:ajax event="change" update="txtTx,txtRt,txtTvc,txtMt" />
+								</p:selectOneMenu>
+								
+								<p:outputLabel value="Taux" />
+								<p:inputNumber id="txtRt" value="#{reglementCltVew.tauxTva}"
+										thousandSeparator="&nbsp;" inputStyle="text-align:right"
+										decimalPlaces="2" />
+										
+								<p:outputLabel value="Banque" />
+								<p:selectOneMenu id="txtBk" value="#{reglementCltVew.idCaisse}"
+								valueChangeListener="#{reglementCltVew.changeBankElement}">
+								<f:selectItem itemLabel=" " itemValue="" />
+								<f:selectItems value="#{reglementCltVew.listCaisse}" />
+								<p:ajax event="change" update="txtBk,txtCpt" />
+								</p:selectOneMenu>
+								
+								<p:outputLabel value="Montant TTC" />
+								<p:inputNumber id="txtTvc" value="#{reglementCltVew.montantTvac}"
+										thousandSeparator="&nbsp;" inputStyle="text-align:right"
+										decimalPlaces="2">
+									<p:ajax event="blur" listener="#{reglementCltVew.calculerMontantHT()}"
+										update="txtMt"/>
+								</p:inputNumber>
+								
+								<p:outputLabel value="Compte" />
+								<p:selectOneMenu id="txtCpt" value="#{reglementCltVew.idCompte}"
+								valueChangeListener="#{reglementCltVew.changeCompteElement}">
+								<f:selectItem itemLabel=" " itemValue="0" />
+								<f:selectItems value="#{reglementCltVew.listCompte}" />
+								<p:ajax event="change" update="txtCpt" />
+								</p:selectOneMenu>
+								
+								<p:outputLabel value="Montat déjà reglé"/>
+								<p:inputNumber id="txtTotReg" value="#{reglementCltVew.totalRegle}"
+										thousandSeparator="&nbsp;" inputStyle="text-align:right;color:blue"
+										decimalPlaces="2" readonly="true"/>
+									
+							</p:panelGrid>
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-2,ui-grid-col-5,ui-grid-col-2,ui-grid-col-2"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+										
+								<p:outputLabel value="Commentaire" />
+								<p:inputTextarea id="txtCmt" value="#{reglementCltVew.comment}"/>
+						
+								</p:panelGrid>
+					</div>
+
+					
+
+						<div class="ui-g-12 ui-fluid card">
+							<div class="ui-g-12 ui-md-1" />
+							<div class="ui-g-3">
+								<p:commandButton value="Enregistrer"
+									action="#{reglementCltVew.save()}" icon="ui-icon-disk" update="frm"
+									style="border-radius:10px" id="btnSave" />
+							</div> 
+							<div class="ui-g-3">
+								<p:commandButton value="Supprimer"
+									action="#{reglementCltVew.delete()}" icon="ui-icon-trash" id="btnDelete"
+									update="frm" styleClass="orange-btn" style="border-radius:10px">
+									<p:confirm header="Confirmation"
+										disabled="#{reglementCltVew.disableMsg}"
+										message="Voulez vous vraiment supprimer ?"
+										icon="ui-icon-alert" />
+								</p:commandButton>
+							</div>
+							<div class="ui-g-3">  
+								<p:commandButton value="Initialiser" id="btnClean"
+									action="#{reglementCltVew.initializeControl()}"
+									icon="ui-icon ui-icon-refresh" update="frm"
+									style="border-radius:10px" />
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</h:form>
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+				widgetVar="cd">
+				<p:commandButton value="Oui" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Non" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+			
+			 
+		
+			<p:dialog widgetVar="dlgFclt" header="Liste des factures clients"
+			modal="true" appendTo="@(body)" width="1200" responsive="true">
+			<h:form id="frmClt">
+
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+						<p:panelGrid columns="6"
+							columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,
+										  ui-grid-col-1,ui-grid-col-2"
+							layout="grid" styleClass="ui-panelgrid-blank"
+							style="background-color:transparent;">
+
+							
+						
+							<p:outputLabel value="Date début"/>
+									<p:inputMask id="txtDateDebut" value="#{reglementCltVew.rechDateDeb}" mask="99/99/9999">
+										<p:ajax event="blur" listener="#{reglementCltVew.changeDateDebut()}" update="txtMsg,txtDateDebut" />
+									</p:inputMask>
+								
+									<p:outputLabel value="Date fin"/>
+									<p:inputMask id="txtDateFin" value="#{reglementCltVew.rechDateFin}" mask="99/99/9999">
+										<p:ajax event="blur" listener="#{reglementCltVew.changeDateFin()}" update="txtMsg,txtDateFin" />
+									</p:inputMask>
+							<p:spacer/>
+							<p:commandButton value="Rechercher"
+								style="border-radius:10px"
+								action="#{reglementCltVew.chargerFactureClient()}"
+								update="tblFcl"/>
+						
+						</p:panelGrid>
+						<p:panelGrid columns="1"
+							columnClasses="ui-grid-col-6"
+							layout="grid" styleClass="ui-panelgrid-blank"
+							style="background-color:transparent;">
+							<p:outputLabel value="#{reglementCltVew.infoMsg}" id="txtMsg" style="color:red"/>
+							
+							</p:panelGrid>
+							
+						<p:dataTable var="enc" value="#{reglementCltVew.listEncaissement}" id="tblFcl"
+								selectionMode="single" selection="#{reglementCltVew.selectedEncaissement}"
+								rowKey="#{enc.id}" reflow="true" 
+								scrollable="true" scrollHeight="250" emptyMessage="">
+ 
+								<p:ajax event="rowSelect" listener="#{reglementCltVew.takeSelectedFacture()}"
+									update=":frm" />
+
+								<p:column headerText="Date" width="8%">
+									<h:outputText value="#{enc.dateToPrint}" />
+								</p:column>
+
+								<p:column headerText="N° facture"  width="15%">
+									<h:outputText value="#{enc.numOperation}"/>
+								</p:column>
+								
+								<p:column headerText="Libellé"  width="45%">
+									<h:outputText value="#{enc.commentaire}"/>
+								</p:column>
+								
+								<p:column headerText="Montant"  width="10%">
+									<h:outputText value="#{enc.amountToPrint}"  style="float:right"/>
+								</p:column>
+								
+								
+								
+								<p:columnGroup type="footer">
+									<p:row>
+										<p:column footerText="Total" colspan="3" 
+											style="text-align:left;color:brown" />
+											
+										<p:column footerText="#{reglementCltVew.printTot}"
+											style="text-align:right;color:brown"/>
+										
+										
+									</p:row>
+									
+								</p:columnGroup>
+							</p:dataTable>
+
+
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog widgetVar="dlgRglClt" header="Liste des règlements"
+			modal="true" appendTo="@(body)" width="1200" responsive="true">
+			<h:form id="frmReg">
+
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+						<p:panelGrid columns="6"
+							columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,
+										  ui-grid-col-1,ui-grid-col-2"
+							layout="grid" styleClass="ui-panelgrid-blank"
+							style="background-color:transparent;">
+
+							
+						
+							<p:outputLabel value="Date début"/>
+									<p:inputMask id="txtDateDebut" value="#{reglementCltVew.rechDateDeb}" mask="99/99/9999">
+										<p:ajax event="blur" listener="#{reglementCltVew.changeDateDebut()}" update=":frmReg:txtMsg,:frmReg:txtDateDebut" />
+									</p:inputMask>
+								
+									<p:outputLabel value="Date fin"/>
+									<p:inputMask id="txtDateFin" value="#{reglementCltVew.rechDateFin}" mask="99/99/9999">
+										<p:ajax event="blur" listener="#{reglementCltVew.changeDateFin()}" update=":frmReg:txtMsg,:frmReg:txtDateFin" />
+									</p:inputMask>
+							<p:spacer/>
+							<p:commandButton value="Rechercher"
+								style="border-radius:10px"
+								action="#{reglementCltVew.chargerReglement()}"
+								update="tbl,frm"/>
+						
+						</p:panelGrid>
+						<p:panelGrid columns="1"
+							columnClasses="ui-grid-col-6"
+							layout="grid" styleClass="ui-panelgrid-blank"
+							style="background-color:transparent;">
+							<p:outputLabel value="#{reglementCltVew.infoMsg}" id="txtMsg" style="color:red"/>
+							
+							</p:panelGrid>
+							
+						<p:dataTable var="reg" value="#{reglementCltVew.listReglement}" id="tbl"
+								selectionMode="single" selection="#{reglementCltVew.selectedReglement}"
+								rowKey="#{reg.id}" reflow="true" 
+								scrollable="true" scrollHeight="250" emptyMessage="">
+
+								<p:ajax event="rowSelect" listener="#{reglementCltVew.takeSelectedReglement()}"
+									update=":frm" />
+ 
+								<p:column headerText="Date" width="8%">
+									<h:outputText value="#{reg.dateToPrint}" />
+								</p:column>
+
+								<p:column headerText="Piece"  width="15%">
+									<h:outputText value="#{reg.piece}"/>
+								</p:column>
+								
+								<p:column headerText="Libellé"  width="45%">
+									<h:outputText value="#{reg.comment}"/>
+								</p:column>
+								
+								<p:column headerText="Montant"  width="10%">
+									<h:outputText value="#{reg.amountToPrint}"  style="float:right"/>
+								</p:column>
+								
+								
+								
+								<p:columnGroup type="footer">
+									<p:row>
+										<p:column footerText="Total" colspan="3" 
+											style="text-align:left;color:brown" />
+											
+										<p:column footerText="#{reglementCltVew.printTot}"
+											style="text-align:right;color:brown"/>
+										
+										
+									</p:row>
+									
+								</p:columnGroup>
+							</p:dataTable>
+
+
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+		</body>
+	</ui:define>
+</ui:composition>

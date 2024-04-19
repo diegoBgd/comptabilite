@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/masterPage.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+		<h:head>
+			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
+			<title>journal</title>
+		</h:head>
+		<body>
+			<h:form id="frm"
+				onkeypress="if (event.keyCode == 13) { return false; }">
+				<p:blockUI block="frm" trigger="btnSave" />
+				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
+						<div class="ui-g-12 ui-fluid card no-margin">
+
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-6"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								<h:outputText value="Référence" />
+								<p:inputText id="txtCd" value="#{journalVew.code}">
+									<p:ajax event="blur" listener="#{journalVew.searchJournal()}"
+										update=":frm" />
+								</p:inputText>
+								<h:outputText value="Libellé" />
+								<p:inputTextarea id="txtDsn" value="#{journalVew.designation}"
+									maxlength="200" rows="1" />
+							</p:panelGrid>
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-7,ui-grid-col-1"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="background-color:transparent;" rendered="false">
+
+								<p:outputLabel value="Compte" />
+								<p:inputText id="txtCpt" value="#{journalVew.codeCpt}">
+									<p:ajax event="blur" listener="#{journalVew.searchCpt()}"
+										update=":frm" />
+								</p:inputText>
+								<p:inputText id="txtLblCpt" value="#{journalVew.libelleCpt}"
+									readonly="true" />
+								<p:commandButton icon="fa fa-search" style="border-radius:10px"
+									onclick="PF('dlgCpt').show();" />
+							</p:panelGrid>
+
+						</div>
+
+						<div class="ui-g-12 ui-fluid card">
+							<p:dataTable var="jrn" value="#{journalVew.listJrnl}" id="tbl"
+								emptyMessage="" selectionMode="single"
+								selection="#{journalVew.selectedJournal}" rowKey="#{jrn.id}"
+								reflow="true" scrollable="true" scrollHeight="200">
+
+								<p:ajax event="rowSelect"
+									listener="#{journalVew.getSelectedValues()}" update="frm" />
+
+								<p:column headerText="Référence" width="10%">
+									<h:outputText value="#{jrn.codeJrnl}" />
+								</p:column>
+
+								<p:column headerText="Libellé">
+									<h:outputText value="#{jrn.libelle}" />
+								</p:column>
+
+							</p:dataTable>
+						</div>
+
+
+
+						<div class="ui-g-12 ui-fluid card">
+							<div class="ui-g-12 ui-md-1" />
+							<div class="ui-g-3">
+								<p:commandButton value="Enregistrer" id="btnSave"
+									action="#{journalVew.save()}" icon="ui-icon-disk" update="frm"
+									style="border-radius:10px" />
+							</div>
+							<div class="ui-g-3">
+								<p:commandButton value="Supprimer"
+									action="#{journalVew.delete()}" icon="ui-icon-trash"
+									update="frm" id="btnDelete" styleClass="orange-btn"
+									style="border-radius:10px">
+									<p:confirm header="Confirmation"
+										disabled="#{journalVew.disableMsg}"
+										message="Voulez vous vraiment supprimer ?"
+										icon="ui-icon-alert" />
+								</p:commandButton>
+							</div>
+							<div class="ui-g-3">
+								<p:commandButton value="Initialiser" id="btnClean"
+									action="#{journalVew.initializeControls()}"
+									icon="ui-icon ui-icon-refresh" update="frm"
+									style="border-radius:10px" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</h:form>
+
+			<h:form>
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+					widgetVar="cd">
+					<p:commandButton value="Oui" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Non" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+			</h:form>
+
+			<p:dialog widgetVar="dlgCpt" header="Plan comptable" modal="true"
+				appendTo="@(body)" width="700" responsive="true">
+				<h:form id="frmCpt">
+
+					<div class="ui-g">
+						<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+
+							<p:panelGrid columns="3"
+								columnClasses="ui-grid-col-2,ui-grid-col-8" layout="grid"
+								styleClass="ui-panelgrid-blank"
+								style="background-color:transparent;">
+
+								<p:inputText value="#{journalVew.rechCodCpt}" />
+								<p:inputText value="#{journalVew.rechLblCpt}" />
+
+								<p:commandButton value="Rechercher" style="border-radius:10px"
+									action="#{journalVew.chargerCompte()}" update="tblCpt" />
+
+							</p:panelGrid>
+
+
+							<p:dataTable value="#{journalVew.listeCpte}" var="cpt"
+								selectionMode="single" id="tblCpt"
+								selection="#{journalVew.selectedCpte}" rowKey="#{cpt.id}"
+								reflow="true" scrollable="true" scrollHeight="200"
+								emptyMessage="">
+
+								<p:ajax event="rowSelect"
+									listener="#{journalVew.getSelecedCptValue()}"
+									update=":frm:txtLblCpt,:frm:txtCpt" />
+
+								<p:column headerText="Compte" width="15%">
+									<h:outputText value="#{cpt.compteCod}" />
+								</p:column>
+
+								<p:column headerText="Libelle">
+									<h:outputText value="#{cpt.libelle}" />
+								</p:column>
+
+
+							</p:dataTable>
+
+
+						</div>
+					</div>
+				</h:form>
+			</p:dialog>
+		</body>
+	</ui:define>
+</ui:composition>

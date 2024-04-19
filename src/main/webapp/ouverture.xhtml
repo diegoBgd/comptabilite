@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/masterPage.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+		<h:head>
+			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
+			<title>ouverture</title>
+		</h:head>
+		<body>
+			<h:form id="frmOpn"
+				onkeypress="if (event.keyCode == 13) { return false; }">
+				<p:blockUI block="frmOpn" trigger="" />
+				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
+						<div class="ui-g-12 ui-fluid card no-margin">
+
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-8,ui-grid-col-1"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								<h:outputText value="Journal" />
+								<p:inputText id="txtCd" value="#{clotureOuvertureVew.codeJrl}" readonly="true"/>									
+								<p:inputText id="txtDsn"
+									value="#{clotureOuvertureVew.libelleJrnl}" readonly="true" />
+
+								
+							</p:panelGrid>
+							
+							
+							<p:panelGrid columns="4" columnClasses="ui-grid-col-3,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="background-color:transparent;">
+								
+								<p:spacer/>
+								<p:commandButton value="Afficher" icon="fa fa-newspaper-o"
+									style="border-radius:10px"
+									action="#{clotureOuvertureVew.soldeCompteBilan()}" update="tbl,txtMsg" />
+								<p:commandButton value="Enregistrer" icon="fa fa-file-pdf-o"
+									style="border-radius:10px" ajax="false"
+									action="#{clotureOuvertureVew.save()}" update="txtMsg" />
+								
+							
+							</p:panelGrid>
+							<p:panelGrid columns="1" columnClasses="ui-grid-col-6"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="background-color:transparent;">
+								<p:outputLabel value="#{clotureOuvertureVew.message}" id="txtMsg"
+									style="color:red" />
+
+							</p:panelGrid>
+						</div>
+
+						<div class="ui-g-12 ui-fluid card">
+							<p:dataTable var="ecr"
+								value="#{clotureOuvertureVew.listEcriture}" id="tbl"
+								reflow="true" emptyMessage=""
+								paginatorAlwaysVisible="#{clotureOuvertureVew.pagination}"
+								paginator="true" paginatorPosition="bottom" rows="10" >
+
+							
+								<p:column headerText="Compte" width="10%">
+									<h:outputText value="#{ecr.cpte}" />
+								</p:column>
+
+								<p:column headerText="Libelle" width="30%">
+									<h:outputText value="#{ecr.libelle}" />
+								</p:column>
+								
+								<p:column headerText="Débit" width="10%">
+									<h:outputText value="#{ecr.printDebit}" style="float:right" />
+								</p:column>
+
+								<p:column headerText="Crédit" width="10%">
+									<h:outputText value="#{ecr.printCredit}" style="float:right" />
+								</p:column>
+								
+								
+							</p:dataTable>
+						</div>
+
+					</div>
+				</div>
+			</h:form>
+
+
+			
+		</body>
+	</ui:define>
+</ui:composition>

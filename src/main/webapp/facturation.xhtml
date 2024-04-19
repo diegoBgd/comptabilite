@@ -1,0 +1,352 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/masterPage.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+		<h:head>
+			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
+			<title>Facturation</title>
+		</h:head>
+		<body>
+			<h:form id="frm"
+				onkeypress="if (event.keyCode == 13) { return false; }">
+				<p:blockUI block="frm" trigger="btnSave" />
+				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
+
+
+						<div class="card">
+
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-7,ui-grid-col-1"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+
+								<h:outputText value="Client" />
+								<p:inputText id="txtClt" value="#{facturationVew.clientCod}">
+									<p:ajax event="blur"
+										listener="#{facturationVew.searchClient()}" update="txtLblClt" />
+								</p:inputText>
+								<p:inputText id="txtLblClt" value="#{facturationVew.clientName}" />
+
+								<p:commandButton icon="fa fa-search" style="border-radius:10px"
+									onclick="PF('dlgClt').show();" />
+ 
+							</p:panelGrid>
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+
+								<h:outputText value="Date facture" />
+
+								<p:inputMask id="txtDatefac" value="#{facturationVew.printDate}"
+									mask="99/99/9999">
+									<p:ajax event="blur" listener="#{facturationVew.changeDate()}"
+										update="txtDatefac" />
+								</p:inputMask>
+
+								<h:outputText value="Date echéance" />
+
+								<p:inputMask id="txtDateEch"
+									value="#{facturationVew.printDatEch}" mask="99/99/9999">
+									<p:ajax event="blur"
+										listener="#{facturationVew.changeDateEcheance()}"
+										update="txtDateEch" />
+								</p:inputMask>
+							</p:panelGrid>
+
+
+						
+
+
+						</div>
+
+						<div class="card">
+
+							<p:dataTable value="#{facturationVew.listDetail}" var="det"
+								selectionMode="single" id="tbl"
+								selection="#{facturationVew.selectedDetail}"
+								rowKey="#{det.product.id}" reflow="true" scrollable="true"
+								scrollHeight="150" emptyMessage="">
+
+								<p:ajax event="rowSelect"
+									listener="#{facturationVew.getSelectedDetailValue()}"
+									update=":frm" />
+
+								<p:column headerText="Produits" width="40%">
+									<h:outputText value="#{det.prodName}" />
+								</p:column>
+
+								<p:column headerText="P.U">
+									<h:outputText value="#{det.printPu}" />
+								</p:column>
+
+								<p:column headerText="Qté" width="5%">
+									<h:outputText value="#{det.quantity}" />
+								</p:column>
+
+								<p:column headerText="Total HT">
+									<h:outputText value="#{det.printTotHT}" />
+								</p:column>
+
+								<p:column headerText="Total Taxe">
+									<h:outputText value="#{det.printTotTxe}" />
+								</p:column>
+
+								<p:column headerText="Total TTC">
+									<h:outputText value="#{det.printTotTTC}" />
+								</p:column>
+
+							</p:dataTable>
+						</div>
+					
+						<div class="card">
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-8,ui-grid-col-1" layout="grid"
+								styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+
+								<p:outputLabel value="Produit" />
+								<p:inputText id="txtProd" value="#{facturationVew.prdCod}">
+									<p:ajax event="blur"
+										listener="#{facturationVew.searchProduct()}"
+										update="txtLblPrd" />
+								</p:inputText>
+								<p:inputText id="txtLblPrd" value="#{facturationVew.prdName}" />
+
+								<p:commandButton icon="fa fa-search" style="border-radius:10px"
+									onclick="PF('dlgPrd').show();" />
+
+							</p:panelGrid>
+							</div>
+							<div class="card no-margin">
+							<p:panelGrid columns="8"
+								columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-1,ui-grid-col-1,ui-grid-col-1"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+
+								<p:outputLabel value="P.U" />
+								<p:inputNumber id="txtPU" value="#{facturationVew.montantPU}"
+									thousandSeparator="&nbsp;" inputStyle="text-align:right"
+									decimalPlaces="0" />
+									
+								<p:outputLabel value="Base calcul " />
+								<p:selectOneMenu value="#{facturationVew.baseCalcul}"
+									autoWidth="false">
+									<f:selectItem itemLabel="HT" itemValue="1" />
+									<f:selectItem itemLabel="TTC " itemValue="0" />
+								</p:selectOneMenu>
+								
+								<p:spacer/>
+								<p:spacer/>
+								<p:spacer/>
+								<p:spacer/>
+								
+								<p:outputLabel value="Quantité" />
+								<p:inputNumber id="txtQte" value="#{facturationVew.qte}"
+									thousandSeparator="&nbsp;" inputStyle="text-align:right"
+									decimalPlaces="2"/>
+							
+								
+									
+									<p:commandButton value="Taxes" 
+									onclick="PF('dlgTaxe').show();" style="border-radius:10px;
+									background: #fff;border:solid 1px #008B8F;color:#008B8F"/>
+									
+									<p:commandButton icon="fa fa-plus-circle"
+									action="#{facturationVew.addDetail()}" id="btnAdd"
+									update="tbl" style="border-radius:10px" />
+									
+									<p:commandButton icon="fa fa-minus-circle"
+									action="#{facturationVew.removeElement()}" id="btnRemv"
+									update="tbl" style="border-radius:10px" />
+									
+							</p:panelGrid>
+							
+
+						
+						</div>
+						<div class="ui-g card">
+							<div class="ui-g-12 ui-md-1" />
+							<div class="ui-g-3">
+								<p:commandButton value="Enregistrer"
+									action="#{facturationVew.save()}" icon="ui-icon-disk"
+									update="frm" style="border-radius:10px" id="btnSave" />
+								</div>
+								<div class="ui-g-3">	
+								
+								</div>
+								<div class="ui-g-3">
+								
+									
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</h:form>
+
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+				widgetVar="cd">
+				<p:commandButton value="Oui" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Non" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+			
+			
+		
+		<p:dialog widgetVar="dlgClt" header="Clients"
+			modal="true" appendTo="@(body)" width="700" responsive="true">
+			<h:form id="frmClt">
+
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+						
+						<p:panelGrid columns="3"
+							columnClasses="ui-grid-col-1,ui-grid-col-6,ui-grid-col-3"
+							layout="grid" styleClass="ui-panelgrid-blank"
+							style="background-color:transparent;">
+							
+							<p:outputLabel value="Libellé" />
+							<p:inputText value="#{facturationVew.rechClient}"/>
+	
+							<p:commandButton value="Rechercher"
+								style="border-radius:10px"
+								action="#{facturationVew.chargerClient()}"
+								update="tblClt"/>
+
+						</p:panelGrid>
+						
+						
+						<p:dataTable value="#{facturationVew.listClts}"
+							var="clt" selectionMode="single" id="tblClt"
+							selection="#{facturationVew.selectedClient}" rowKey="#{clt.id}"
+							reflow="true" scrollable="true" scrollHeight="200"
+							emptyMessage="">
+
+							<p:ajax event="rowSelect"
+								listener="#{facturationVew.getSelectedCltValue()}"
+								update=":frm:txtLblClt,:frm:txtClt" />
+
+							<p:column headerText="Référence" width="15%">
+								<h:outputText value="#{clt.codeClt}" />
+							</p:column>
+
+							<p:column headerText="Nom client">
+								<h:outputText value="#{clt.nameClt}" />
+							</p:column>
+
+						</p:dataTable>
+						 
+
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog widgetVar="dlgPrd" header="Produits"
+			modal="true" appendTo="@(body)" width="700" responsive="true">
+			<h:form id="frmPrd">
+
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+					
+					<p:panelGrid columns="3"
+							columnClasses="ui-grid-col-1,ui-grid-col-6,ui-grid-col-3"
+							layout="grid" styleClass="ui-panelgrid-blank"
+							style="background-color:transparent;">
+							
+							<p:outputLabel value="Libellé" />
+							<p:inputText value="#{facturationVew.rechProd}"/>
+	
+							<p:commandButton value="Rechercher"
+								style="border-radius:10px"
+								action="#{facturationVew.chargerProduits()}"
+								update="tblPrd"/>
+
+						</p:panelGrid>
+						
+						<p:dataTable value="#{facturationVew.listProd}"
+							var="prd" selectionMode="single" id="tblPrd" 
+							selection="#{facturationVew.selectedProd}" 
+							rowKey="#{prd.id}"
+							reflow="true" scrollable="true" scrollHeight="200"
+							emptyMessage="">
+
+							<p:ajax event="rowSelect"
+								listener="#{facturationVew.getSelectedProductValue()}"
+								update="frm" />
+
+							<p:column headerText="Référence" width="10%">
+								<h:outputText value="#{prd.codePrd}" />
+							</p:column>
+
+							<p:column headerText="Libellé" >
+								<h:outputText value="#{prd.libelle}"/>
+							</p:column>
+
+							
+						</p:dataTable>
+					
+						
+						
+						
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+		
+	<p:dialog widgetVar="dlgTaxe" header="Taxes"
+			modal="true" appendTo="@(body)" width="500" responsive="true">
+			<h:form id="frmTx">
+
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+					
+						<p:dataTable value="#{facturationVew.listTaxe}"
+							var="tx" selectionMode="single" id="tblTxe" 
+							
+							reflow="true" scrollable="true" scrollHeight="200"
+							emptyMessage="">
+
+						
+
+							<p:column headerText="Taxe" width="40%">
+								<h:outputText value="#{tx.printLibelle}" />
+							</p:column>
+
+							<p:column headerText="Taux"  width="10%">
+								<h:outputText value="#{tx.taux}"/>
+							</p:column>
+							
+							<p:column headerText="Montant"  width="20%">
+								<h:outputText value="#{tx.printTaxe}"/>
+							</p:column>
+							
+							<p:column headerText=""  width="5%">
+								<h:outputText value="#{det.selected}"/>
+							</p:column>
+							
+						</p:dataTable>
+					
+						
+						
+						
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+		
+
+		
+		
+		</body>
+	</ui:define>
+</ui:composition>

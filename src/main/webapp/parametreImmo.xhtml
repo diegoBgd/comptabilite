@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/masterPage.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+		<h:head>
+			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
+			<title>Parametrages immo</title>
+		</h:head>
+		<body>
+			<h:form id="frm"
+				onkeypress="if (event.keyCode == 13) { return false; }">
+				<p:blockUI block="frm" trigger="btnSave" />
+				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
+					
+						<div class="ui-g-12 ui-fluid card">
+ 
+							
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-7,ui-grid-col-1"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<h:outputText value="Journl amortissement"/>
+								<p:inputText id="txtCodJrnl" value="#{parametreImmoVew.codeJrnl}">
+									<p:ajax event="blur" listener="#{parametreImmoVew.searchJournal()}"
+										update="txtLblJrnl"/>
+								</p:inputText>	
+												
+								<p:inputText id="txtLblJrnl" value="#{parametreImmoVew.libelleJrnl}"/>
+								<p:commandButton icon="fa fa-search" style="border-radius:10px"
+									onclick="PF('dlgJrnl').show();" />
+									
+							
+								<p:outputLabel value="Valeur non amortissable" />
+								<p:inputNumber id="txtMt" value="#{parametreImmoVew.nonAmrtValue}"
+										thousandSeparator="&nbsp;" inputStyle="text-align:right"
+										decimalPlaces="2"/>
+									
+								
+							</p:panelGrid>
+							
+							
+							</div>
+							
+							
+					
+
+						<div class="ui-g-12 ui-fluid card">
+							<div class="ui-g-12 ui-md-1" />
+							<div class="ui-g-3">
+								<p:commandButton value="Enregistrer"
+									action="#{parametreImmoVew.save()}" icon="ui-icon-disk" update="frm"
+									style="border-radius:10px" id="btnSave" />
+							</div> 
+							<div class="ui-g-3">
+								<p:commandButton value="Supprimer"
+									action="#{parametreImmoVew.delete()}" icon="ui-icon-trash" id="btnDelete"
+									update="frm" styleClass="orange-btn" style="border-radius:10px">
+									<p:confirm header="Confirmation"
+										disabled="#{encaissementVew.disableMsg}"
+										message="Voulez vous vraiment supprimer ?"
+										icon="ui-icon-alert" />
+								</p:commandButton>
+							</div>
+							<div class="ui-g-3">  
+								<p:commandButton value="Initialiser" id="btnClean"
+									action="#{encaissementVew.initializeControl()}"
+									icon="ui-icon ui-icon-refresh" update="frm"
+									style="border-radius:10px" />
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</h:form>
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+				widgetVar="cd">
+				<p:commandButton value="Oui" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Non" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+			
+			
+		
+		<p:dialog widgetVar="dlgJrnl" header="Liste des journaux"
+			modal="true" appendTo="@(body)" width="800" responsive="true">
+			<h:form id="frmJrnl">
+
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+						<p:panelGrid columns="4"
+							columnClasses="ui-grid-col-1,ui-grid-col-6,ui-grid-col-2,ui-grid-col-3"
+							layout="grid" styleClass="ui-panelgrid-blank"
+							style="background-color:transparent;">
+							
+							<p:outputLabel value="Libellé" />
+							<p:inputText value="#{parametreImmoVew.motRech}"/>
+	
+							<p:commandButton value="Rechercher"
+								style="border-radius:10px"
+								action="#{parametreImmoVew.chargerJournal()}"
+								update="tblJrn,numInfo"/>
+							<p:outputLabel value="#{parametreImmoVew.numMsg}" style="color:red" id="numInfo"/>
+							
+						</p:panelGrid>
+
+						<p:dataTable value="#{parametreImmoVew.listJournal}"
+							var="jrn" selectionMode="single" id="tblJrn"
+							selection="#{parametreImmoVew.selectedJrnlAmrt}" rowKey="#{jrn.id}"
+							reflow="true" scrollable="true" scrollHeight="200"
+							emptyMessage="">
+
+							<p:ajax event="rowSelect"
+								listener="#{parametreImmoVew.getSelctedJournal()}"
+								update=":frm:txtLblJrnl,:frm:txtCodJrnl"/>
+
+							<p:column headerText="Référence" width="15%">
+								<h:outputText value="#{jrn.codeJrnl}" />
+							</p:column>
+
+							<p:column headerText="Libellé">
+								<h:outputText value="#{jrn.libelle}" />
+							</p:column>
+
+						</p:dataTable>
+
+
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+		
+		
+		</body>
+	</ui:define>
+</ui:composition>

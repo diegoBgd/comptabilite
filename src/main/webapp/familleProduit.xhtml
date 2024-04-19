@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/masterPage.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+		<h:head>
+			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
+			<title>Famille produit</title>
+		</h:head>
+		<body>
+			<h:form id="frm"
+				onkeypress="if (event.keyCode == 13) { return false; }">
+				<p:blockUI block="frm" trigger="btnSave" />
+				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
+					
+						 
+						<div class="ui-g-12 ui-fluid card">
+
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-7"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								<h:outputText value="Référence"/>
+								<p:inputText id="txtRef" value="#{familleVew.code}">
+									<p:ajax event="blur" listener="#{familleVew.searchFamille()}"
+										update=":frm"/>
+								</p:inputText>	
+								
+								<h:outputText value="Libellé"/>					
+								<p:inputText id="txtLbl" value="#{familleVew.designation}"/>
+								
+								
+							</p:panelGrid>
+							</div>
+
+					<div class="ui-g-12 ui-fluid card">
+						<p:dataTable var="fm" value="#{familleVew.listFamille}" id="tbl" emptyMessage=""
+							selectionMode="single" selection="#{familleVew.selecetdFamille}"
+							rowKey="#{fm.id}" reflow="true" scrollable="true" scrollHeight="200">
+
+							<p:ajax event="rowSelect" listener="#{familleVew.getSelectedFamilleValue()}"
+								update="frm" />
+
+							<p:column headerText="Référence" width="10%">
+								<h:outputText value="#{fm.codeFm}" />
+							</p:column>
+
+							<p:column headerText="Libellé">
+								<h:outputText value="#{fm.libelle}" />
+							</p:column>
+
+						</p:dataTable>
+					</div>
+
+						<div class="ui-g-12 ui-fluid card">
+							<div class="ui-g-12 ui-md-1" />
+							<div class="ui-g-3">
+								<p:commandButton value="Enregistrer"
+									action="#{familleVew.save()}" icon="ui-icon-disk" update="frm"
+									style="border-radius:10px" id="btnSave" />
+							</div> 
+							<div class="ui-g-3">
+								<p:commandButton value="Supprimer"
+									action="#{familleVew.delete()}" icon="ui-icon-trash" id="btnDelete"
+									update="frm" styleClass="orange-btn" style="border-radius:10px">
+									<p:confirm header="Confirmation"
+										disabled="#{familleVew.disableMsg}"
+										message="Voulez vous vraiment supprimer ?"
+										icon="ui-icon-alert" />
+								</p:commandButton>
+							</div>
+							<div class="ui-g-3"> 
+								<p:commandButton value="Initialiser" id="btnClean"
+									action="#{familleVew.initializeControl()}"
+									icon="ui-icon ui-icon-refresh" update="frm"
+									style="border-radius:10px" />
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</h:form>
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+				widgetVar="cd">
+				<p:commandButton value="Oui" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Non" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+	
+		</body>
+	</ui:define>
+</ui:composition>

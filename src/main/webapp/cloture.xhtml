@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/masterPage.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+		<h:head>
+			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
+			<title>Cloture</title>
+		</h:head>
+		<body>
+			<h:form id="frmClo"
+				onkeypress="if (event.keyCode == 13) { return false; }">
+				<p:blockUI block="frmClo" trigger="btnCalculate" />
+				<p:growl id="frmCloClo" life="21600" showDetail="true" sticky="false" />
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
+
+						<div class="ui-g-12 ui-fluid card">
+
+
+							<p:panelGrid columns="2"
+								columnClasses="ui-grid-col-2,ui-grid-col-6,ui-grid-col-3" layout="grid"
+								styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+
+								<h:outputText value="Résultat  de l'exercice" />
+								<p:inputNumber id="txtRes" 
+									value="#{clotureOuvertureVew.resultatExercice}"  readonly="true"
+									inputStyle="text-align:right;font-weight:bold;color:blue" 
+									thousandSeparator="&nbsp;" decimalPlaces="0"/>
+ 
+									
+									
+								<h:outputText value="Type de résultat" />
+								<p:inputText id="txtTypeRes"
+									value="#{clotureOuvertureVew.typeResultat}" readonly="true"/>
+								
+								
+							</p:panelGrid>
+
+							<p:panelGrid columns="1"
+								columnClasses="ui-grid-col-6" layout="grid"
+								styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								<h:outputText value="#{clotureOuvertureVew.message}" style="color:red"/>
+							</p:panelGrid>
+						</div>
+
+ 
+							<div class="ui-g-12 ui-fluid card">
+							<div class="ui-g-12 ui-md-2" />
+							<div class="ui-g-2">
+							<p:commandButton value="Calculer le Résultat"
+									action="#{clotureOuvertureVew.calculResultat()}" icon="fa fa-calculator" 
+									update="frmJrnl,txtRes,txtTypeRes"
+									style="border-radius:10px" id="btnCalculate" />
+							</div>
+							<div class="ui-g-2">
+							<p:commandButton value="Ecritures comptables" id="btnCancel"
+									action="A"
+									icon="fa fa-edit" update="frmClo"
+									style="border-radius:10px" onclick="PF('dlgJrnl').show();"/>
+							</div>
+							<div class="ui-g-2">
+							<p:commandButton value="Clôturer"
+									action="#{clotureOuvertureVew.save()}" icon="fa fa-lock" id="btnDelete"
+									update="frmClo" styleClass="orange-btn" style="border-radius:10px">
+									<p:confirm header="Confirmation" 
+										disabled="#{clotureOuvertureVew.disableMsg}"
+										message="Cette opération est irréversible. Voulez-vous vraiment clôturer l'exercice ?"
+										icon="ui-icon-alert"/>
+								</p:commandButton>
+							</div>
+							</div>
+
+						
+					</div>
+
+				</div>
+			</h:form>
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+				widgetVar="cd" style="color:red">
+				<p:commandButton value="Oui" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Non" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+			
+			
+		
+		<p:dialog widgetVar="dlgJrnl" header="Ecritures comptable"
+			modal="true" appendTo="@(body)" width="1000" responsive="true">
+			<h:form id="frmJrnl">
+
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+						
+
+						<p:dataTable value="#{clotureOuvertureVew.listEcriture}"
+							var="ecr" 
+							reflow="true"  rows="10" paginatorAlwaysVisible="#{clotureOuvertureVew.pagination}"
+                 			paginator="true" paginatorPosition="bottom"
+							emptyMessage="">
+							
+							<p:column headerText="Date" width="10%">
+								<h:outputText value="#{ecr.printDate}" />
+							</p:column>
+
+							<p:column headerText="Compte" width="10%">
+								<h:outputText value="#{ecr.cpte}" />
+							</p:column>
+						
+							<p:column headerText="Journal" width="5%">
+								<h:outputText value="#{ecr.jrnl}" />
+							</p:column>
+
+							<p:column headerText="Libellé" width="40%">
+								<h:outputText value="#{ecr.libelle}" />
+							</p:column>
+							
+							<p:column headerText="Débit">
+								<h:outputText value="#{ecr.printDebit}"  width="10%" style="float:right"/>
+							</p:column>
+							
+							<p:column headerText="Crédit">
+								<h:outputText value="#{ecr.printCredit}"  width="10%" style="float:right"/>
+							</p:column>
+
+						</p:dataTable>
+
+
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+		
+		
+		</body>
+	</ui:define>
+</ui:composition>

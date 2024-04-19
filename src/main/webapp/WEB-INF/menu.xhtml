@@ -1,0 +1,125 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pa="http://primefaces.org/apollo">
+
+    <div class="layout-menu-container">
+        <div class="nano">
+            <div class="nano-content menu-scroll-content">
+                <div class="layout-menu-title">MENU</div>
+                <h:form id="menuform">
+                    <pa:menu rendered="false">
+                       
+						
+						<p:submenu label="Droits des utilisateurs" icon="fa fa-slideshare" >	
+							<p:menuitem icon="fa fa-users" value="Droits" outcome="/role" />
+							<p:menuitem icon="fa fa-users" value="Utilisateurs" outcome="/utilisateur" />
+						</p:submenu>
+												
+						 <p:submenu label="Paramètres généraux" icon="fa fa-gears" >
+							<p:menuitem icon="fa fa-star" value="Exercice" outcome="/exercice" />
+						 	<p:menuitem icon="fa fa-star" value="Devise" outcome="/devise" />
+						 	<p:menuitem icon="fa fa-star" value="Type de dépense" outcome="/typeCharge" />
+						 	<p:menuitem icon="fa fa-star" value="Source de fonds" outcome="/typeRecette"/>	
+						 	<p:menuitem icon="fa fa-star" value="Taxe" outcome="/taxe" />
+						 	<p:menuitem icon="fa fa-star" value="Centre coût" outcome="/centreCout" rendered="false"/>							 	
+						 	<p:menuitem icon="fa fa-star" value="Client" outcome="/client" />	
+						 </p:submenu>
+						
+						<p:submenu label="Comptabilité générale" icon="fa fa-gears" >	
+							<p:submenu label="Paramétrage" icon="fa fa-gears" >
+								<p:menuitem icon="fa fa-star" value="Etats financiers" outcome="/etatFinancier" />	
+						 		<p:menuitem icon="fa fa-star" value="Parametre etats financiers" outcome="/parametrageEF" />
+							</p:submenu>
+							<p:menuitem icon="fa fa-star" value="Journal" outcome="/journal" />	
+						 	<p:menuitem icon="fa fa-star" value="Plan comptable" outcome="/planComptable" />						 					 	
+						 	<p:menuitem icon="fa fa-star" value="Ecritures comptables" outcome="/ecritureComptable" />	
+						 	<p:menuitem icon="fa fa-star" value="Historique du journal" outcome="/editionJournal" />	
+						 	<p:menuitem icon="fa fa-star" value="Historique du compte" outcome="/editionCompte" />
+						 	<p:menuitem icon="fa fa-star" value="Soldes d'un compte" outcome="/editionSoldeCompte" />
+						 	<p:menuitem icon="fa fa-star" value="Grand livre" outcome="/editionGrandLivre" />		
+						 	<p:menuitem icon="fa fa-star" value="Balance" outcome="/editionBalance" />
+						 	<p:menuitem icon="fa fa-star" value="Etats financiers" outcome="/editionEtatFinancier" />
+						</p:submenu>
+						<p:submenu label="Gestion des immobilisés" icon="fa fa-gears" >
+							<p:menuitem icon="fa fa-star" value="Parametrage" outcome="/parametreImmo" />
+							<p:menuitem icon="fa fa-star" value="Saisie des immo" outcome="/saisieImmo"/>
+							<p:menuitem icon="fa fa-star" value="Amortissements" outcome="/amortissement" />
+						</p:submenu>
+						<p:submenu label="Gestion financière" icon="fa fa-gears">
+						<p:submenu label="Banque et caisse" icon="fa fa-gears">	
+							<p:menuitem icon="fa fa-star" value="Banque" outcome="/banque" />	
+						 	<p:menuitem icon="fa fa-star" value="Compte" outcome="/compteBancaire" />	
+						 	
+						</p:submenu>
+						<p:submenu label="Ventes" icon="fa fa-gears" rendered="false">	
+						
+							<p:menuitem icon="fa fa-star" value="Famille " outcome="/familleProduit" />
+							<p:menuitem icon="fa fa-star" value="Sous famille" outcome="/sousFamilleProduit" />	
+							<p:menuitem icon="fa fa-star" value="Produit" outcome="/produit" />																					
+							<p:menuitem icon="fa fa-star" value="Facturation" outcome="/facturation" />
+							
+						</p:submenu>
+						<p:submenu label="Encaissements" icon="fa fa-gears">	
+							<p:menuitem icon="fa fa-star" value="Saisie entrée de fonds" outcome="/saisirEntreeFond" />
+							<p:menuitem icon="fa fa-star" value="Factures clients" outcome="/factureClient" />
+							<p:menuitem icon="fa fa-star" value="Règlement client" outcome="/reglementClient" />
+						</p:submenu>
+						<p:submenu label="Dépenses" icon="fa fa-gears">
+							<p:menuitem icon="fa fa-star" value="Fournisseur/Bénéficiaire" outcome="/fournisseur" />	
+							<p:menuitem icon="fa fa-star" value="Factures fournisseurs" outcome="/factureFournisseur" />	
+							<p:menuitem icon="fa fa-star" value="Règlements fournisseurs" outcome="/reglementFournisseur" />
+							<p:menuitem icon="fa fa-star" value="Autres dépenses" outcome="/autreDepense"/>
+							
+							
+						</p:submenu>
+						</p:submenu>
+						<p:menuitem icon="fa fa-star" value="Ecritures comptables" outcome="/ecritures" />
+                    </pa:menu>
+                   <pa:menu rendered="true">
+                   <p:submenu label="Droits des utilisateurs" icon="fa fa-slideshare" >	
+							<p:menuitem icon="fa fa-users" value="Droits" outcome="/role" />
+							<p:menuitem icon="fa fa-users" value="Utilisateurs" outcome="/utilisateur" />
+						</p:submenu>
+							<p:submenu label="Paramétrage" icon="fa fa-gears" >
+							<p:menuitem icon="fa fa-star" value="Exercice" outcome="/exercice" />
+							<p:menuitem icon="fa fa-star" value="Parametre general" outcome="/parametreCompta" />
+							<p:menuitem icon="fa fa-star" value="Etats financiers" outcome="/etatFinancier" />
+							<p:menuitem icon="fa fa-star" value="Rubriques des E-financiers" outcome="/parametrageEF" />							 	
+						 	<p:menuitem icon="fa fa-star" value="Journal" outcome="/journal" />	
+						 	<p:menuitem icon="fa fa-star" value="Plan comptable" outcome="/planComptable" />
+							</p:submenu>
+							<p:submenu label="Opérations comptables" icon="fa fa-gears" >						 					 	
+						 	<p:menuitem icon="fa fa-star" value="Ecritures comptables" outcome="/ecritureComptable" />	
+						 	<p:menuitem icon="fa fa-star" value="Edtion du journal" outcome="/editionJournal" />	
+						 	<p:menuitem icon="fa fa-star" value="Historique du compte" outcome="/editionCompte" />	
+						 	<p:menuitem icon="fa fa-star" value="Soldes d'un compte" outcome="/editionSoldeCompte" />
+						 	<p:menuitem icon="fa fa-star" value="Soldes des journaux" outcome="/editionSoldeJournal" />
+						 	<p:menuitem icon="fa fa-star" value="Grand livre" outcome="/editionGrandLivre" />
+						 	<p:menuitem icon="fa fa-star" value="Balance" outcome="/editionBalance" />
+						 	<p:menuitem icon="fa fa-star" value="Etats financiers" outcome="/editionEtatFinancier" />
+						</p:submenu>
+						<p:submenu label="Gestion des immobilisés" icon="fa fa-gears" rendered="false">
+							<p:menuitem icon="fa fa-star" value="Parametrage" outcome="/parametreImmo" />
+							<p:menuitem icon="fa fa-star" value="Saisie des immo" outcome="/saisieImmo"/>
+							<p:menuitem icon="fa fa-star" value="Amortissements" outcome="/amortissement" />
+						</p:submenu>
+						<p:submenu label="Cloture et ouverture" icon="fa fa-gears">
+							<p:menuitem icon="fa fa-star" value="Ouverture"
+								outcome="/ouverture" />
+							<p:menuitem icon="fa fa-star" value="Clôture" outcome="/cloture" />
+
+						</p:submenu>
+					</pa:menu>
+                </h:form>
+                
+                <div class="nano-scroll-footer" />
+            </div>
+        </div>
+    </div>
+
+
+</ui:composition>

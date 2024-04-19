@@ -1,0 +1,418 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/masterPage.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+		<h:head>
+			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
+			<title>Saisie des immo</title>
+		</h:head>
+		<body>
+			<h:form id="frm"
+				onkeypress="if (event.keyCode == 13) { return false; }">
+				<p:blockUI block="frm" trigger="btnSave" />
+				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
+					
+						<div class="ui-g-12 ui-fluid card">
+							<div class="ui-g-12 ui-md-1"/>
+							<div class="ui-g-12 ui-md-4">
+							<p:commandButton value="Recherche des immobilisés"
+								icon="fa fa-search" style="border-radius:10px"
+								oncomplete="PF('dlgImmo').show();" />
+						</div>
+						</div>
+						<div class="ui-g-12 ui-fluid card">
+							<p:tabView id="sIm" style="font-size:13px">
+							<p:tab id="tab1" title="Immobilisé">
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-3"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<h:outputText value="Code immo"/>								
+								<p:inputText value="#{immoVew.code}">
+								<p:ajax event="blur" listener="#{immoVew.searchImmo()}"
+										update="frm"/>
+								</p:inputText>
+								<h:outputText value="Immobilisé amortissable"/>
+								<p:selectOneMenu value="#{immoVew.amortizable}" autoWidth="false" id="chkAmrt">
+									<f:selectItem itemLabel="Oui " itemValue="0" />
+									<f:selectItem itemLabel="Non" itemValue="1" />
+									<p:ajax event="change" listener="#{immoVew.amortisationChanged()}"
+										update="chkAmrt,tblAmrt"/>								
+								</p:selectOneMenu>
+								
+								 	
+							</p:panelGrid>
+							<p:panelGrid columns="2"
+								columnClasses="ui-grid-col-2,ui-grid-col-9"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<h:outputText value="Nom de l'immo"/>								
+								<p:inputText value="#{immoVew.designation}"/>
+								
+								
+									
+							</p:panelGrid>
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-3"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<h:outputText value="Numéro fabrication"/>
+								<p:inputText id="txtNum" value="#{immoVew.numeroInv}"/>
+												
+								<p:outputLabel value="Date d'acquisition"/>
+								<p:inputMask id="txtDate" value="#{immoVew.printDateAq}" mask="99/99/9999">
+								<p:ajax event="blur" listener="#{immoVew.changeDate()}"
+										update="txtDate,tblAmrt"/>
+								</p:inputMask>
+								
+								<p:outputLabel value="Valeur d'acquisition" />
+								<p:inputNumber  value="#{immoVew.montantAcq}" decimalPlaces="0"
+								thousandSeparator="&nbsp;" inputStyle="text-align:right" id="txtMontant">
+									<p:ajax event="blur" listener="#{immoVew.typeChanged()}"
+										update="txtMontant,tblAmrt"/>
+								</p:inputNumber>
+									
+								
+								<p:outputLabel value="Type d'amortissement"/>
+								<p:selectOneMenu value="#{immoVew.type}" autoWidth="false" id="chkType">
+									<f:selectItem itemLabel="Linéaire " itemValue="0" />
+									<f:selectItem itemLabel="Degressif" itemValue="1" />
+									<p:ajax event="change" listener="#{immoVew.typeChanged()}"
+										update="chkType,tblAmrt"/>								
+								</p:selectOneMenu>
+								
+								<p:outputLabel value="Durée  de vie" />
+								<p:inputNumber id="txtDelay" value="#{immoVew.duree}" decimalPlaces="0" 
+								thousandSeparator="&nbsp;" inputStyle="text-align:right">
+									<p:ajax event="blur" listener="#{immoVew.changeTaux()}"
+										update="txtTaux,tblAmrt"/>
+								</p:inputNumber>
+								
+								
+								<p:outputLabel value="Taux" />
+								<p:inputNumber value="#{immoVew.taux}" decimalPlaces="1"
+								thousandSeparator="&nbsp;" inputStyle="text-align:right" id="txtTaux">
+								<p:ajax event="blur" listener="#{immoVew.changeDuree()}"
+										update="txtDelay,tblAmrt"/>
+								</p:inputNumber>
+								
+							</p:panelGrid>
+							
+							
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-7,ui-grid-col-1"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<h:outputText value="Compte d'immobilisé"/>
+								<p:inputText id="txtCptIm" value="#{immoVew.cptImmo}">
+									<p:ajax event="blur" listener="#{immoVew.searchCompteImmo()}"
+										update="txtLblCptIm"/>
+								</p:inputText>	
+												
+								<p:inputText id="txtLblCptIm" value="#{immoVew.lblCptImmo}" readonly="true"/>
+								<p:commandButton icon="fa fa-search" style="border-radius:10px"
+									onclick="PF('dlgCptImmo').show();" />
+								
+								<h:outputText value="Compte d'amortissement"/>
+								<p:inputText id="txtCptAm" value="#{immoVew.cptAmrt}">
+									<p:ajax event="blur" listener="#{immoVew.searchCompteAmrt()}"
+										update="txtLblCptAm"/>
+								</p:inputText>	
+												
+								<p:inputText id="txtLblCptAm" value="#{immoVew.lblCptAmrt}" readonly="true"/>
+								<p:commandButton icon="fa fa-search" style="border-radius:10px"
+									onclick="PF('dlgCptAmrt').show();" />
+								
+								<h:outputText value="Compte dotation amrt."/>
+								<p:inputText id="txtCptDot" value="#{immoVew.cptDot}">
+									<p:ajax event="blur" listener="#{immoVew.searchCompteDot()}"
+										update="txtLblCptDot"/>
+								</p:inputText>	
+												
+								<p:inputText id="txtLblCptDot" value="#{immoVew.lblCptDotAmrt}" readonly="true"/>
+								<p:commandButton icon="fa fa-search" style="border-radius:10px"
+									onclick="PF('dlgCptDotAmrt').show();" />
+									
+										
+							</p:panelGrid>
+							</p:tab>
+							<p:tab id="tab2" title="Amortissement">
+							<p:dataTable var="amrt" value="#{immoVew.listAmrt}" id="tblAmrt"
+								 reflow="true" 
+								scrollable="true" scrollHeight="250" emptyMessage="">
+
+								
+								<p:column headerText="Exercice"  width="15%">
+									<h:outputText value="#{amrt.numExercice}"/>
+								</p:column>
+								
+								<p:column headerText="Base amortissement"  width="15%">
+									<h:outputText value="#{amrt.montantBase}"/>
+								</p:column>
+								
+								<p:column headerText="Amort. exercice"  width="15%">
+									<h:outputText value="#{amrt.montantExercice}"  style="float:right"/>
+								</p:column>
+								
+								<p:column headerText="Cumul"  width="15%">
+									<h:outputText value="#{amrt.montantCumul}"  style="float:right"/>
+								</p:column>
+								<p:column headerText="V.N.C"  width="15%">
+									<h:outputText value="#{amrt.montantVnc}"  style="float:right"/>
+								</p:column>
+							</p:dataTable>
+							</p:tab>
+							</p:tabView>
+					</div>
+
+					
+
+						<div class="ui-g-12 ui-fluid card">
+							<div class="ui-g-12 ui-md-1" />
+							<div class="ui-g-3">
+								<p:commandButton value="Enregistrer"
+									action="#{immoVew.save()}" icon="ui-icon-disk" update="frm"
+									style="border-radius:10px" id="btnSave" />
+							</div> 
+							<div class="ui-g-3">
+								<p:commandButton value="Supprimer"
+									action="#{immoVew.delete()}" icon="ui-icon-trash" id="btnDelete"
+									update="frm" styleClass="orange-btn" style="border-radius:10px">
+									<p:confirm header="Confirmation"
+										disabled="#{immoVew.disableMsg}"
+										message="Voulez vous vraiment supprimer ?"
+										icon="ui-icon-alert" />
+								</p:commandButton>
+							</div>
+							<div class="ui-g-3">  
+								<p:commandButton value="Initialiser" id="btnClean"
+									action="#{immoVew.initializeControl()}"
+									icon="ui-icon ui-icon-refresh" update="frm"
+									style="border-radius:10px" />
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</h:form>
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+				widgetVar="cd">
+				<p:commandButton value="Oui" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Non" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+			
+			
+		
+		
+		<p:dialog widgetVar="dlgCptImmo" header="Plan comptable"
+			modal="true" appendTo="@(body)" width="700" responsive="true">
+			<h:form id="frmCptIm">
+
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+						<p:panelGrid columns="3"
+							columnClasses="ui-grid-col-1,ui-grid-col-6,ui-grid-col-3"
+							layout="grid" styleClass="ui-panelgrid-blank"
+							style="background-color:transparent;">
+							
+							<p:outputLabel value="Libellé" />
+							<p:inputText value="#{immoVew.rechLblCpt}"/>
+	
+							<p:commandButton value="Rechercher"
+								style="border-radius:10px"
+								action="#{immoVew.chargerCompteImmo()}"
+								update="tblCptIm"/>
+
+						</p:panelGrid>
+
+						<p:dataTable value="#{immoVew.listCptImmo}"
+							var="cptIm" selectionMode="single" id="tblCptIm"
+							selection="#{immoVew.selectedCptImmo}" rowKey="#{cptIm.id}"
+							reflow="true" scrollable="true" scrollHeight="200"
+							emptyMessage="">
+
+							<p:ajax event="rowSelect"
+								listener="#{immoVew.getSelecedCptImmoValue()}"
+								update=":frm:sIm:txtCptIm,:frm:sIm:txtLblCptIm" />
+
+							<p:column headerText="Compte" width="15%">
+								<h:outputText value="#{cptIm.compteCod}" />
+							</p:column>
+
+							<p:column headerText="Libelle">
+								<h:outputText value="#{cptIm.libelle}" />
+							</p:column>
+
+						</p:dataTable>
+
+
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog widgetVar="dlgCptAmrt" header="Plan comptable"
+			modal="true" appendTo="@(body)" width="700" responsive="true">
+			<h:form id="frmCptAmrt">
+
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+						<p:panelGrid columns="3"
+							columnClasses="ui-grid-col-1,ui-grid-col-6,ui-grid-col-3"
+							layout="grid" styleClass="ui-panelgrid-blank"
+							style="background-color:transparent;">
+							
+							<p:outputLabel value="Libellé" />
+							<p:inputText value="#{immoVew.rechLblCpt}"/>
+	
+							<p:commandButton value="Rechercher"
+								style="border-radius:10px"
+								action="#{immoVew.chargerCompteAmrt()}"
+								update="tblCptAmrt"/>
+
+						</p:panelGrid>
+
+						<p:dataTable value="#{immoVew.listCptAmrt}"
+							var="cptAm" selectionMode="single" id="tblCptAmrt"
+							selection="#{immoVew.selectedCptAmrt}" rowKey="#{cptAm.id}"
+							reflow="true" scrollable="true" scrollHeight="200"
+							emptyMessage="">
+
+							<p:ajax event="rowSelect"
+								listener="#{immoVew.getSelecedCptAmrtValue()}"
+								update=":frm:sIm:txtLblCptAm,:frm:sIm:txtCptAm" />
+
+							<p:column headerText="Compte" width="15%">
+								<h:outputText value="#{cptAm.compteCod}" />
+							</p:column>
+
+							<p:column headerText="Libelle">
+								<h:outputText value="#{cptAm.libelle}" />
+							</p:column>
+
+						</p:dataTable>
+
+
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog widgetVar="dlgCptDotAmrt" header="Plan comptable"
+			modal="true" appendTo="@(body)" width="700" responsive="true">
+			<h:form id="frmCptDot">
+
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+						<p:panelGrid columns="3"
+							columnClasses="ui-grid-col-1,ui-grid-col-6,ui-grid-col-3"
+							layout="grid" styleClass="ui-panelgrid-blank"
+							style="background-color:transparent;">
+							
+							<p:outputLabel value="Libellé" />
+							<p:inputText value="#{immoVew.rechLblCpt}"/>
+	
+							<p:commandButton value="Rechercher"
+								style="border-radius:10px"
+								action="#{immoVew.chargerCompteDot()}"
+								update="tblCptDot"/>
+
+						</p:panelGrid>
+
+						<p:dataTable value="#{immoVew.listCptDot}"
+							var="cptDt" selectionMode="single" id="tblCptDot"
+							selection="#{immoVew.selectedCptDot}" rowKey="#{cptDt.id}"
+							reflow="true" scrollable="true" scrollHeight="200"
+							emptyMessage="">
+
+							<p:ajax event="rowSelect"
+								listener="#{immoVew.getSelecedCptDotAmrtValue()}"
+								update=":frm:sIm:txtLblCptDot,:frm:sIm:txtCptDot" />
+
+							<p:column headerText="Compte" width="15%">
+								<h:outputText value="#{cptDt.compteCod}" />
+							</p:column>
+
+							<p:column headerText="Libelle">
+								<h:outputText value="#{cptDt.libelle}" />
+							</p:column>
+
+						</p:dataTable>
+
+
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog widgetVar="dlgImmo" header="Liste des immobilisés"
+			modal="true" appendTo="@(body)" width="1200" responsive="true">
+			<h:form id="frmDep">
+
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+						<p:panelGrid columns="4"
+							columnClasses="ui-grid-col-2,ui-grid-col-6,ui-grid-col-2,ui-grid-col-2"
+							layout="grid" styleClass="ui-panelgrid-blank"
+							style="background-color:transparent;">
+
+							
+						
+							<p:outputLabel value="Mot"/>
+							<p:inputText value="#{immoVew.motRechImmo}"/>	
+							<p:commandButton value="Rechercher"
+								style="border-radius:10px"
+								action="#{immoVew.chargerImmo()}"
+								update="tbl,txtMsg"/>
+						<p:outputLabel value="#{immoVew.numMsg}" style="color:red" id="txtMsg"/>
+						</p:panelGrid>
+						
+							
+						<p:dataTable var="im" value="#{immoVew.listImmo}" id="tbl"
+								selectionMode="single" selection="#{immoVew.selectedImmo}"
+								rowKey="#{im.id}" reflow="true" 
+								scrollable="true" scrollHeight="250" emptyMessage="">
+
+								<p:ajax event="rowSelect" listener="#{immoVew.takeSelectedValues()}"
+									update=":frm" />
+
+								
+								<p:column headerText="Code immo"  width="15%">
+									<h:outputText value="#{im.codeImmo}"/>
+								</p:column>
+								
+								<p:column headerText="Libellé"  width="45%">
+									<h:outputText value="#{im.libelle}"/>
+								</p:column>
+								
+								<p:column headerText="Compte immo"  width="10%">
+									<h:outputText value="#{im.compteImmo}"/>
+								</p:column>
+								
+								<p:column headerText="Valeur d'acquisition"  width="10%">
+									<h:outputText value="#{im.printAcqValue}"  style="float:right"/>
+								</p:column>
+								
+							</p:dataTable>
+
+
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+		</body>
+	</ui:define>
+</ui:composition>

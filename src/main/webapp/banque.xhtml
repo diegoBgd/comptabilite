@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/masterPage.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+		<h:head>
+			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
+			<title>Banques</title>
+		</h:head>
+		<body>
+			<h:form id="frm"
+				onkeypress="if (event.keyCode == 13) { return false; }">
+				<p:blockUI block="frm" trigger="btnSave" />
+				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
+					 
+						
+						<div class="ui-g-12 ui-fluid card">
+
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-1,ui-grid-col-6"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								<h:outputText value="Référence"/>
+								<p:inputText id="txtRef" value="#{banqueVew.codeBanque}">
+									<p:ajax event="blur" listener="#{banqueVew.searchBank()}"
+										update="txtLbl,txtLblCpt"/>
+								</p:inputText>	
+								
+								<h:outputText value="Libellé"/>					
+								<p:inputText id="txtLbl" value="#{banqueVew.designation}"/>
+							</p:panelGrid>
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-7,ui-grid-col-1"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<p:outputLabel value="Code comptable" />
+								<p:inputText id="txtCpt" value="#{banqueVew.compteCptbl}">
+									<p:ajax event="blur" listener="#{banqueVew.searchCompte()}"
+										update="txtLblCpt"/>
+								</p:inputText>
+								<p:inputText id="txtLblCpt" value="#{banqueVew.libelleCpt}"/>
+								<p:commandButton icon="fa fa-search" style="border-radius:10px"
+									onclick="PF('dlgCpt').show();" />
+								
+							</p:panelGrid>
+							
+							<p:panelGrid columns="2"
+								columnClasses="ui-grid-col-2,ui-grid-col-1"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<p:outputLabel value="Caisse"/>
+								<p:selectBooleanCheckbox value="#{banqueVew.cash}"/>
+								
+								
+							</p:panelGrid>
+							
+								
+							
+						</div>
+
+					<div class="ui-g-12 ui-fluid card">
+						<p:dataTable var="bk" value="#{banqueVew.listBk}" id="tbl" emptyMessage=""
+							selectionMode="single" selection="#{banqueVew.selectedBk}"
+							rowKey="#{bk.id}" reflow="true" scrollable="true" scrollHeight="200">
+
+							<p:ajax event="rowSelect" listener="#{banqueVew.getSelectedBnkValues()}"
+								update="frm" />
+
+							<p:column headerText="Référence" width="10%">
+								<h:outputText value="#{bk.codeBk}" />
+							</p:column>
+
+							<p:column headerText="Libellé">
+								<h:outputText value="#{bk.libelle}" />
+							</p:column>
+
+						</p:dataTable>
+					</div>
+
+						<div class="ui-g-12 ui-fluid card">
+							<div class="ui-g-12 ui-md-1" />
+							<div class="ui-g-3">
+								<p:commandButton value="Enregistrer"
+									action="#{banqueVew.save()}" icon="ui-icon-disk" update="frm"
+									style="border-radius:10px" id="btnSave" />
+							</div> 
+							<div class="ui-g-3">
+								<p:commandButton value="Supprimer"
+									action="#{banqueVew.delete()}" icon="ui-icon-trash" id="btnDelete"
+									update="frm" styleClass="orange-btn" style="border-radius:10px">
+									<p:confirm header="Confirmation"
+										disabled="#{banqueVew.disableMsg}"
+										message="Voulez vous vraiment supprimer ?"
+										icon="ui-icon-alert" />
+								</p:commandButton>
+							</div>
+							<div class="ui-g-3"> 
+								<p:commandButton value="Initialiser" id="btnClean"
+									action="#{banqueVew.initializeControl()}"
+									icon="ui-icon ui-icon-refresh" update="frm"
+									style="border-radius:10px" />
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</h:form>
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+				widgetVar="cd">
+				<p:commandButton value="Oui" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Non" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+			
+			
+		
+		<p:dialog widgetVar="dlgCpt" header="Plan comptable"
+			modal="true" appendTo="@(body)" width="700" responsive="true">
+			<h:form id="frmCpt">
+
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+						<p:panelGrid columns="3"
+							columnClasses="ui-grid-col-1,ui-grid-col-6,ui-grid-col-3"
+							layout="grid" styleClass="ui-panelgrid-blank"
+							style="background-color:transparent;">
+							
+							<p:outputLabel value="Libellé" />
+							<p:inputText value="#{banqueVew.rechLblCpt}"/>
+	
+							<p:commandButton value="Rechercher"
+								style="border-radius:10px"
+								action="#{banqueVew.chargerCompte()}"
+								update="tblCpt"/>
+
+						</p:panelGrid>
+
+						<p:dataTable value="#{banqueVew.listCpte}"
+							var="cpt" selectionMode="single" id="tblCpt"
+							selection="#{banqueVew.selectedCpt}" rowKey="#{cpt.id}"
+							reflow="true" scrollable="true" scrollHeight="200"
+							emptyMessage="">
+
+							<p:ajax event="rowSelect"
+								listener="#{banqueVew.getSelecedCptValue()}"
+								update=":frm:txtLblCpt,:frm:txtCpt" />
+
+							<p:column headerText="Compte" width="15%">
+								<h:outputText value="#{cpt.compteCod}" />
+							</p:column>
+
+							<p:column headerText="Libelle">
+								<h:outputText value="#{cpt.libelle}" />
+							</p:column>
+
+						</p:dataTable>
+
+
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+		
+		
+		</body>
+	</ui:define>
+</ui:composition>

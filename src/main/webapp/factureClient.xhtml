@@ -1,0 +1,356 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/masterPage.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+		<h:head>
+			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
+			<title>Factures clients</title>
+		</h:head>
+		<body>
+			<h:form id="frmFcl"
+				onkeypress="if (event.keyCode == 13) { return false; }">
+				<p:blockUI block="frmFcl" trigger="btnSave" />
+				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
+					
+						<div class="ui-g-12 ui-fluid card">
+							<div class="ui-g-12 ui-md-1"/>
+							<div class="ui-g-12 ui-md-4">
+							<p:commandButton value="Recherche des factures"
+								icon="fa fa-search" style="border-radius:10px"
+								oncomplete="PF('dlgFclt').show();" />
+						</div>
+						</div>
+						<div class="ui-g-12 ui-fluid card">
+ 
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-2,ui-grid-col-5,ui-grid-col-2,ui-grid-col-2"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<h:outputText value="N° facture"/>								
+								<p:inputText value="#{encaissementVew.numEnc}"/>
+								
+								<p:outputLabel value="Date facture"/>
+									<p:inputMask id="txtDate" value="#{encaissementVew.printDate}" mask="99/99/9999">
+										<p:ajax event="blur" listener="#{encaissementVew.changeDate()}" 
+										update=":frmFcl:msg,:frmFcl:txtDate,:frmFcl:btnSave" />
+									</p:inputMask>
+									
+							</p:panelGrid>
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-7,ui-grid-col-1"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<h:outputText value="Client"/>
+								<p:inputText id="txtCodClt" value="#{encaissementVew.codeClt}">
+									<p:ajax event="blur" listener="#{encaissementVew.searchClient()}"
+										update="txtLblClt"/>
+								</p:inputText>	
+												
+								<p:inputText id="txtLblClt" value="#{encaissementVew.libelleClt}"/>
+								<p:commandButton icon="fa fa-search" style="border-radius:10px"
+									onclick="PF('dlgClt').show();" />
+									
+								<p:outputLabel value="Type recette " />
+								<p:inputText id="txtCdRec" value="#{encaissementVew.codeRec}">
+									<p:ajax event="blur" listener="#{encaissementVew.searchRecette()}"
+										update="txtLblRec"/>
+								</p:inputText>
+								<p:inputText id="txtLblRec" value="#{encaissementVew.libelleRec}"/>
+								<p:commandButton icon="fa fa-search" style="border-radius:10px"
+									onclick="PF('dlgRec').show();" />
+								
+							</p:panelGrid>
+							
+							
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-2,ui-grid-col-5,ui-grid-col-2,ui-grid-col-2"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<p:outputLabel value="Centre coût" />
+								<p:selectOneMenu id="txtCentre" value="#{encaissementVew.idCentre}"
+								valueChangeListener="#{encaissementVew.changeCentreElement}">
+								<f:selectItem itemLabel=" " itemValue="" />
+								<f:selectItems value="#{encaissementVew.listCentre}" />
+								<p:ajax event="change" update="txtCentre" />
+								</p:selectOneMenu>
+								
+								<p:outputLabel value="Montant H.T" />
+								<p:inputNumber id="txtMt" value="#{encaissementVew.montantHt}"
+										thousandSeparator="&nbsp;" inputStyle="text-align:right"
+										decimalPlaces="2">
+										<p:ajax event="blur" listener="#{encaissementVew.calculerMontantTTC()}"
+										update="txtTvc"/>
+								</p:inputNumber>
+								
+								<p:outputLabel value="Devise" />
+								<p:selectOneMenu id="txtDev" value="#{encaissementVew.idDevise}"
+								valueChangeListener="#{encaissementVew.changeDeviseElement}">
+								<f:selectItem itemLabel=" " itemValue="" />
+								<f:selectItems value="#{encaissementVew.listDevise}" />
+								<p:ajax event="change" update="txtDev" />
+								</p:selectOneMenu>
+								
+								<p:outputLabel value="Cours" />
+								<p:inputNumber id="txtCrs" value="#{encaissementVew.tauxDevise}"
+										thousandSeparator="&nbsp;" inputStyle="text-align:right"
+										decimalPlaces="2" />
+								
+								
+								<p:outputLabel value="Taxes" />
+								<p:selectOneMenu id="txtTx" value="#{encaissementVew.idTaxe}"
+								valueChangeListener="#{encaissementVew.changeTaxeElement}">
+								<f:selectItem itemLabel=" " itemValue="" />
+								<f:selectItems value="#{encaissementVew.listTaxe}" />
+								<p:ajax event="change" update="txtTx,txtRt,txtTvc,txtMt" />
+								</p:selectOneMenu>
+								
+								<p:outputLabel value="Taux" />
+								<p:inputNumber id="txtRt" value="#{encaissementVew.tauxTva}"
+										thousandSeparator="&nbsp;" inputStyle="text-align:right"
+										decimalPlaces="2" />
+								
+								<p:outputLabel value="Commentaire" />
+								<p:inputTextarea id="txtCmt" value="#{encaissementVew.comment}"/>
+								
+								<p:outputLabel value="Montant TTC" />
+								<p:inputNumber id="txtTvc" value="#{encaissementVew.montantTvac}"
+										thousandSeparator="&nbsp;" inputStyle="text-align:right"
+										decimalPlaces="2">
+									<p:ajax event="blur" listener="#{encaissementVew.calculerMontantHT()}"
+										update="txtMt"/>
+								</p:inputNumber>
+										
+							</p:panelGrid>
+							
+					</div>
+
+					
+
+						<div class="ui-g-12 ui-fluid card">
+							<div class="ui-g-12 ui-md-1" />
+							<div class="ui-g-3">
+								<p:commandButton value="Enregistrer"
+									action="#{encaissementVew.save()}" icon="ui-icon-disk" update="frmFcl"
+									style="border-radius:10px" id="btnSave" />
+							</div> 
+							<div class="ui-g-3">
+								<p:commandButton value="Supprimer"
+									action="#{encaissementVew.delete()}" icon="ui-icon-trash" id="btnDelete"
+									update="frmFcl" styleClass="orange-btn" style="border-radius:10px">
+									<p:confirm header="Confirmation"
+										disabled="#{encaissementVew.disableMsg}"
+										message="Voulez vous vraiment supprimer ?"
+										icon="ui-icon-alert" />
+								</p:commandButton>
+							</div>
+							<div class="ui-g-3">  
+								<p:commandButton value="Initialiser" id="btnClean"
+									action="#{encaissementVew.initializeControl()}"
+									icon="ui-icon ui-icon-refresh" update="frmFcl"
+									style="border-radius:10px" />
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</h:form>
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+				widgetVar="cd">
+				<p:commandButton value="Oui" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Non" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+			
+			
+		
+		<p:dialog widgetVar="dlgClt" header="Liste des clients"
+			modal="true" appendTo="@(body)" width="700" responsive="true">
+			<h:form id="frmFclClt">
+
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+						<p:panelGrid columns="3"
+							columnClasses="ui-grid-col-1,ui-grid-col-6,ui-grid-col-3"
+							layout="grid" styleClass="ui-panelgrid-blank"
+							style="background-color:transparent;">
+							
+							<p:outputLabel value="Libellé" />
+							<p:inputText value="#{encaissementVew.rechLblClt}"/>
+	
+							<p:commandButton value="Rechercher"
+								style="border-radius:10px"
+								action="#{encaissementVew.chargerClient()}"
+								update="tblClt"/>
+
+						</p:panelGrid>
+
+						<p:dataTable value="#{encaissementVew.listeClient}"
+							var="clt" selectionMode="single" id="tblClt"
+							selection="#{encaissementVew.selectedClient}" rowKey="#{clt.id}"
+							reflow="true" scrollable="true" scrollHeight="200"
+							emptyMessage="">
+
+							<p:ajax event="rowSelect"
+								listener="#{encaissementVew.getSelectedClientValue()}"
+								update=":frmFcl:txtCodClt,:frmFcl:txtLblClt"/>
+
+							<p:column headerText="Référence" width="15%">
+								<h:outputText value="#{clt.codeClt}" />
+							</p:column>
+
+							<p:column headerText="Client">
+								<h:outputText value="#{clt.nameClt}" />
+							</p:column>
+
+						</p:dataTable>
+
+
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog widgetVar="dlgRec" header="Listes des types de recette"
+			modal="true" appendTo="@(body)" width="700" responsive="true">
+			<h:form id="frmRec"> 
+
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+						<p:panelGrid columns="3"
+							columnClasses="ui-grid-col-2,ui-grid-col-6,ui-grid-col-3"
+							layout="grid" styleClass="ui-panelgrid-blank"
+							style="background-color:transparent;">
+
+							
+							
+							<p:outputLabel value="Libellé" />
+							<p:inputText value="#{encaissementVew.rechLblRec}"/>
+	
+							<p:commandButton value="Rechercher"
+								style="border-radius:10px"
+								action="#{encaissementVew.chargerRecette()}"
+								update="tblRec"/>
+								
+						
+						
+						</p:panelGrid>
+						
+						<p:dataTable var="rec" value="#{encaissementVew.listeRecette}" id="tblRec" emptyMessage=""
+							selectionMode="single" selection="#{encaissementVew.selectedRecette}"
+							rowKey="#{rec.id}" reflow="true" scrollable="true" scrollHeight="200">
+
+							<p:ajax event="rowSelect" listener="#{encaissementVew.getSelectedRecetteValue()}"
+								update="frmFcl" />
+
+							<p:column headerText="Référence" width="10%">
+								<h:outputText value="#{rec.codeRec}" />
+							</p:column>
+
+							<p:column headerText="Libellé">
+								<h:outputText value="#{rec.libelle}" />
+							</p:column>
+
+						</p:dataTable>
+
+
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+		<p:dialog widgetVar="dlgFclt" header="Liste des factures clients"
+			modal="true" appendTo="@(body)" width="1200" responsive="true">
+			<h:form id="frmClt">
+
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+						<p:panelGrid columns="6"
+							columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,
+										  ui-grid-col-1,ui-grid-col-2"
+							layout="grid" styleClass="ui-panelgrid-blank"
+							style="background-color:transparent;">
+
+							
+						
+							<p:outputLabel value="Date début"/>
+									<p:inputMask id="txtDateDebut" value="#{encaissementVew.rechDateDeb}" mask="99/99/9999">
+										<p:ajax event="blur" listener="#{encaissementVew.changeDateDebut()}" update="txtMsg,txtDateDebut" />
+									</p:inputMask>
+								
+									<p:outputLabel value="Date fin"/>
+									<p:inputMask id="txtDateFin" value="#{encaissementVew.rechDateFin}" mask="99/99/9999">
+										<p:ajax event="blur" listener="#{encaissementVew.changeDateFin()}" update="txtMsg,txtDateFin" />
+									</p:inputMask>
+							<p:spacer/>
+							<p:commandButton value="Rechercher"
+								style="border-radius:10px"
+								action="#{encaissementVew.chargerEncaissement()}"
+								update="tblFcl"/>
+						
+						</p:panelGrid>
+						<p:panelGrid columns="1"
+							columnClasses="ui-grid-col-6"
+							layout="grid" styleClass="ui-panelgrid-blank"
+							style="background-color:transparent;">
+							<p:outputLabel value="#{encaissementVew.infoMsg}" id="txtMsg" style="color:red"/>
+							
+							</p:panelGrid>
+							
+						<p:dataTable var="enc" value="#{encaissementVew.listEncaissement}" id="tblFcl"
+								selectionMode="single" selection="#{encaissementVew.selectedEncaissement}"
+								rowKey="#{enc.id}" reflow="true" 
+								scrollable="true" scrollHeight="250" emptyMessage="">
+ 
+								<p:ajax event="rowSelect" listener="#{encaissementVew.getSelectedFactureClient()}"
+									update=":frmFcl" />
+
+								<p:column headerText="Date" width="8%">
+									<h:outputText value="#{enc.dateToPrint}" />
+								</p:column>
+
+								<p:column headerText="N° facture"  width="15%">
+									<h:outputText value="#{enc.numOperation}"/>
+								</p:column>
+								
+								<p:column headerText="Libellé"  width="45%">
+									<h:outputText value="#{enc.commentaire}"/>
+								</p:column>
+								
+								<p:column headerText="Montant"  width="10%">
+									<h:outputText value="#{enc.amountToPrint}"  style="float:right"/>
+								</p:column>
+								
+								
+								
+								<p:columnGroup type="footer">
+									<p:row>
+										<p:column footerText="Total" colspan="3" 
+											style="text-align:left;color:brown" />
+											
+										<p:column footerText="#{encaissementVew.printTot}"
+											style="text-align:right;color:brown"/>
+										
+										
+									</p:row>
+									
+								</p:columnGroup>
+							</p:dataTable>
+
+
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+		</body>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,227 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/masterPage.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+		<h:head>
+			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
+			<title>Compte bancaire</title>
+		</h:head> 
+		<body>
+			<h:form id="frm"
+				onkeypress="if (event.keyCode == 13) { return false; }">
+				<p:blockUI block="frm" trigger="btnSave" />
+				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
+					
+						
+						<div class="ui-g-12 ui-fluid card">
+
+							<p:panelGrid columns="2"
+								columnClasses="ui-grid-col-2,ui-grid-col-9,ui-grid-col-1,ui-grid-col-7"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<h:outputText value="N° compte"/>								
+								<p:inputText value="#{bankAcountVew.compteBank}">
+								<p:ajax event="blur" listener="#{bankAcountVew.searchBkAcount()}"
+										update=":frm"/>
+								</p:inputText>
+								
+								<h:outputText value="Libellé"/>
+								<p:inputText id="txtLbl" value="#{bankAcountVew.designation}"/>
+							</p:panelGrid>
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-7,ui-grid-col-1"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<h:outputText value="Banque"/>
+								<p:inputText id="txtCodBk" value="#{bankAcountVew.codeBk}">
+									<p:ajax event="blur" listener="#{bankAcountVew.searchBank()}"
+										update="txtLblBk"/>
+								</p:inputText>	
+												
+								<p:inputText id="txtLblBk" value="#{bankAcountVew.libelleBk}"/>
+								<p:commandButton icon="fa fa-search" style="border-radius:10px"
+									onclick="PF('dlgBk').show();" />
+									
+								<p:outputLabel value="Code comptble" />
+								<p:inputText id="txtCpt" value="#{bankAcountVew.codeCompte}">
+									<p:ajax event="blur" listener="#{bankAcountVew.searchCompte()}"
+										update="txtLblCpt"/>
+								</p:inputText>
+								<p:inputText id="txtLblCpt" value="#{bankAcountVew.libelleCpt}"/>
+								<p:commandButton icon="fa fa-search" style="border-radius:10px"
+									onclick="PF('dlgCpt').show();" />
+								
+							</p:panelGrid>
+							
+						
+								
+							
+						</div>
+
+					<div class="ui-g-12 ui-fluid card">
+						
+						<p:dataTable value="#{bankAcountVew.listAccount}"
+							var="cpt" selectionMode="single" id="tbl"
+							selection="#{bankAcountVew.selectedbkAccount}" rowKey="#{cpt.id}"
+							reflow="true" scrollable="true" scrollHeight="200"
+							emptyMessage="">
+
+							<p:ajax event="rowSelect"
+								listener="#{bankAcountVew.getBkAccountSelected()}"
+								update=":frm" />
+
+							<p:column headerText="N° compte" width="25%">
+								<h:outputText value="#{cpt.accCode}" />
+							</p:column>
+
+							<p:column headerText="Banque">
+								<h:outputText value="#{cpt.bank.codeBk}" />
+							</p:column>
+
+						</p:dataTable>
+					</div>
+
+						<div class="ui-g-12 ui-fluid card">
+							<div class="ui-g-12 ui-md-1" />
+							<div class="ui-g-3">
+								<p:commandButton value="Enregistrer"
+									action="#{bankAcountVew.save()}" icon="ui-icon-disk" update="frm"
+									style="border-radius:10px" id="btnSave" />
+							</div> 
+							<div class="ui-g-3">
+								<p:commandButton value="Supprimer"
+									action="#{bankAcountVew.delete()}" icon="ui-icon-trash" id="btnDelete"
+									update="frm" styleClass="orange-btn" style="border-radius:10px">
+									<p:confirm header="Confirmation"
+										disabled="#{bankAcountVew.disableMsg}"
+										message="Voulez vous vraiment supprimer ?"
+										icon="ui-icon-alert" />
+								</p:commandButton>
+							</div>
+							<div class="ui-g-3">  
+								<p:commandButton value="Initialiser" id="btnClean"
+									action="#{bankAcountVew.initializeControl()}"
+									icon="ui-icon ui-icon-refresh" update="frm"
+									style="border-radius:10px" />
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</h:form>
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+				widgetVar="cd">
+				<p:commandButton value="Oui" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Non" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+			
+			
+		
+		<p:dialog widgetVar="dlgCpt" header="Plan comptable"
+			modal="true" appendTo="@(body)" width="700" responsive="true">
+			<h:form id="frmCpt">
+
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+						<p:panelGrid columns="3"
+							columnClasses="ui-grid-col-1,ui-grid-col-6,ui-grid-col-3"
+							layout="grid" styleClass="ui-panelgrid-blank"
+							style="background-color:transparent;">
+							
+							<p:outputLabel value="Libellé" />
+							<p:inputText value="#{bankAcountVew.rechLblCpt}"/>
+	
+							<p:commandButton value="Rechercher"
+								style="border-radius:10px"
+								action="#{bankAcountVew.chargerCompte()}"
+								update="tblCpt"/>
+
+						</p:panelGrid>
+
+						<p:dataTable value="#{bankAcountVew.listCpte}"
+							var="cpt" selectionMode="single" id="tblCpt"
+							selection="#{bankAcountVew.selectedCpt}" rowKey="#{cpt.id}"
+							reflow="true" scrollable="true" scrollHeight="200"
+							emptyMessage="">
+
+							<p:ajax event="rowSelect"
+								listener="#{banqueVew.getSelecedCptValue()}"
+								update=":frm:txtLblCpt,:frm:txtCpt" />
+
+							<p:column headerText="Compte" width="15%">
+								<h:outputText value="#{cpt.compteCod}" />
+							</p:column>
+
+							<p:column headerText="Libelle">
+								<h:outputText value="#{cpt.libelle}" />
+							</p:column>
+
+						</p:dataTable>
+
+
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog widgetVar="dlgBk" header="Liste des banques"
+			modal="true" appendTo="@(body)" width="700" responsive="true">
+			<h:form id="frmBk"> 
+
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+						<p:panelGrid columns="3"
+							columnClasses="ui-grid-col-2,ui-grid-col-6,ui-grid-col-3"
+							layout="grid" styleClass="ui-panelgrid-blank"
+							style="background-color:transparent;">
+
+							
+							
+							<p:outputLabel value="Libellé" />
+							<p:inputText value="#{bankAcountVew.rechLblBk}"/>
+	
+							<p:commandButton value="Rechercher"
+								style="border-radius:10px"
+								action="#{bankAcountVew.chargermentBanque()}"
+								update="tblBk"/>
+								
+						
+						
+						</p:panelGrid>
+						
+						<p:dataTable var="bk" value="#{bankAcountVew.listBk}" id="tblBk" emptyMessage=""
+							selectionMode="single" selection="#{bankAcountVew.selectedBk}"
+							rowKey="#{bk.id}" reflow="true" scrollable="true" scrollHeight="200">
+
+							<p:ajax event="rowSelect" listener="#{bankAcountVew.getSelectedBnkValues()}"
+								update="frm" />
+
+							<p:column headerText="Référence" width="10%">
+								<h:outputText value="#{bk.codeBk}" />
+							</p:column>
+
+							<p:column headerText="Libellé">
+								<h:outputText value="#{bk.libelle}" />
+							</p:column>
+
+						</p:dataTable>
+
+
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+		</body>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/masterPage.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+		<h:head>
+			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
+			<title>journal</title>
+		</h:head>
+		<body>
+			<h:form id="frm"
+				onkeypress="if (event.keyCode == 13) { return false; }">
+				<p:blockUI block="frm" trigger="" />
+				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
+						<div class="ui-g-12 ui-fluid card no-margin">
+
+
+
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+
+								
+								<p:outputLabel value="Date début" />
+								<p:inputMask id="txtDateDebut" value="#{balance.rechDateDeb}"
+									mask="99/99/9999">
+									<p:ajax event="blur" listener="#{balance.changeDateDebut()}"
+										update="txtMsg,txtDateDebut" />
+								</p:inputMask>
+
+								<p:outputLabel value="Date fin" />
+								<p:inputMask id="txtDateFin" value="#{balance.rechDateFin}"
+									mask="99/99/9999">
+									<p:ajax event="blur" listener="#{balance.changeDateFin()}"
+										update="txtMsg,txtDateFin" />
+								</p:inputMask>
+
+							
+							</p:panelGrid>
+
+							<p:panelGrid columns="2"
+								columnClasses="ui-grid-col-2,ui-grid-col-5,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								<p:outputLabel value="Type balance" />
+								<p:selectOneMenu value="#{balance.typeBalance}"
+									autoWidth="false">
+									<f:selectItem itemLabel="Balance 4 colonnes" itemValue="1" />
+									<f:selectItem itemLabel="Balance 6 colonnes" itemValue="2" />
+
+								</p:selectOneMenu>
+								 <p:outputLabel value="Type d'affichage" />
+								<p:selectOneMenu value="#{balance.typeAffichage}"
+									autoWidth="false">
+									<f:selectItem itemLabel="Afficher avec les comptes pricipaux" itemValue="1" />
+									<f:selectItem itemLabel="Afficher seulement les comptes mouvementés" itemValue="2" />
+
+							</p:selectOneMenu>
+							</p:panelGrid>
+							<p:panelGrid columns="3"
+								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2" layout="grid"
+								styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								<p:spacer/>
+								
+								<p:commandButton value="Editer en pdf" icon="fa fa-file-pdf-o"
+									style="border-radius:10px" ajax="false"
+									action="#{balance.printBalancePdf()}" />
+								<p:commandButton value="Editer en excel"
+									icon="fa fa-file-excel-o" style="border-radius:10px" action="#{balance.printeBalanceExcel()}"
+									ajax="false" />
+
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" columnClasses="ui-grid-col-6"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="background-color:transparent;">
+								<p:outputLabel value="#{balance.infoMsg}" id="txtMsg"
+									style="color:red" />
+
+							</p:panelGrid>
+						</div>
+
+
+
+
+					</div>
+				</div>
+			</h:form>
+
+
+
+		</body>
+	</ui:define>
+</ui:composition>
