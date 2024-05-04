@@ -254,23 +254,27 @@
 							update="frm" style="border-radius:10px" id="btnSave"
 							disabled="#{ecritureVew.disableSave}" />
 					</div>
+					
 					<div class="ui-g-3">
-						<p:commandButton value="Supprimer"
+						<p:commandButton value="Supprimer" 
 							action="#{ecritureVew.delete()}" icon="ui-icon-trash"
 							id="btnDelete" update="frm" styleClass="orange-btn"
 							style="border-radius:10px">
 							<p:confirm header="Confirmation"
 								disabled="#{ecritureVew.disableMsg}"
-								message="Voulez vous vraiment supprimer ?" icon="ui-icon-alert" />
+								message="#{ecritureVew.deleteMsg}" icon="ui-icon-alert" />
 						</p:commandButton>
 					</div>
+					
 					<div class="ui-g-3">
 						<p:commandButton value="Initialiser" id="btnClean"
 							action="#{ecritureVew.initializeAll()}"
 							icon="ui-icon ui-icon-refresh" update="frm"
 							style="border-radius:10px" />
 					</div>
-
+					
+					
+					
 				</div>
 
 
@@ -437,7 +441,7 @@
 								paginator="true" emptyMessage="" paginatorPosition="bottom">
 
 								<p:ajax event="rowSelect"
-									listener="#{ecritureVew.getSelectedSaisie()}" update=":frm:tblSaisie,:frm:pnlTotaux" />
+									listener="#{ecritureVew.getSelectedSaisie()}" update=":frm:tblSaisie,:frm:pnlTotaux,:frm:btnDelete" />
 
 								<p:column headerText="Date" width="7%">
 									<h:outputText value="#{ecr.printDate}" />

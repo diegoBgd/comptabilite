@@ -284,7 +284,7 @@ public class ClotureOuvertureVew implements Serializable {
 
 	public void save() {
 		if (this.listEcriture != null && this.listEcriture.size() > 0)
-			this.message = this.model.saveEcriture(this.factory, this.listEcriture);
+			this.message = this.model.saveEcriture(this.factory, this.listEcriture,null);
 		else
 			message="La liste des écritures est vide"	;
 	}

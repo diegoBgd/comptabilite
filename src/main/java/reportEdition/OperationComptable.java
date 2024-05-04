@@ -524,7 +524,10 @@ public class OperationComptable implements Serializable {
 	}
 	
 	public void chargerSoldeCompte() {
-		List<Object[]> soldes = model.getSoldeCompte(factory, selecetdExercice.getId(), "", selectedCpte.getCompteCod(), dateDebut, dateFin);
+		List<Object[]> soldes;
+		if(selectedCpte!=null)
+		{
+		 soldes = model.getSoldeCompte(factory, selecetdExercice.getId(), "", selectedCpte.getCompteCod(), dateDebut, dateFin);
 		listSolde=new ArrayList<SoldeCompte>();
 		SoldeCompte solde=null;
 		double cd=0,db=0;
@@ -554,6 +557,7 @@ public class OperationComptable implements Serializable {
 			
 			
 			cd=0;db=0;
+		}
 		}
 	}
 	

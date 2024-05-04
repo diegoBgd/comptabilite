@@ -22,7 +22,7 @@ public class EcritureModel {
 		ss.close();
 	}
 
-	public String saveEcriture(SessionFactory factory, List<Ecriture> list) {
+	public String saveEcriture(SessionFactory factory, List<Ecriture> list,List<Ecriture>dList) {
 		String msg = "";
 		Session ss = null;
 
@@ -35,7 +35,12 @@ public class EcritureModel {
 			else
 				ss.update(ecriture);
 		}
-
+		if(dList!=null &&dList.size()>0)
+		{
+			for (Ecriture ecriture : dList) {
+				ss.delete(ecriture);
+			}
+		}
 		ss.getTransaction().commit();
 		ss.close();
 		msg = "Opération réussie";

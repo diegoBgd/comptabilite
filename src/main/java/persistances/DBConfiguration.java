@@ -22,14 +22,15 @@
 			  "jdbc:mysql://localhost:3306/comptavirago");
 			  config.setProperty("hibernate.connection.username", "root");
 			  config.setProperty("hibernate.connection.password", "123");
-				  
-				/*
-				 * config.setProperty("hibernate.connection.url",
-				 * "jdbc:mysql://localhost:3306/comptavirago");
-				 * config.setProperty("hibernate.connection.username", "root");
-				 * config.setProperty("hibernate.connection.password", "virago/2024");
-				 * 
-				 */
+			 
+			/*
+			 * 
+			 * config.setProperty("hibernate.connection.url",
+			 * "jdbc:mysql://localhost:3306/comptavirago");
+			 * config.setProperty("hibernate.connection.username", "root");
+			 * config.setProperty("hibernate.connection.password", "virago/2024");
+			 */
+				 
 			config.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
 			config.setProperty("hibernate.hbm2ddl.auto", "update");
 			config.setProperty("show_sql", "true");

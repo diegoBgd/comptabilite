@@ -78,7 +78,7 @@ import org.apache.poi.ss.usermodel.Cell;
    private String printSoldeDb; 
    private String printSoldeCd; 
    private String soldeJrnl,soldeCpte;
-   private String infoMsg; 
+   private String infoMsg,deleteMsg; 
    private String libelleOperation; 
    private String piece; 
    private String printCredit,printDebit,printSoldeDeb,printSoldeCrd;
@@ -92,6 +92,7 @@ import org.apache.poi.ss.usermodel.Cell;
    String exerCode;
    String currUserCode;
    User currentUser;
+   List<Ecriture>listDelete;
    int idEcr = 0;
    int index=0;
  
@@ -465,6 +466,14 @@ import org.apache.poi.ss.usermodel.Cell;
 		this.autoAdd = autoAdd;
 	}
 
+	public String getDeleteMsg() {
+		return deleteMsg;
+	}
+
+	public void setDeleteMsg(String deleteMsg) {
+		this.deleteMsg = deleteMsg;
+	}
+
 	@PostConstruct
 	public void initialize() {
 		this.model = new EcritureModel();
@@ -691,9 +700,14 @@ import org.apache.poi.ss.usermodel.Cell;
 	}
 
 	public void getSelectedSaisie() {
+		deleteMsg="";disableMsg=true;
 		if (selectedEcriture != null) {
 			listeSaisie = model.getListEcriture(factory, selecetdExercice.getId(), selectedEcriture.getJrnl(), "",
 					selectedEcriture.getPieceCpb(), null, null);
+			listDelete=new ArrayList<Ecriture>();
+			if(listeSaisie.size()>0)
+			{
+			disableMsg = false;
 			int i = 0;
 			for (Ecriture ec : this.listeSaisie) {
 				ec.setOrderIndex(i);
@@ -701,6 +715,8 @@ import org.apache.poi.ss.usermodel.Cell;
 			}
 			calculTotaux();
 			PrimeFaces.current().executeScript("PF('dlgEcr').hide();");
+			deleteMsg="Voulez-vous supprimer ces "+listeSaisie.size()+" lignes ?";
+			}
 		}
 	}
 
@@ -719,14 +735,14 @@ import org.apache.poi.ss.usermodel.Cell;
 		this.codeJrnl = this.selectedEcriture.getJrnl();
 		searchCpt();
 		searchJournal();
-		this.disableMsg = false;
+		
 		PrimeFaces.current().executeScript("PF('dlgEcr').hide();");
 	}
 
 	public void saveSaisie() {
 		if (listeSaisie != null && listeSaisie.size() > 0) {
 			if (solde == 0) {
-				model.saveEcriture(this.factory, listeSaisie);
+				model.saveEcriture(this.factory, listeSaisie,listDelete);
 				initializeAll();
 			} else {
 				HelperC.afficherAttention("Attention", "Le journal n'est  équilibré !");
@@ -773,9 +789,9 @@ import org.apache.poi.ss.usermodel.Cell;
 	}
 
 	public void delete() {
-		if (listeEcriture != null && listeEcriture.size()>0) {
+		if (listeSaisie != null && listeSaisie.size()>0) {
 
-			this.model.deleteListEcriture(this.factory,listeEcriture);
+			this.model.deleteListEcriture(this.factory,listeSaisie);
 			initializeAll();
 			calculTotaux();
 			calculTotauxEcriture();
@@ -790,7 +806,7 @@ import org.apache.poi.ss.usermodel.Cell;
 		this.codeCpt = "";
 		this.libelleCpt = "";
 		this.selectedEcriture = null;
-
+		selected=false;
 		if (!this.keepDate) {
 
 			this.dateOp = null;
@@ -842,9 +858,11 @@ import org.apache.poi.ss.usermodel.Cell;
 		keepPice = false;
 		keepJrnal = false;
 		keepLibelle = false;
+		selected=false;
 		listeSaisie.clear();
 		if(listeEcriture!=null)
 		listeEcriture.clear();
+		listDelete=null;
 	}
 
 	public void addEcriture() {
@@ -943,8 +961,11 @@ import org.apache.poi.ss.usermodel.Cell;
 			initializeControl();
 		}
 	}
+	
 	public void remove() {
 		if (selectedEcriture != null) {
+			if(selectedEcriture.getId()>0)
+				listDelete.add(selectedEcriture);
 			listeSaisie.remove(selectedEcriture);
 			calculTotaux();
 			initializeControl();
