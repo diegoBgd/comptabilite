@@ -19,55 +19,55 @@
      String valeur = "";
      switch (fx) {
        case GestionAcces:
-         valeur = "Drois d'accÃ¨s";
+         valeur = "Drois d'accès";
          break;
        case ParametreGeneraux:
-         valeur = "ParamÃ¨tres gÃ©nÃ©raux";
+         valeur = "Paramètres généraux";
          break;
        case ParametreEfi:
-         valeur = "ParamÃ©trage des Ã©tats financiers";
+         valeur = "Paramétrage des états financiers";
          break;
        case Journal:
-         valeur = "ParamÃ©trage des journaux";
+         valeur = "Paramétrage des journaux";
          break;
        case PlanComptable:
-         valeur = "ParamÃ©trage du plan comptable";
+         valeur = "Paramétrage du plan comptable";
          break;
        case SaisieEcritures:
-         valeur = "Saisie des Ã©critures comptables";
+         valeur = "Saisie des écritures comptables";
          break;
        case EditionEfi:
-         valeur = "Edition des Ã©tats financiers";
+         valeur = "Edition des états financiers";
          break;
        case EditionHistoriques:
-         valeur = "Editions des opÃ©rations comptables";
+         valeur = "Editions des opérations comptables";
          break;
        case SaisieImmo:
-         valeur = "Saisie des immobilisÃ©s";
+         valeur = "Saisie des immobilisés";
          break;
        case Amortissement:
-         valeur = "GÃ©rer les amortissement";
+         valeur = "Gérer les amortissement";
          break;
        case Cession:
          valeur = "Cession des immo";
          break;
        case ParametrageFinance:
-         valeur = "ParamÃ©trage des gestions financiÃ¨res";
+         valeur = "Paramétrage des gestions financières";
          break;
        case EntreeFond:
-         valeur = "Saisie des entrÃ©es de fonds";
+         valeur = "Saisie des entrées de fonds";
          break;
        case ReglementClient:
-         valeur = "Saisie des rÃ¨glement clients";
+         valeur = "Saisie des règlement clients";
          break;
        case FactureFourn:
          valeur = "Saisie des factures fournisseurs";
          break;
        case ReglementFournisseur:
-         valeur = "Saisie des rÃ¨glements fournisseurs";
+         valeur = "Saisie des règlements fournisseurs";
          break;
        case AutresDepenses:
-         valeur = "Autres dÃ©penses";
+         valeur = "Autres dépenses";
          break;
      } 
  
