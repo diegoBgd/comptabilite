@@ -1173,8 +1173,12 @@ public class EditionEtatFinancier implements Serializable {
 			
 				
 				if (cpt.startsWith(compte)) {
-					value += Double.valueOf(ob[1].toString()).doubleValue();
-					
+					db = Double.valueOf(ob[1].toString()).doubleValue();
+					cd = Double.valueOf(ob[2].toString()).doubleValue();
+					if(db>cd)
+						value += (db - cd);
+					else
+						value +=0;
 					
 				}
 			}
@@ -1186,7 +1190,13 @@ public class EditionEtatFinancier implements Serializable {
 
 				if (cpt.startsWith(compte)) {
 
-					value += Double.valueOf(ob[2].toString()).doubleValue();
+					db = Double.valueOf(ob[1].toString()).doubleValue();
+					cd = Double.valueOf(ob[2].toString()).doubleValue();
+					
+					if(db<cd)
+						value += (cd-db);
+					else
+						value +=0;
 				}
 			}
 			break;

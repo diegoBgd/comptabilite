@@ -601,7 +601,7 @@ public class GrandLivre implements Serializable {
 		List<Ecriture> listeEcriture = model.getListEcritureCompteBetween(factory, selecetdExercice.getId(),
 				compteDeb, compteFin, dateDebut, dateFin);
 		
-		double subTotDeb = 0, subTotCrd = 0, totCred = 0, totDeb = 0,soldeDb,soldeCrd;
+		double subTotDeb = 0, subTotCrd = 0, totCred = 0, totDeb = 0,soldeDb=0,soldeCrd=0,totSoldDeb=0,totSoldCrd=0;
 		int nbr = 0;
 		Phrase phrase = null;
 		Paragraph p = null;
@@ -663,8 +663,7 @@ public class GrandLivre implements Serializable {
 							subTotCrd += ecr.getCredit();
 							subTotDeb += ecr.getDebit();
 
-							totCred += subTotCrd;
-							totDeb += subTotDeb;
+							
 							
 								p = new Paragraph();
 								p.add(new Chunk(HelperC.convertDate(ecr.getDateOperation()), FontFactory.getFont("Times", 8F, 0)));
@@ -710,6 +709,9 @@ public class GrandLivre implements Serializable {
 					if(subTotDeb <subTotCrd)
 						soldeCrd=subTotCrd-subTotDeb;
 					
+					totCred += subTotCrd;
+					totDeb += subTotDeb;
+					
 					p = new Paragraph();
 					p.add(new Chunk("Total " + cpte.getCompteCod()+" "+cpte.getLibelle(), FontFactory.getFont("Times", 8F, 1)));
 					cell = HelperItext.getCellule(p, 1, 0, 6, 4, 0.5F, 3F,true);
@@ -749,6 +751,52 @@ public class GrandLivre implements Serializable {
 
 					
 				}
+			
+			if(totDeb>totCred)
+				totSoldDeb=totDeb-totCred;
+			if(totCred>totDeb)
+				totSoldCrd=totCred-totDeb;
+			if(totSoldDeb==totSoldCrd)
+			{
+				totSoldCrd=0;
+				totSoldDeb=0;
+			}
+			p = new Paragraph();
+			p.add(new Chunk("Total général ", FontFactory.getFont("Times", 8F, 1)));
+			cell = HelperItext.getCellule(p, 1, 0, 6, 4, 0.5F, 3F,true);
+			tabInfo.addCell(cell);
+
+			p = new Paragraph();
+			p.add(new Chunk(HelperC.decimalNumber(totDeb, 0, true), FontFactory.getFont("Times", 8F, 1)));
+			p.setAlignment(2);
+			cell = HelperItext.getCellule(p, 1, 0, 6, 0, 0.5F, 3F,true);
+			tabInfo.addCell(cell);
+			
+			p = new Paragraph();
+			p.add(new Chunk(HelperC.decimalNumber(totCred, 0, true), FontFactory.getFont("Times", 8F, 1)));
+			p.setAlignment(2);
+			cell = HelperItext.getCellule(p, 1, 0,14, 0, 0.5F, 3F,true);
+			tabInfo.addCell(cell);
+				
+			
+			p = new Paragraph();
+			p.add(new Chunk("Solde " , FontFactory.getFont("Times", 8F, 1)));
+			cell = HelperItext.getCellule(p, 1, 0, 6, 4, 0.5F, 3F,true);
+			tabInfo.addCell(cell);
+
+			p = new Paragraph();
+			p.add(new Chunk(HelperC.decimalNumber(totSoldCrd, 0, true), FontFactory.getFont("Times", 8F, 1)));
+			p.setAlignment(2);
+			cell = HelperItext.getCellule(p, 1, 0, 6, 0, 0.5F, 3F,true);
+			tabInfo.addCell(cell);
+			
+			p = new Paragraph();
+			p.add(new Chunk(HelperC.decimalNumber(totSoldDeb, 0, true), FontFactory.getFont("Times", 8F, 1)));
+			p.setAlignment(2);
+			cell = HelperItext.getCellule(p, 1, 0,14, 0, 0.5F, 3F,true);
+			tabInfo.addCell(cell);
+				
+				
 			}
 			
 			
