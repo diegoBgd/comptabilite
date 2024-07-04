@@ -219,7 +219,20 @@
 
 				<div class="ui-g">
 					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
-						
+						<p:panelGrid columns="2"
+								columnClasses="ui-grid-col-2,ui-grid-col-2"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								
+								<p:outputLabel value="Type rubrique" id="chkType"/>
+								<p:selectOneMenu value="#{rubriqueEFiVew.typeRb}" autoWidth="false">
+									<f:selectItem itemLabel=" " itemValue="0" />
+									<f:selectItem itemLabel="Actif" itemValue="1" />
+									<f:selectItem itemLabel="Passif" itemValue="2" />
+									<p:ajax event="change" update="chkType"/>
+								</p:selectOneMenu>
+								
+						</p:panelGrid>
 						
 						<p:dataTable value="#{rubriqueEFiVew.listeEtat}"
 							var="efi" selectionMode="single" id="tblCpt"

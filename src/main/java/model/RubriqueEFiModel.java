@@ -1,13 +1,15 @@
  package model;
  
- import entite.EtatFinancier;
+ import entite.Compte;
+import entite.EtatFinancier;
  import entite.RubriqueEFi;
  import java.util.ArrayList;
  import java.util.List;
  import javax.persistence.criteria.CriteriaBuilder;
  import javax.persistence.criteria.CriteriaQuery;
  import javax.persistence.criteria.Expression;
- import javax.persistence.criteria.*;
+import javax.persistence.Query;
+import javax.persistence.criteria.*;
  import javax.persistence.criteria.Predicate;
  import javax.persistence.criteria.Root;
  import javax.persistence.criteria.Selection;
@@ -141,7 +143,7 @@ public List<RubriqueEFi> getListRubrique(SessionFactory factory, EtatFinancier e
        
        if (efi != null) {
          
-         predicates.add(cb.equal((Expression)ec.get("etat"), efi));
+         predicates.add(cb.equal((Expression<?>)ec.get("etat"), efi));
          qr.select((Selection)ec).where((Expression)cb.and(predicates.<Predicate>toArray(new Predicate[predicates.size()])));
          qr.orderBy(new Order[] { cb.asc((Expression)ec.get("code")) });
          list = session.createQuery(qr).getResultList();
@@ -154,6 +156,36 @@ public List<RubriqueEFi> getListRubrique(SessionFactory factory, EtatFinancier e
      } 
      return list;
    }
+   
+	@SuppressWarnings("unchecked")
+	public List<RubriqueEFi> getListRubrique(SessionFactory factory, EtatFinancier efi, int typeRb) {
+		List<RubriqueEFi> listRb = null;
+
+		try {
+			Session session = factory.openSession();
+			session.beginTransaction();
+			String sql = "SELECT r from RubriqueEFi r WHERE r.etat=:e ";
+
+			if (typeRb > 0)
+				sql += " AND r.typeValeur=:t ";
+
+			sql += " ORDER BY r.code ASC";
+
+			Query query = session.createQuery(sql);
+
+			query.setParameter("e", efi);
+			if (typeRb > 0)
+				query.setParameter("t", typeRb);
+
+			listRb = query.getResultList();
+			session.getTransaction().commit();
+			session.close();
+		} catch (Exception e) {
+			System.out.println(e.toString());
+		}
+		return listRb;
+	}
+	
  }
 
 

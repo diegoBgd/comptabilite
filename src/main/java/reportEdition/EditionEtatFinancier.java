@@ -1151,11 +1151,14 @@ public class EditionEtatFinancier implements Serializable {
 	
 			for (Object[] ob : this.listSolde) {
 				cpt = ob[0].toString();
-
+				
 				if (cpt.startsWith(compte)) {
 
+					db=0;cd=0;
+					
 					db = Double.valueOf(ob[1].toString()).doubleValue();
 					cd = Double.valueOf(ob[2].toString()).doubleValue();
+					
 					if(db>cd)
 						value += (db - cd);
 					if(db<cd)
@@ -1170,9 +1173,11 @@ public class EditionEtatFinancier implements Serializable {
 		case 2:
 			for (Object[] ob : this.listSolde) {
 				cpt = ob[0].toString();
-			
+				
 				
 				if (cpt.startsWith(compte)) {
+					db=0;cd=0;
+					
 					db = Double.valueOf(ob[1].toString()).doubleValue();
 					cd = Double.valueOf(ob[2].toString()).doubleValue();
 					if(db>cd)
@@ -1186,10 +1191,12 @@ public class EditionEtatFinancier implements Serializable {
 
 		case 3:
 			for (Object[] ob : this.listSolde) {
-				cpt = ob[0].toString();
-
+				cpt = ob[0].toString();			
+				
 				if (cpt.startsWith(compte)) {
 
+					db=0;cd=0;
+					
 					db = Double.valueOf(ob[1].toString()).doubleValue();
 					cd = Double.valueOf(ob[2].toString()).doubleValue();
 					

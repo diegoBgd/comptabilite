@@ -32,9 +32,10 @@ import org.hibernate.SessionFactory;
    private List<EtatFinancier> listeEtat;
    private List<SelectItem> listElement;
    private CompteEFi selectedDetail;
+   private boolean actf,pssf;
    private int valeur;
    private int valeurColone;
-   private int type;
+   private int type,typeRb;
    private String codeEfi;
    private String libelleEfi;
    private String symbol;
@@ -69,15 +70,18 @@ import org.hibernate.SessionFactory;
    String currUserCode;
    User currentUser;
    int index = 0;
- 
- 
- 
- 
- 
-   
-   public RubriqueEFi getSelectedRubrique() {
-     return this.selectedRubrique;
-   }
+
+	public int getTypeRb() {
+		return typeRb;
+	}
+
+	public void setTypeRb(int typeRb) {
+		this.typeRb = typeRb;
+	}
+
+	public RubriqueEFi getSelectedRubrique() {
+		return this.selectedRubrique;
+	}
    public void setSelectedRubrique(RubriqueEFi selectedRubrique) {
      this.selectedRubrique = selectedRubrique;
    }
@@ -293,7 +297,8 @@ import org.hibernate.SessionFactory;
    }
    
    public void chargerRubrique() {
-     this.listRubrique = this.model.getListRubrique(this.factory, this.selectedEfi);
+	
+     this.listRubrique = this.model.getListRubrique(this.factory, this.selectedEfi,typeRb);
    }
  
    

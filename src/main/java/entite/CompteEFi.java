@@ -97,13 +97,13 @@
    public String getPrintSldType() {
      switch (getTypeSolde()) {
        case 1:
-         this.printSldType = "Solde";
+         this.printSldType = "S";
          break;
        case 2:
-         this.printSldType = "Débit";
+         this.printSldType = "S.D";
          break;
        case 3:
-         this.printSldType = "Crédit";
+         this.printSldType = "S.C";
          break;
      } 
  
