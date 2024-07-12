@@ -1106,9 +1106,11 @@ public class EditionEtatFinancier implements Serializable {
 		String cpteFn=ce.getCompteFin();
 		
 		  if(cpteFn.equals(null) || cpteFn.equals("")) {
-			  cpteFn=HelperC.completerCompte(cpteDb); }
+			  cpteFn=cpteDb+"9999"; 
+			  }
 		 
-		List<Compte> listCpt = new CompteModel().getPlanComptable(factory,cpteDb, cpteFn);
+		List<Compte> listCpt = new CompteModel().getListeCompte(factory,cpteDb, cpteFn);
+		
 		if (listCpt.size() > 0)
 			for (Compte compte : listCpt) {
 				valeur+=getValue(compte.getCompteCod(), ce.getTypeSolde());
@@ -1165,6 +1167,7 @@ public class EditionEtatFinancier implements Serializable {
 						value += (cd-db);
 					if(db==cd)
 						value +=0;
+					 
 				}
 			}
 
@@ -1185,6 +1188,7 @@ public class EditionEtatFinancier implements Serializable {
 					else
 						value +=0;
 					
+					
 				}
 			}
 			break;
@@ -1204,6 +1208,8 @@ public class EditionEtatFinancier implements Serializable {
 						value += (cd-db);
 					else
 						value +=0;
+					
+				
 				}
 			}
 			break;

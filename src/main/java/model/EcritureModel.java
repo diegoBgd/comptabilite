@@ -623,6 +623,10 @@ public class EcritureModel {
 
 			for (Object ob : list) {
 				soldeCpt = (Object[]) ob;
+				/*
+				 * if(soldeCpt[0].toString().startsWith("5"))
+				 * System.out.println(soldeCpt[0]+" "+soldeCpt[1]+" "+soldeCpt[2]);
+				 */
 				listSold.add(soldeCpt);
 			}
 

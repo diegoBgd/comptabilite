@@ -418,11 +418,11 @@ import org.hibernate.SessionFactory;
      if (this.cptDeb != null && !this.cptDeb.equals("")) {
        
        this.compteDb = (new CompteModel()).getCompteByCode(this.factory, this.cptDeb);
-       if (this.compteDb == null) {
-         
-         this.infoMsg = "Ce compte n'existe pas !";
-         this.disableAddCpt = true;
-       } 
+		/*
+		 * if (this.compteDb == null) {
+		 * 
+		 * this.infoMsg = "Ce compte n'existe pas !"; this.disableAddCpt = true; }
+		 */
      } 
    }
    
@@ -431,11 +431,11 @@ import org.hibernate.SessionFactory;
      if (this.cptFin != null && !this.cptFin.equals("")) {
        
        this.compteFn = (new CompteModel()).getCompteByCode(this.factory, this.cptFin);
-       if (this.compteFn == null) {
-         
-         this.infoMsg = "Ce compte n'existe pas !";
-         this.disableAddCpt = true;
-       } 
+		/*
+		 * if (this.compteFn == null) {
+		 * 
+		 * this.infoMsg = "Ce compte n'existe pas !"; this.disableAddCpt = true; }
+		 */
      } 
    }
  

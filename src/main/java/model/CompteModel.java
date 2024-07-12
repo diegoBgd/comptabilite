@@ -141,6 +141,41 @@ public class CompteModel implements Serializable{
 	}
 	
 	@SuppressWarnings("unchecked")
+	public List<Compte> getListeCompte(SessionFactory factory, String compteDeb, String compteFin) {
+		List<Compte> list = null;
+		try {
+			Session session = factory.openSession();
+			session.beginTransaction();
+
+			String sql = "SELECT C from Compte C WHERE 1=1 AND C.compteDetail=1";
+
+			if (compteDeb != null && !compteDeb.equals(""))
+				sql += " AND C.compteCod>=:deb";
+			if (compteFin != null && !compteFin.equals(""))
+				sql += " AND C.compteCod<=:fin";
+
+			sql = sql + " ORDER BY C.compteCod ASC";
+
+			Query query = session.createQuery(sql);
+
+			if (compteDeb != null && !compteDeb.equals("")) {
+				query.setParameter("deb", compteDeb);
+			}
+			if (compteFin != null && !compteFin.equals("")) {
+				query.setParameter("fin", compteFin);
+
+			}
+			list = query.getResultList();
+
+			session.getTransaction().commit();
+			session.close();
+		} catch (Exception e) {
+			System.out.println(e.toString());
+		}
+		return list;
+	}
+	
+	@SuppressWarnings("unchecked")
 	public List<Compte> getListCompte(SessionFactory factory) {
 	     List<Compte> listCpt = null;
 	 
