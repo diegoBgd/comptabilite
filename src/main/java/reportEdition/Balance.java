@@ -79,7 +79,8 @@ public class Balance implements Serializable {
 	List<Compte> listeCpte;
 	ParametreCompta prmCpt;
 	String codeJAN;
-
+	String resultAccount="";
+	
 	public int getTypeBalance() {
 		return this.typeBalance;
 	}
@@ -141,9 +142,11 @@ public class Balance implements Serializable {
 		chargementSession();
 		this.prmCpt = (new ParametreComptaModel()).getParameter(this.factory);
 		if (this.prmCpt != null) {
-			this.codeJAN = this.prmCpt.getJournalAN();
+			codeJAN = this.prmCpt.getJournalAN();
+			resultAccount=this.prmCpt.getCompteRs();
 		} else {
-			this.codeJAN = "";
+			codeJAN = "";
+			resultAccount="";
 		}
 	}
 
@@ -327,7 +330,7 @@ public class Balance implements Serializable {
 		PdfPCell cell = new PdfPCell();
 
 		double totDeb = 0.0D, totCrd = 0.0D, deb = 0.0D, crd = 0.0D, soldDb = 0.0D, soldCd = 0.0D, totSoldDb = 0.0D,
-				totSoldCd = 0.0D;
+				totSoldCd = 0.0D,result=0.0D;
 		chargerCompte();
 		chargementSolde();
 
@@ -400,9 +403,20 @@ public class Balance implements Serializable {
 			for (Compte cpte : this.listeCpte) {
 				j++;
 
+				if(cpte.getCompteCod().contentEquals(resultAccount))
+				{
+					result=calculResultat();
+					if(result>0)
+						deb=result;
+					if(result<0)
+						crd=Math.abs(result);
+				}
+				else 
+				{
 				deb = getDebit(cpte.getCompteCod());
 				crd = getCredit(cpte.getCompteCod());
-
+				}
+				
 				if (deb > crd)
 					soldDb = deb - crd;
 				if (crd > deb)
@@ -525,7 +539,7 @@ public class Balance implements Serializable {
 
 		double totDeb = 0.0D, totCrd = 0.0D, deb = 0.0D, crd = 0.0D, soldDb = 0.0D, soldCd = 0.0D;
 		double totSoldDb = 0.0D, totSoldCd = 0.0D, credEnt = 0.0D, debEntre = 0.0D;
-		double totCrdE = 0.0D, totDebE = 0.0D;
+		double totCrdE = 0.0D, totDebE = 0.0D,result=0;
 		boolean used=false;
 		chargerCompte();
 		chargerSoldeEntree();
@@ -620,9 +634,19 @@ public class Balance implements Serializable {
 			for (Compte cpte : this.listeCpte) {
 				j++;
 
+				if(cpte.getCompteCod().contentEquals(resultAccount))
+				{
+					result=calculResultat();
+					if(result>0)
+						deb=result;
+					if(result<0)
+						crd=Math.abs(result);
+				}
+				else 
+				{
 				deb = getDebit(cpte.getCompteCod());
 				crd = getCredit(cpte.getCompteCod());
-
+				}
 				debEntre = getDebitEntree(cpte.getCompteCod());
 				credEnt = getCreditEntree(cpte.getCompteCod());
 
@@ -795,7 +819,7 @@ public class Balance implements Serializable {
 		chargementSolde();
 
 		double totDeb = 0.0D, totCrd = 0.0D, deb = 0.0D, crd = 0.0D, soldDb = 0.0D, soldCd = 0.0D, totSoldDb = 0.0D,
-				totSoldCd = 0.0D;
+				totSoldCd = 0.0D,result=0;
 		boolean bl = false;
 
 		if (this.listeCpte.size() > 0 && this.listSolde.size() > 0) {
@@ -836,9 +860,19 @@ public class Balance implements Serializable {
 
 			for (Compte cpte : this.listeCpte) {
 
+				if(cpte.getCompteCod().contentEquals(resultAccount))
+				{
+					result=calculResultat();
+					if(result>0)
+						deb=result;
+					if(result<0)
+						crd=Math.abs(result);
+				}
+				else 
+				{
 				deb = getDebit(cpte.getCompteCod());
 				crd = getCredit(cpte.getCompteCod());
-
+				}
 				if (deb > crd)
 					soldDb = deb - crd;
 				if (crd > deb)
@@ -963,7 +997,7 @@ public class Balance implements Serializable {
 
 		double totDeb = 0.0D, totCrd = 0.0D, deb = 0.0D, crd = 0.0D, soldDb = 0.0D, soldCd = 0.0D;
 		double totSoldDb = 0.0D, totSoldCd = 0.0D, credEnt = 0.0D, debEntre = 0.0D;
-		double totCrdE = 0.0D, totDebE = 0.0D;
+		double totCrdE = 0.0D, totDebE = 0.0D,result=0;
 
 		boolean used=false;
 
@@ -1015,9 +1049,19 @@ public class Balance implements Serializable {
 
 			for (Compte cpte : this.listeCpte) {
 
+				if(cpte.getCompteCod().contentEquals(resultAccount))
+				{
+					result=calculResultat();
+					if(result>0)
+						deb=result;
+					if(result<0)
+						crd=Math.abs(result);
+				}
+				else 
+				{
 				deb = getDebit(cpte.getCompteCod());
 				crd = getCredit(cpte.getCompteCod());
-
+				}
 				debEntre = getDebitEntree(cpte.getCompteCod());
 				credEnt = getCreditEntree(cpte.getCompteCod());
 
@@ -1314,5 +1358,46 @@ public class Balance implements Serializable {
 			}
 		}
 		return used;
+	}
+	public double calculResultat() {
+		
+		List<Object[]> listeSolde = new EcritureModel().getListEcriture(this.factory, this.selecetdExercice.getId(), "", "6",
+				"8");
+	
+		double solde = 0.0D, totPrd = 0.0D, totChg = 0.0D;
+		double deb=0,crd=0;
+		if (listeSolde.size() > 0) {
+
+			
+			for (Object[] objects : listeSolde) {
+
+				if (objects[0].toString().startsWith("6")) {
+					deb=Double.valueOf(objects[1].toString()).doubleValue();
+					crd=Double.valueOf(objects[2].toString()).doubleValue();
+					
+					totChg =deb-crd;
+				}
+				if (objects[0].toString().startsWith("7")) {
+					
+					deb=Double.valueOf(objects[1].toString()).doubleValue();
+					crd=Double.valueOf(objects[2].toString()).doubleValue();
+					
+					totPrd = crd-deb;
+				}
+				crd=0;deb=0;
+				solde += totPrd - totChg;
+
+				
+
+				
+
+				totChg = 0.0D;
+				totPrd = 0.0D;
+			}
+
+			
+			
+		}
+		return solde;
 	}
 }

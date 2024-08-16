@@ -208,6 +208,7 @@ public class ClotureOuvertureVew implements Serializable {
 				"8");
 		this.listEcriture = new ArrayList<>();
 		double solde = 0.0D, totPrd = 0.0D, totChg = 0.0D;
+		double deb=0,crd=0;
 		if (listeSolde.size() > 0) {
 
 			this.pagination = true;
@@ -216,11 +217,19 @@ public class ClotureOuvertureVew implements Serializable {
 			for (Object[] objects : listeSolde) {
 
 				if (objects[0].toString().startsWith("6")) {
-					totChg = Double.valueOf(objects[1].toString()).doubleValue();
+					deb=Double.valueOf(objects[1].toString()).doubleValue();
+					crd=Double.valueOf(objects[2].toString()).doubleValue();
+					
+					totChg =deb-crd;
 				}
 				if (objects[0].toString().startsWith("7")) {
-					totPrd = Double.valueOf(objects[2].toString()).doubleValue();
+					
+					deb=Double.valueOf(objects[1].toString()).doubleValue();
+					crd=Double.valueOf(objects[2].toString()).doubleValue();
+					
+					totPrd = crd-deb;
 				}
+				crd=0;deb=0;
 				solde += totPrd - totChg;
 
 				if (totPrd > 0.0D) {

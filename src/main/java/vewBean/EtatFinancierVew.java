@@ -19,10 +19,6 @@
  import utils.HelperC;
  
  
- 
- 
- 
- 
  @ManagedBean
  @ViewScoped
  public class EtatFinancierVew

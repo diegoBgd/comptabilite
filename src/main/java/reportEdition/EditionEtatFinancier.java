@@ -20,6 +20,7 @@ import entite.Compte;
 import entite.CompteEFi;
 import entite.EtatFinancier;
 import entite.Exercice;
+import entite.ParametreCompta;
 import entite.RubriqueEFi;
 import entite.User;
 import java.io.ByteArrayOutputStream;
@@ -27,6 +28,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -42,6 +44,7 @@ import model.CompteModel;
 import model.EcritureModel;
 import model.EtatFinancierModel;
 import model.ExerciceModel;
+import model.ParametreComptaModel;
 import model.RubriqueEFiModel;
 import model.UserModel;
 
@@ -70,7 +73,7 @@ public class EditionEtatFinancier implements Serializable {
 	private String code;
 	private String libelle;
 	List<Object[]> listSolde;
-
+	ParametreCompta parametre;
 	SessionFactory factory = DBConfiguration.getSessionFactory();
 
 	RubriqueEFiModel model;
@@ -84,7 +87,7 @@ public class EditionEtatFinancier implements Serializable {
 	Exercice exercicePcd;
 	EcritureModel emodel;
 	String codeEx = "", codeExPrcd = "";
-
+	String resultAccount="";
 	public RubriqueEFi getSelectedRubrique() {
 		return this.selectedRubrique;
 	}
@@ -170,6 +173,14 @@ public class EditionEtatFinancier implements Serializable {
 				} catch (IOException e) {
 
 					e.printStackTrace();
+				}
+			}
+			else {
+				parametre=new ParametreComptaModel().getParameter(factory);
+				if(parametre!=null)
+				{
+					if(parametre.getCompteRs()!=null && !parametre.getCompteRs().equals(""))
+					resultAccount=parametre.getCompteRs();
 				}
 			}
 		}
@@ -1105,6 +1116,7 @@ public class EditionEtatFinancier implements Serializable {
 		String cpteDb=ce.getCompteDeb();
 		String cpteFn=ce.getCompteFin();
 		
+		
 		  if(cpteFn.equals(null) || cpteFn.equals("")) {
 			  cpteFn=cpteDb+"9999"; 
 			  }
@@ -1112,8 +1124,15 @@ public class EditionEtatFinancier implements Serializable {
 		List<Compte> listCpt = new CompteModel().getListeCompte(factory,cpteDb, cpteFn);
 		
 		if (listCpt.size() > 0)
-			for (Compte compte : listCpt) {
-				valeur+=getValue(compte.getCompteCod(), ce.getTypeSolde());
+			for (Compte compte : listCpt) 
+			{
+				
+					if(resultAccount.equals(compte.getCompteCod()))
+					{
+						valeur=calculResultat();
+					}
+					else
+						valeur+=getValue(compte.getCompteCod(), ce.getTypeSolde());								
 			}
 		
 	
@@ -1216,6 +1235,47 @@ public class EditionEtatFinancier implements Serializable {
 		}
 
 		return value;
+	}
+	public double calculResultat() {
+		
+		List<Object[]> listeSolde = new EcritureModel().getListEcriture(this.factory, this.selecetdExercice.getId(), "", "6",
+				"8");
+	
+		double solde = 0.0D, totPrd = 0.0D, totChg = 0.0D;
+		double deb=0,crd=0;
+		if (listeSolde.size() > 0) {
+
+			
+			for (Object[] objects : listeSolde) {
+
+				if (objects[0].toString().startsWith("6")) {
+					deb=Double.valueOf(objects[1].toString()).doubleValue();
+					crd=Double.valueOf(objects[2].toString()).doubleValue();
+					
+					totChg =deb-crd;
+				}
+				if (objects[0].toString().startsWith("7")) {
+					
+					deb=Double.valueOf(objects[1].toString()).doubleValue();
+					crd=Double.valueOf(objects[2].toString()).doubleValue();
+					
+					totPrd = crd-deb;
+				}
+				crd=0;deb=0;
+				solde += totPrd - totChg;
+
+				
+
+				
+
+				totChg = 0.0D;
+				totPrd = 0.0D;
+			}
+
+			
+			
+		}
+		return solde;
 	}
 
 }
