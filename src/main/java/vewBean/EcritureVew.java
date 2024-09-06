@@ -703,7 +703,7 @@ import org.apache.poi.ss.usermodel.Cell;
 		deleteMsg="";disableMsg=true;
 		if (selectedEcriture != null) {
 			listeSaisie = model.getListEcriture(factory, selecetdExercice.getId(), selectedEcriture.getJrnl(), "",
-					selectedEcriture.getPieceCpb(), null, null);
+					selectedEcriture.getPieceCpb(), selectedEcriture.getDateOperation(), selectedEcriture.getDateOperation());
 			listDelete=new ArrayList<Ecriture>();
 			if(listeSaisie.size()>0)
 			{
