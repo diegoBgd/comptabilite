@@ -25,10 +25,6 @@
  import utils.HelperC;
  
  
- 
- 
- 
- 
  @ManagedBean
  @ViewScoped
  public class ImmoVew
@@ -68,7 +64,23 @@
    public Immobilise getSelectedImmo() {
      return this.selectedImmo;
    }
-   private Compte selectedCptDot; private List<Compte> listCptImmo; private List<Compte> listCptAmrt; private List<Compte> listCptDot; private List<Amortissement> listAmrt; private Date dateAcq; private String code; private String designation; private String numeroInv; private double montantAnterieur; private double montantExercice; private double montantVnc; private double montantAcq; private double taux; private int amortizable; private int duree; private int type;
+   private Compte selectedCptDot; 
+   private List<Compte> listCptImmo; 
+   private List<Compte> listCptAmrt; 
+   private List<Compte> listCptDot; 
+   private List<Amortissement> listAmrt; 
+   private Date dateAcq; 
+   private String code; 
+   private String designation; 
+   private String numeroInv; 
+   private double montantAnterieur; 
+   private double montantExercice; 
+   private double montantVnc; 
+   private double montantAcq; 
+   private double taux; 
+   private int amortizable; 
+   private int duree; 
+   private int type;
    public void setSelectedImmo(Immobilise selectedImmo) {
      this.selectedImmo = selectedImmo;
    }
@@ -373,12 +385,7 @@
          } 
        }
      } 
-   }
- 
- 
- 
- 
- 
+   } 
    
    public void chargerCompteImmo() {
      this.listCptImmo = (new CompteModel()).getListCompte(this.factory, this.rechLblCpt, this.rechCodCpt);
@@ -469,10 +476,7 @@
        PrimeFaces.current().executeScript("PF('dlgCptDotAmrt').hide();");
      } 
    }
- 
- 
- 
-   
+  
    public void changeDate() {
      if (this.printDateAq.replace("/", "").replace("_", "").trim().equals("")) {
        this.dateAcq = null;
@@ -494,7 +498,7 @@
    
    public void chargerImmo() {
      this.listImmo = this.model.getListImmo(this.factory, this.motRechImmo);
-     this.numMsg = String.valueOf(this.listImmo.size()) + " Ã©lÃ©ments trouvÃ©s";
+     this.numMsg = String.valueOf(this.listImmo.size()) + " éléments trouvés";
    }
  
    
@@ -621,7 +625,7 @@
      }
      else {
        
-       HelperC.afficherAttention("Attention", "Il faut prÃ©ciser le code de l'immo !");
+       HelperC.afficherAttention("Attention", "Il faut préciser le code de l'immo !");
      } 
    }
    

@@ -27,12 +27,14 @@
 						 	<p:menuitem icon="fa fa-star" value="Taxe" outcome="/taxe" />
 						 	<p:menuitem icon="fa fa-star" value="Centre coût" outcome="/centreCout" rendered="false"/>							 	
 						 	<p:menuitem icon="fa fa-star" value="Client" outcome="/client" />	
+						 	<p:menuitem icon="fa fa-star" value="Fournisseur/Bénéficiaire" outcome="/fournisseur" />
 						 </p:submenu>
 						
 						<p:submenu label="Comptabilité générale" icon="fa fa-gears" >	
 							<p:submenu label="Paramétrage" icon="fa fa-gears" >
+								<p:menuitem icon="fa fa-star" value="Paramètre général" outcome="/parametreCompta" />
 								<p:menuitem icon="fa fa-star" value="Etats financiers" outcome="/etatFinancier" />	
-						 		<p:menuitem icon="fa fa-star" value="Parametre etats financiers" outcome="/parametrageEF" />
+						 		<p:menuitem icon="fa fa-star" value="Paramètre etats financiers" outcome="/parametrageEF" />
 							</p:submenu>
 							<p:menuitem icon="fa fa-star" value="Journal" outcome="/journal" />	
 						 	<p:menuitem icon="fa fa-star" value="Plan comptable" outcome="/planComptable" />						 					 	
@@ -50,7 +52,8 @@
 							<p:menuitem icon="fa fa-star" value="Amortissements" outcome="/amortissement" />
 						</p:submenu>
 						<p:submenu label="Gestion financière" icon="fa fa-gears">
-						<p:submenu label="Banque et caisse" icon="fa fa-gears">	
+						<p:submenu label="Parametrage" icon="fa fa-gears">	
+							<p:menuitem icon="fa fa-star" value="Paramètre général" outcome="/parametreFinance" />	
 							<p:menuitem icon="fa fa-star" value="Banque" outcome="/banque" />	
 						 	<p:menuitem icon="fa fa-star" value="Compte" outcome="/compteBancaire" />	
 						 	
@@ -64,20 +67,18 @@
 							
 						</p:submenu>
 						<p:submenu label="Encaissements" icon="fa fa-gears">	
-							<p:menuitem icon="fa fa-star" value="Saisie entrée de fonds" outcome="/saisirEntreeFond" />
+							<p:menuitem icon="fa fa-star" value="Entrée de fonds" outcome="/entreeFond" />
 							<p:menuitem icon="fa fa-star" value="Factures clients" outcome="/factureClient" />
 							<p:menuitem icon="fa fa-star" value="Règlement client" outcome="/reglementClient" />
 						</p:submenu>
 						<p:submenu label="Dépenses" icon="fa fa-gears">
-							<p:menuitem icon="fa fa-star" value="Fournisseur/Bénéficiaire" outcome="/fournisseur" />	
+							<p:menuitem icon="fa fa-star" value="Sortie de fonds" outcome="/sortieFond"/>							
 							<p:menuitem icon="fa fa-star" value="Factures fournisseurs" outcome="/factureFournisseur" />	
 							<p:menuitem icon="fa fa-star" value="Règlements fournisseurs" outcome="/reglementFournisseur" />
-							<p:menuitem icon="fa fa-star" value="Autres dépenses" outcome="/autreDepense"/>
-							
-							
-						</p:submenu>
-						</p:submenu>
+							</p:submenu>
 						<p:menuitem icon="fa fa-star" value="Ecritures comptables" outcome="/ecritures" />
+						</p:submenu>
+						
                     </pa:menu>
                    <pa:menu rendered="true">
                    <p:submenu label="Droits des utilisateurs" icon="fa fa-slideshare" >	
@@ -112,6 +113,10 @@
 								outcome="/ouverture" />
 							<p:menuitem icon="fa fa-star" value="Clôture" outcome="/cloture" />
 
+						</p:submenu>
+						<p:submenu label="Utilitaires" icon="fa fa-gears">
+						<p:menuitem icon="fa fa-star" value="Corriger écritures"
+								outcome="/correctionEcriture" />
 						</p:submenu>
 					</pa:menu>
                 </h:form>

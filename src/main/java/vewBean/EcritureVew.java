@@ -11,10 +11,14 @@
  import java.io.IOException;
  import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
  import java.util.List;
- import javax.annotation.PostConstruct;
- import javax.faces.bean.ManagedBean;
+import java.util.stream.Collectors;
+
+import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
  import javax.faces.bean.ViewScoped;
  import javax.faces.context.FacesContext;
  import javax.servlet.http.HttpSession;
@@ -31,7 +35,9 @@ import org.apache.poi.ss.usermodel.Cell;
  import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  import org.hibernate.SessionFactory;
  import org.primefaces.PrimeFaces;
- import persistances.DBConfiguration;
+import org.primefaces.event.SelectEvent;
+
+import persistances.DBConfiguration;
  import utils.HelperC;
  
 
@@ -580,6 +586,28 @@ import org.apache.poi.ss.usermodel.Cell;
 		soldeCpte=HelperC.decimalNumber(sdCp, 0, true);
 	}
 
+	public void searchRechJrnl() {
+		if(rechJrnal!=null && !rechJrnal.equals(""))
+		{
+			selectedJrnl = (new JournalModel()).getJouralByCode(this.factory, this.rechJrnal);
+			getJrnlValues();
+		}
+	}
+	public void takeSelecteRechJrnl() {
+		getJrnlValues();
+		rechJrnal=selectedJrnl.getCodeJrnl();
+		PrimeFaces.current().executeScript("PF('dlgJrnl').hide();");
+	}
+	public void searchCompteRecherch() {
+		selectedCpte = (new CompteModel()).getCompteByCode(this.factory, this.rechCpte);
+		getCptValues();
+		
+	}
+	public void takeSelectedRechCompte() {
+		getCptValues();
+		rechCpte=selectedCpte.getCompteCod();
+		PrimeFaces.current().executeScript("PF('dlgCpt').hide();");
+	}
 	public void chargerEcriture() {
 		this.pagination = false;
 		this.listeEcriture = this.model.getListEcriture(this.factory, this.selecetdExercice.getId(), this.rechJrnal,
@@ -590,7 +618,7 @@ import org.apache.poi.ss.usermodel.Cell;
 			this.pagination = true;
 		}
 	}
-
+	
 	public void controlDebValue() {
 		if (this.montantDeb > 0.0D)
 			this.montantCrd = 0.0D;
@@ -607,6 +635,7 @@ import org.apache.poi.ss.usermodel.Cell;
 		printDebit = "0";
 		printSoldeCrd = "0";
 		printSoldeDeb = "0";
+		if(listeEcriture!=null && listeEcriture.size()>0)
 		for (Ecriture ec : this.listeEcriture) {
 			totDeb += ec.getDebit();
 			totCrd += ec.getCredit();
@@ -738,7 +767,7 @@ import org.apache.poi.ss.usermodel.Cell;
 		
 		PrimeFaces.current().executeScript("PF('dlgEcr').hide();");
 	}
-
+	 
 	public void saveSaisie() {
 		if (listeSaisie != null && listeSaisie.size() > 0) {
 			if (solde == 0) {
@@ -752,50 +781,17 @@ import org.apache.poi.ss.usermodel.Cell;
 		}
 	}
 
-	public void save() {
-		if (this.selectedEcriture == null)
-			this.selectedEcriture = new Ecriture();
-		this.selectedEcriture.setId(this.idEcr);
-		this.selectedEcriture.setCpte(this.codeCpt);
-		this.selectedEcriture.setCredit(this.montantCrd);
-		this.selectedEcriture.setDateOperation(this.dateOp);
-		this.selectedEcriture.setDebit(this.montantDeb);
-		this.selectedEcriture.setIdExercise(this.selecetdExercice.getId());
-		this.selectedEcriture.setJrnl(this.codeJrnl);
-		this.selectedEcriture.setLibelle(this.libelleOperation);
-		this.selectedEcriture.setPieceCpb(this.piece);
-
-		if (this.selectedEcriture.getDateOperation() == null) {
-
-			HelperC.afficherAttention("Attention", "Il faut préciser la date de l'opération !");
-			return;
-		}
-		if (this.selectedJrnl == null) {
-
-			HelperC.afficherAttention("Attention", "Il faut préciser le journal !");
-			return;
-		}
-		if (this.selectedCpte == null) {
-
-			HelperC.afficherAttention("Attention", "Il faut préciser le compte comptable !");
-			return;
-		}
-		if (this.selectedEcriture.getId() == 0) {
-			this.model.saveEcriture(this.factory, this.selectedEcriture);
-		} else {
-			this.model.updateEcriture(this.factory, this.selectedEcriture);
-		}
-		initializeControl();
-	}
+	
 
 	public void delete() {
 		if (listeSaisie != null && listeSaisie.size()>0) {
 
 			this.model.deleteListEcriture(this.factory,listeSaisie);
 			initializeAll();
-			calculTotaux();
+			initializeControl();
 			calculTotauxEcriture();
-		}
+			
+			}
 	}
 
 	public void initializeControl() {
@@ -916,6 +912,7 @@ import org.apache.poi.ss.usermodel.Cell;
 		initializeControl();
 	}
 
+	
 	private void contrePartie() {
 		double montant = 0, db = 0, cd = 0;
 
@@ -971,7 +968,58 @@ import org.apache.poi.ss.usermodel.Cell;
 			initializeControl();
 		}
 	}
+	
+//** UTILITAIRE MODIFICATION ET SUPPRESSION
+	
+	public void deleteModif() {
+		if (selectedEcriture != null && selectedEcriture.getId()>0) {
 
+			this.model.deletEcriture(factory, selectedEcriture);
+			chargerEcriture();		
+			calculTotauxEcriture();
+		}
+	}	
+	public void saveModif() {
+		if (this.selectedEcriture == null)
+			this.selectedEcriture = new Ecriture();
+		this.selectedEcriture.setId(this.idEcr);
+		this.selectedEcriture.setCpte(this.codeCpt);
+		this.selectedEcriture.setCredit(this.montantCrd);
+		this.selectedEcriture.setDateOperation(this.dateOp);
+		this.selectedEcriture.setDebit(this.montantDeb);
+		this.selectedEcriture.setIdExercise(this.selecetdExercice.getId());
+		this.selectedEcriture.setJrnl(this.codeJrnl);
+		this.selectedEcriture.setLibelle(this.libelleOperation);
+		this.selectedEcriture.setPieceCpb(this.piece);
+
+		if (this.selectedEcriture.getDateOperation() == null) {
+
+			HelperC.afficherAttention("Attention", "Il faut préciser la date de l'opération !");
+			return;
+		}
+		if (this.selectedJrnl == null) {
+
+			HelperC.afficherAttention("Attention", "Il faut préciser le journal !");
+			return;
+		}
+		if (this.selectedCpte == null) {
+
+			HelperC.afficherAttention("Attention", "Il faut préciser le compte comptable !");
+			return;
+		}
+		if (this.selectedEcriture.getId() == 0) {
+			this.model.saveEcriture(this.factory, this.selectedEcriture);
+		} else {
+			this.model.updateEcriture(this.factory, this.selectedEcriture);
+		}
+		chargerEcriture();		
+		calculTotauxEcriture();
+		PrimeFaces.current().executeScript("PF('dlgEcr').hide();");
+	}
+	
+	
+	
+//**RECUPERATION DES ECRITURES A PARTIR DU FICHIER EXCEL
 	private void getEcriture() {
 		File f = new File("D:\\VIRAGO\\COMPTAVIRAGO\\SALAIRE2023.xlsx");
 

@@ -45,11 +45,18 @@
    private String rechLblCpt;
    private String rechCodCpt;
    private String compteCpbl;
-   int idClt = 0; private String codeClient; private String nomClient; private Compte selectedCpt; ClientModel model; Exercice selecetdExercice;
+
+   private String codeClient; 
+   private String nomClient; 
+   private Compte selectedCpt; 
+   ClientModel model; 
+   Exercice selecetdExercice;
+   
    HttpSession session;
    String exerCode;
    String currUserCode;
    User currentUser;
+   int idClt = 0;
    
    public Clients getSelectedClient() {
      return this.selectedClient;

@@ -259,7 +259,7 @@
        initializeControl();
      } else {
        
-       HelperC.afficherAttention("Attention", "Il faut prÃ©ciser la rÃ©fÃ©rence !");
+       HelperC.afficherAttention("Attention", "Il faut préciser la référence !");
      } 
    }
    

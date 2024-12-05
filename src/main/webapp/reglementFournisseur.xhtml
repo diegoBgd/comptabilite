@@ -45,7 +45,7 @@
 								
 								<p:outputLabel value="Montat de la facture"/>
 								<p:inputNumber id="txtTotDep" value="#{reglementVew.montantDepense}"
-										thousandSeparator="&nbsp;" inputStyle="text-align:right"
+										thousandSeparator="&nbsp;" inputStyle="text-align:right;text-align:right;color:green;font-weight:bold"
 										decimalPlaces="2"/>
 						</p:panelGrid>
 							<p:panelGrid columns="4"  id="pnl2"
@@ -158,7 +158,7 @@
 								
 								<p:outputLabel value="Montat déjà reglé"/>
 								<p:inputNumber id="txtTotReg" value="#{reglementVew.totalRegle}"
-										thousandSeparator="&nbsp;" inputStyle="text-align:right;color:blue"
+										thousandSeparator="&nbsp;" inputStyle="text-align:right;color:blue;font-weight:bold"
 										decimalPlaces="2" readonly="true"/>
 									
 							</p:panelGrid>
@@ -168,9 +168,14 @@
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
 								
-									<p:outputLabel value="Commentaire" />
+								<p:outputLabel value="Commentaire" />
 								<p:inputTextarea id="txtCmt" value="#{reglementVew.commentaire}"/>
 								
+								<p:outputLabel value="Reste"/>
+								<p:inputNumber id="txtRest" value="#{reglementVew.reste}"
+										thousandSeparator="&nbsp;" inputStyle="text-align:right;color:red;font-weight:bold"
+										decimalPlaces="2" readonly="true"/>
+										
 							</p:panelGrid>
 					</div>
 
@@ -364,7 +369,7 @@
 								scrollable="true" scrollHeight="250" emptyMessage="">
  
 								<p:ajax event="rowSelect" listener="#{reglementVew.getSelectedDepenseValue()}"
-									update=":frmRF:pnl1,:frmRF:pnl2,:frmRF:txtTotReg" />
+									update=":frmRF:pnl1,:frmRF:pnl2,:frmRF:txtTotReg,:frmRF:txtRest" />
 
 								<p:column headerText="Date" width="8%">
 									<h:outputText value="#{dep.dateToPrint}" />

@@ -25,37 +25,51 @@
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "id_reg")
    private int id;
+   
    @Column(name = "date_reglement")
    private Date dateReglement;
+   
    @Column(name = "mode_reglement")
    private int modeReglement;
+   
    @ManyToOne
-   @JoinColumn(name = "depense")
+   @JoinColumn(name = "encaismt")
    private Encaissement encaissement;
+   
    @Column(name = "montant")
    private double montantRegle;
+   
    @ManyToOne
    @JoinColumn(name = "devise")
    private Devise deviseRgl;
+   
    @Column(name = "cours")
    private Double coursRgl;
+   
    @Column(name = "exercice")
    private int idExercise;
+   
    @Column(name = "comment")
    private String comment;
+   
    @ManyToOne
    @JoinColumn(name = "taxe")
    private Taxes taxeRgl;
+   
    @Column(name = "taux")
    private double taux;
+   
    @Column(name = "num_piece")
    private String piece;
+   
    @ManyToOne
    @JoinColumn(name = "id_caisse")
    private Banque caisse;
+   
    @ManyToOne
    @JoinColumn(name = "id_compte")
    private BankAccount account;
+   
    @Transient
    private String amountToPrint;
    @Transient

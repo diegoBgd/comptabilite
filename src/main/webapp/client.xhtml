@@ -12,9 +12,9 @@
 			<title>Clients</title>
 		</h:head>
 		<body>
-			<h:form id="frm"
+			<h:form id="frmClt"
 				onkeypress="if (event.keyCode == 13) { return false; }">
-				<p:blockUI block="frm" trigger="btnSave" />
+				<p:blockUI block="frmClt" trigger="btnSave" />
 				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
 				<div class="ui-g">
 					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
@@ -27,13 +27,13 @@
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
 								<h:outputText value="Référence"/>
-								<p:inputText id="txtRef" value="#{clientVew.codeClient}">
-									<p:ajax event="blur" listener="#{clientVew.searchClient()}"
-										update=":frm"/>
+								<p:inputText id="txtRef" value="#{partenaireVew.codePartenaire}">
+									<p:ajax event="blur" listener="#{partenaireVew.searchParteners()}"
+										update=":frmClt"/>
 								</p:inputText>	
 								
 								<h:outputText value="Libellé"/>					
-								<p:inputText id="txtLbl" value="#{clientVew.nomClient}"/>
+								<p:inputText id="txtLbl" value="#{partenaireVew.nomPartenaire}"/>
 							</p:panelGrid>
 							<p:panelGrid columns="4"
 								columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-8,ui-grid-col-1"
@@ -41,13 +41,13 @@
 								style="border:0px none; background-color:transparent;">
 								
 								<p:outputLabel value="Compte" />
-								<p:inputText id="txtCpt" value="#{clientVew.compteCpbl}">
-									<p:ajax event="blur" listener="#{clientVew.searchCompte()}"
+								<p:inputText id="txtCpt" value="#{partenaireVew.compteCpbl}">
+									<p:ajax event="blur" listener="#{partenaireVew.searchCompte()}"
 										update="txtLblCpt"/>
 								</p:inputText>
-								<p:inputText id="txtLblCpt" value="#{clientVew.libelleCpt}"/>
+								<p:inputText id="txtLblCpt" value="#{partenaireVew.libelleCpt}"/>
 								<p:commandButton icon="fa fa-search" style="border-radius:10px"
-									onclick="PF('dlgCpt').show();" />
+									onclick="PF('dlgCpt').show();" action="#{partenaireVew.chargerCompte()}" update="frmCpt"/>
 								
 							</p:panelGrid>
 							
@@ -57,19 +57,19 @@
 						</div>
 
 					<div class="ui-g-12 ui-fluid card">
-						<p:dataTable var="clt" value="#{clientVew.listClt}" id="tbl" emptyMessage=""
-							selectionMode="single" selection="#{clientVew.selectedClient}"
+						<p:dataTable var="clt" value="#{partenaireVew.listPartenaire}" id="tbl" emptyMessage=""
+							selectionMode="single" selection="#{partenaireVew.selectedPertener}"
 							rowKey="#{clt.id}" reflow="true" scrollable="true" scrollHeight="200">
 
-							<p:ajax event="rowSelect" listener="#{clientVew.getSelectedClientValues()}"
-								update="frm" />
+							<p:ajax event="rowSelect" listener="#{partenaireVew.takeSelectedPartener()}"
+								update="frmClt" />
 
 							<p:column headerText="Référence" width="10%">
-								<h:outputText value="#{clt.codeClt}" />
+								<h:outputText value="#{clt.codePartener}" />
 							</p:column>
 
 							<p:column headerText="Nom client">
-								<h:outputText value="#{clt.nameClt}" />
+								<h:outputText value="#{clt.nomination}" />
 							</p:column>
 
 						</p:dataTable>
@@ -79,23 +79,23 @@
 							<div class="ui-g-12 ui-md-1" />
 							<div class="ui-g-3">
 								<p:commandButton value="Enregistrer"
-									action="#{clientVew.save()}" icon="ui-icon-disk" update="frm"
+									action="#{partenaireVew.save()}" icon="ui-icon-disk" update="frmClt"
 									style="border-radius:10px" id="btnSave" />
 							</div> 
 							<div class="ui-g-3">
 								<p:commandButton value="Supprimer"
-									action="#{clientVew.delete()}" icon="ui-icon-trash" id="btnDelete"
-									update="frm" styleClass="orange-btn" style="border-radius:10px">
+									action="#{partenaireVew.delete()}" icon="ui-icon-trash" id="btnDelete"
+									update="frmClt" styleClass="orange-btn" style="border-radius:10px">
 									<p:confirm header="Confirmation"
-										disabled="#{clientVew.disableMsg}"
+										disabled="#{partenaireVew.disableMsg}"
 										message="Voulez vous vraiment supprimer ?"
 										icon="ui-icon-alert" />
 								</p:commandButton>
 							</div>
 							<div class="ui-g-3"> 
 								<p:commandButton value="Initialiser" id="btnClean"
-									action="#{clientVew.initializeControl()}"
-									icon="ui-icon ui-icon-refresh" update="frm"
+									action="#{partenaireVew.initializeControl()}"
+									icon="ui-icon ui-icon-refresh" update="frmClt"
 									style="border-radius:10px" />
 							</div>
 						</div>
@@ -124,31 +124,25 @@
 							layout="grid" styleClass="ui-panelgrid-blank"
 							style="background-color:transparent;">
 							
-							<p:outputLabel value="Libellé" />
-							<p:inputText value="#{clientVew.rechLblCpt}"/>
-	
-							<p:commandButton value="Rechercher"
-								style="border-radius:10px"
-								action="#{clientVew.chargerCompte()}"
-								update="tblCpt"/>
+							
 
 						</p:panelGrid>
 
-						<p:dataTable value="#{clientVew.listCpte}"
+						<p:dataTable value="#{partenaireVew.listCpte}"
 							var="cpt" selectionMode="single" id="tblCpt"
-							selection="#{clientVew.selectedCpt}" rowKey="#{cpt.id}"
+							selection="#{partenaireVew.selectedCpt}" rowKey="#{cpt.id}"
 							reflow="true" scrollable="true" scrollHeight="200"
 							emptyMessage="">
 
 							<p:ajax event="rowSelect"
-								listener="#{clientVew.getSelecedCptValue()}"
-								update=":frm:txtLblCpt,:frm:txtCpt" />
+								listener="#{partenaireVew.getSelecedCptValue()}"
+								update=":frmClt:txtLblCpt,:frmClt:txtCpt" />
 
-							<p:column headerText="Compte" width="15%">
+							<p:column headerText="Compte" width="15%" filterBy="#{cpt.compteCod}">
 								<h:outputText value="#{cpt.compteCod}" />
 							</p:column>
 
-							<p:column headerText="Libelle">
+							<p:column headerText="Libelle" filterBy="#{cpt.libelle}">
 								<h:outputText value="#{cpt.libelle}" />
 							</p:column>
 

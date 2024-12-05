@@ -199,18 +199,18 @@
 							var="frn" selectionMode="single" id="tblFrn"
 							selection="#{depenseVew.selectedFourn}" rowKey="#{frn.id}"
 							reflow="true" scrollable="true" scrollHeight="200"
-							emptyMessage="">
+							emptyMessage=""> 
 
 							<p:ajax event="rowSelect"
 								listener="#{depenseVew.getSelectedFrnValue()}"
 								update=":frmFF:txtCodFrn,:frmFF:txtLblFrn"/>
 
 							<p:column headerText="Référence" width="15%">
-								<h:outputText value="#{frn.codeFrn}" />
+								<h:outputText value="#{frn.codePartener}" />
 							</p:column>
 
 							<p:column headerText="Fournisseur">
-								<h:outputText value="#{frn.nameFrn}" />
+								<h:outputText value="#{frn.nomination}" />
 							</p:column>
 
 						</p:dataTable>

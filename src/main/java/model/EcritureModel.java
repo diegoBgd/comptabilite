@@ -102,7 +102,7 @@ public class EcritureModel {
 			if (piece != null && !piece.equals(""))
 				sql = sql + " AND e.pieceCpb=:pce";
 
-			sql = sql + " ORDER BY e.dateOperation";
+			sql = sql + " ORDER BY e.id,e.dateOperation";
 
 			Query<?> query = session.createQuery(sql);
 			query.setParameter("ex", idExercice);

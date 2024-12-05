@@ -121,8 +121,8 @@
 								</p:inputText>	
 												
 								<p:inputText id="txtLblCptIm" value="#{immoVew.lblCptImmo}" readonly="true"/>
-								<p:commandButton icon="fa fa-search" style="border-radius:10px"
-									onclick="PF('dlgCptImmo').show();" />
+								<p:commandButton icon="fa fa-search" style="border-radius:10px" update="frmCptIm"
+									onclick="PF('dlgCptImmo').show();" action="#{immoVew.chargerCompteImmo()}"/>
 								
 								<h:outputText value="Compte d'amortissement"/>
 								<p:inputText id="txtCptAm" value="#{immoVew.cptAmrt}">
@@ -131,8 +131,8 @@
 								</p:inputText>	
 												
 								<p:inputText id="txtLblCptAm" value="#{immoVew.lblCptAmrt}" readonly="true"/>
-								<p:commandButton icon="fa fa-search" style="border-radius:10px"
-									onclick="PF('dlgCptAmrt').show();" />
+								<p:commandButton icon="fa fa-search" style="border-radius:10px" update="frmCptAmrt"
+									onclick="PF('dlgCptAmrt').show();" action="#{immoVew.chargerCompteAmrt()}"/>
 								
 								<h:outputText value="Compte dotation amrt."/>
 								<p:inputText id="txtCptDot" value="#{immoVew.cptDot}">
@@ -141,8 +141,8 @@
 								</p:inputText>	
 												
 								<p:inputText id="txtLblCptDot" value="#{immoVew.lblCptDotAmrt}" readonly="true"/>
-								<p:commandButton icon="fa fa-search" style="border-radius:10px"
-									onclick="PF('dlgCptDotAmrt').show();" />
+								<p:commandButton icon="fa fa-search" style="border-radius:10px" update="frmCptDot"
+									onclick="PF('dlgCptDotAmrt').show();" action="#{immoVew.chargerCompteDot()}"/>
 									
 										
 							</p:panelGrid>
@@ -223,21 +223,7 @@
 
 				<div class="ui-g">
 					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
-						<p:panelGrid columns="3"
-							columnClasses="ui-grid-col-1,ui-grid-col-6,ui-grid-col-3"
-							layout="grid" styleClass="ui-panelgrid-blank"
-							style="background-color:transparent;">
-							
-							<p:outputLabel value="Libellé" />
-							<p:inputText value="#{immoVew.rechLblCpt}"/>
-	
-							<p:commandButton value="Rechercher"
-								style="border-radius:10px"
-								action="#{immoVew.chargerCompteImmo()}"
-								update="tblCptIm"/>
-
-						</p:panelGrid>
-
+						
 						<p:dataTable value="#{immoVew.listCptImmo}"
 							var="cptIm" selectionMode="single" id="tblCptIm"
 							selection="#{immoVew.selectedCptImmo}" rowKey="#{cptIm.id}"
@@ -248,11 +234,11 @@
 								listener="#{immoVew.getSelecedCptImmoValue()}"
 								update=":frm:sIm:txtCptIm,:frm:sIm:txtLblCptIm" />
 
-							<p:column headerText="Compte" width="15%">
+							<p:column headerText="Compte" width="15%" filterBy="#{cptIm.compteCod}">
 								<h:outputText value="#{cptIm.compteCod}" />
 							</p:column>
 
-							<p:column headerText="Libelle">
+							<p:column headerText="Libelle" filterBy="#{cptIm.libelle}">
 								<h:outputText value="#{cptIm.libelle}" />
 							</p:column>
 
@@ -270,20 +256,7 @@
 
 				<div class="ui-g">
 					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
-						<p:panelGrid columns="3"
-							columnClasses="ui-grid-col-1,ui-grid-col-6,ui-grid-col-3"
-							layout="grid" styleClass="ui-panelgrid-blank"
-							style="background-color:transparent;">
-							
-							<p:outputLabel value="Libellé" />
-							<p:inputText value="#{immoVew.rechLblCpt}"/>
-	
-							<p:commandButton value="Rechercher"
-								style="border-radius:10px"
-								action="#{immoVew.chargerCompteAmrt()}"
-								update="tblCptAmrt"/>
-
-						</p:panelGrid>
+						
 
 						<p:dataTable value="#{immoVew.listCptAmrt}"
 							var="cptAm" selectionMode="single" id="tblCptAmrt"
@@ -295,11 +268,11 @@
 								listener="#{immoVew.getSelecedCptAmrtValue()}"
 								update=":frm:sIm:txtLblCptAm,:frm:sIm:txtCptAm" />
 
-							<p:column headerText="Compte" width="15%">
+							<p:column headerText="Compte" width="15%" filterBy="#{cptAm.compteCod}">
 								<h:outputText value="#{cptAm.compteCod}" />
 							</p:column>
 
-							<p:column headerText="Libelle">
+							<p:column headerText="Libelle" filterBy="#{cptAm.libelle}">
 								<h:outputText value="#{cptAm.libelle}" />
 							</p:column>
 
@@ -317,20 +290,7 @@
 
 				<div class="ui-g">
 					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
-						<p:panelGrid columns="3"
-							columnClasses="ui-grid-col-1,ui-grid-col-6,ui-grid-col-3"
-							layout="grid" styleClass="ui-panelgrid-blank"
-							style="background-color:transparent;">
-							
-							<p:outputLabel value="Libellé" />
-							<p:inputText value="#{immoVew.rechLblCpt}"/>
-	
-							<p:commandButton value="Rechercher"
-								style="border-radius:10px"
-								action="#{immoVew.chargerCompteDot()}"
-								update="tblCptDot"/>
-
-						</p:panelGrid>
+						
 
 						<p:dataTable value="#{immoVew.listCptDot}"
 							var="cptDt" selectionMode="single" id="tblCptDot"
@@ -342,11 +302,11 @@
 								listener="#{immoVew.getSelecedCptDotAmrtValue()}"
 								update=":frm:sIm:txtLblCptDot,:frm:sIm:txtCptDot" />
 
-							<p:column headerText="Compte" width="15%">
+							<p:column headerText="Compte" width="15%" filterBy="#{cptDt.compteCod}">
 								<h:outputText value="#{cptDt.compteCod}" />
 							</p:column>
 
-							<p:column headerText="Libelle">
+							<p:column headerText="Libelle" filterBy="#{cptDt.libelle}">
 								<h:outputText value="#{cptDt.libelle}" />
 							</p:column>
 

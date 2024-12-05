@@ -60,7 +60,7 @@
   
    private List<SelectItem> listCharge; 
    private int idTypeChrg; 
-   private int typeOperation; 
+   private TypeEcriture typeOperation; 
    private List<Journal> listJrnl; 
    private boolean pagination; 
    TypeCharge selectedTypeChrg; 
@@ -200,15 +200,14 @@
      this.printSolde = printSolde;
    }
    
-   public int getTypeOperation() {
-     return this.typeOperation;
-   }
-   
-   public void setTypeOperation(int typeOperation) {
-     this.typeOperation = typeOperation;
-   }
-   
-   public boolean isPagination() {
+  
+   public TypeEcriture getTypeOperation() {
+	return typeOperation;
+}
+public void setTypeOperation(TypeEcriture typeOperation) {
+	this.typeOperation = typeOperation;
+}
+public boolean isPagination() {
      return this.pagination;
    }
    
@@ -333,7 +332,7 @@
    
    public void chargerEcritures() {
      switch (this.typeOperation) {
-       case 0:
+       case entreeFond:
          chargerEntrer();
          break;
  
@@ -343,7 +342,7 @@
  
  
        
-       case 3:
+       case sortieFond:
          chargerDepense();
          break;
      } 
@@ -385,7 +384,7 @@
    
    private void chargerDepense() {
      this.listeEcriture = new ArrayList<>();
-     this.listDepense = (new DepenseModel()).getListDepense(this.factory, this.selecetdExercice.getId(), this.selectedTypeChrg, this.dateDebut, this.dateFin);
+     this.listDepense = (new DepenseModel()).getListDepense(this.factory, this.selecetdExercice.getId(), typeOperation, this.dateDebut, this.dateFin);
      Ecriture ecriture = null;
      for (Depense dep : this.listDepense) {
  
@@ -397,7 +396,7 @@
          ecriture = createEcriture(dep.getTaxe().getCodeCpbl(), this.codeJrnl, dep.getPiece(), dep.getLibelle(), dep.getMontantTTC() - dep.getMontant(), dep.getDateOperation(), 0);
          this.listeEcriture.add(ecriture);
        } 
-       ecriture = createEcriture(dep.getFourn().getCodeCpbl(), this.codeJrnl, dep.getPiece(), dep.getLibelle(), dep.getMontantTTC(), dep.getDateOperation(), 1);
+       ecriture = createEcriture(dep.getPartener().getCodeCpbl(), this.codeJrnl, dep.getPiece(), dep.getLibelle(), dep.getMontantTTC(), dep.getDateOperation(), 1);
        this.listeEcriture.add(ecriture);
      } 
      

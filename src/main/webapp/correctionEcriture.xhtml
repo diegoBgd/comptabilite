@@ -1,0 +1,328 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/masterPage.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+		<h:head>
+			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
+			<title>Corriger ecriture</title>
+		</h:head>
+		<body>
+			<h:form id="frm"
+				onkeypress="if (event.keyCode == 13) { return false; }">
+				<p:blockUI block="frm" trigger="" />
+				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
+						<div class="ui-g-12 ui-fluid card no-margin">
+
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-8,ui-grid-col-1"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								<h:outputText value="Journal" />
+								<p:inputText id="txtJrn" value="#{ecritureVew.rechJrnal}">
+									<p:ajax event="blur" listener="#{ecritureVew.searchJournal()}"
+										update="txtLblJrn" />
+								</p:inputText>
+								<p:inputText id="txtLblJrn" value="#{ecritureVew.libelleJrnl}"
+									readonly="true" />
+
+								<p:commandButton icon="fa fa-search" style="border-radius:10px"
+									onclick="PF('dlgJrnl').show();" />
+
+								<h:outputText value="Compte" />
+								<p:inputText id="txtCpt" value="#{ecritureVew.rechCpte}">
+									<p:ajax event="blur"
+										listener="#{ecritureVew.searchCompteRecherch()}"
+										update="txtLblCpt" />
+								</p:inputText>
+								<p:inputText id="txtLblCpt" value="#{ecritureVew.libelleCpt}"
+									readonly="true" />
+
+								<p:commandButton icon="fa fa-search" style="border-radius:10px"
+									update="frmCpt" onclick="PF('dlgCpt').show();"
+									action="#{ecritureVew.chargerCompte()}" />
+							</p:panelGrid>
+
+
+							<p:panelGrid columns="7"
+								columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								<p:outputLabel value="Date début" />
+								<p:inputMask id="txtDateDebut"
+									value="#{ecritureVew.rechDateDeb}" mask="99/99/9999">
+									<p:ajax event="blur"
+										listener="#{ecritureVew.changeDateDebut()}"
+										update="txtMsg,txtDateDebut" />
+								</p:inputMask>
+
+								<p:outputLabel value="Date fin" />
+								<p:inputMask id="txtDateFin" value="#{ecritureVew.rechDateFin}"
+									mask="99/99/9999">
+									<p:ajax event="blur" listener="#{ecritureVew.changeDateFin()}"
+										update="txtMsg,txtDateFin" />
+								</p:inputMask>
+
+								<p:commandButton value="Afficher" icon="fa fa-newspaper-o"
+									style="border-radius:10px"
+									action="#{ecritureVew.chargerEcriture()}" update="frm" />
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" columnClasses="ui-grid-col-6"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="background-color:transparent;">
+								<p:outputLabel value="#{ecritureVew.infoMsg}" id="txtMsg"
+									style="color:red" />
+
+							</p:panelGrid>
+						</div>
+
+						<div class="ui-g-12 ui-fluid card">
+							<p:dataTable var="ecr" value="#{ecritureVew.listeEcriture}"
+								id="tbl" rowKey="#{ecr.id}" reflow="true" emptyMessage=""
+								rows="10" paginatorAlwaysVisible="#{ecritureVew.pagination}"
+								paginator="true" paginatorPosition="bottom">
+
+
+
+								<p:column headerText="Date" width="7%">
+									<h:outputText value="#{ecr.printDate}" />
+								</p:column>
+
+								<p:column headerText="Compte" width="5%">
+									<h:outputText value="#{ecr.cpte}" />
+								</p:column>
+
+								<p:column headerText="Journal" width="5%">
+									<h:outputText value="#{ecr.jrnl}" />
+								</p:column>
+								<p:column headerText="Piece" width="15%">
+									<h:outputText value="#{ecr.pieceCpb}" />
+								</p:column>
+								<p:column headerText="Libellé" width="43%">
+									<h:outputText value="#{ecr.libelle}" />
+								</p:column>
+
+								<p:column headerText="Débit" width="10%">
+									<h:outputText value="#{ecr.printDebit}" style="float:right" />
+								</p:column>
+
+								<p:column headerText="Crédit" width="10%">
+									<h:outputText value="#{ecr.printCredit}" style="float:right" />
+								</p:column>
+
+								<p:column headerText="Action" width="10%">
+									<p:commandButton oncomplete="PF('dlgEcr').show()"
+										update="frmEcr" action="#{ecritureVew.getSelectedEcrValue()}"
+										icon="fa fa-search" title="Editer"
+										style="border-radius:10px;width:45%">
+
+										<f:setPropertyActionListener value="#{ecr}"
+											target="#{ecritureVew.selectedEcriture}" />
+									</p:commandButton>
+									<p:commandButton action="#{ecritureVew.deleteModif()}"
+										update="frm" icon="fa fa-times-circle" title="supprimer"
+										style="border-radius:10px;width:45%;background:red">
+										<f:setPropertyActionListener value="#{ecr}"
+											target="#{ecritureVew.selectedEcriture}" />
+										<p:confirm header="Confirmation"
+											message="Voulez-vous vraiement supprimer cette ligne ?"
+											icon="ui-icon-alert" />
+
+									</p:commandButton>
+								</p:column>
+
+								<p:columnGroup type="footer">
+									<p:row>
+										<p:column colspan="5" footerText="Total"
+											style="text-align:left;color:brown" />
+
+										<p:column footerText="#{ecritureVew.printCredit}"
+											style="text-align:right;color:brown" />
+
+										<p:column footerText="#{ecritureVew.printDebit}"
+											style="text-align:right;color:brown" />
+										<p:column />
+									</p:row>
+
+									<p:row>
+										<p:column colspan="5" footerText="Solde"
+											style="text-align:left;color:brown" />
+
+										<p:column footerText="#{ecritureVew.printSoldeDeb}"
+											style="text-align:right;color:brown" />
+
+										<p:column footerText="#{ecritureVew.printSoldeCrd}"
+											style="text-align:right;color:brown" />
+										<p:column />
+									</p:row>
+								</p:columnGroup>
+							</p:dataTable>
+						</div>
+
+					</div>
+				</div>
+			</h:form>
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+				widgetVar="cd">
+				<p:commandButton value="Oui" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Non" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+			<p:dialog widgetVar="dlgJrnl" header="Liste des journaux"
+				modal="true" appendTo="@(body)" width="600" responsive="true">
+				<h:form id="frmJrnl">
+
+					<div class="ui-g">
+						<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+							<p:panelGrid columns="3"
+								columnClasses="ui-grid-col-2,ui-grid-col-6,ui-grid-col-3"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="background-color:transparent;">
+
+								<p:outputLabel value="Libellé" />
+								<p:inputText value="#{ecritureVew.rechLblJrnl}" />
+								<p:commandButton value="Rechercher" style="border-radius:10px"
+									action="#{ecritureVew.chargerJournal()}" update="tblJrnl" />
+
+							</p:panelGrid>
+
+							<p:dataTable value="#{ecritureVew.listJrnl}" var="jrn"
+								selectionMode="single" id="tblJrnl"
+								selection="#{ecritureVew.selectedJrnl}" rowKey="#{jrn.id}"
+								reflow="true" scrollable="true" scrollHeight="200"
+								emptyMessage="">
+
+								<p:ajax event="rowSelect"
+									listener="#{ecritureVew.takeSelecteRechJrnl()}"
+									update=":frm:txtJrn,:frm:txtLblJrn" />
+
+								<p:column headerText="Reference" width="10%">
+									<h:outputText value="#{jrn.codeJrnl}" />
+								</p:column>
+
+								<p:column headerText="Libelle">
+									<h:outputText value="#{jrn.libelle}" />
+								</p:column>
+
+
+
+							</p:dataTable>
+
+
+						</div>
+					</div>
+				</h:form>
+			</p:dialog>
+
+			<p:dialog widgetVar="dlgCpt" header="Liste des journaux" modal="true"
+				appendTo="@(body)" width="600" responsive="true">
+				<h:form id="frmCpt">
+
+					<div class="ui-g">
+						<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+
+
+							<p:dataTable value="#{ecritureVew.listeCpte}" var="cpt"
+								selectionMode="single" id="tblCpt"
+								selection="#{ecritureVew.selectedCpte}" rowKey="#{cpt.id}"
+								reflow="true" scrollable="true" scrollHeight="200"
+								emptyMessage="">
+
+								<p:ajax event="rowSelect"
+									listener="#{ecritureVew.takeSelectedRechCompte()}"
+									update=":frm:txtCpt,:frm:txtLblCpt" />
+
+								<p:column headerText="Reference" width="10%"
+									filterBy="#{cpt.compteCod}">
+									<h:outputText value="#{cpt.compteCod}" />
+								</p:column>
+
+								<p:column headerText="Libelle" filterBy="#{cpt.libelle}">
+									<h:outputText value="#{cpt.libelle}" />
+								</p:column>
+
+
+
+							</p:dataTable>
+
+
+						</div>
+					</div>
+				</h:form>
+			</p:dialog>
+
+			<p:dialog widgetVar="dlgEcr" header="Détails écriture" modal="true"
+				appendTo="@(body)" width="650" responsive="true">
+				<h:form id="frmEcr">
+
+					<div class="ui-g">
+						<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+						
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-2,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+
+								<p:outputLabel value="N° pièce" />
+								<p:inputText value="#{ecritureVew.piece}" />
+
+								<p:outputLabel value="Date opération" />
+								<p:inputMask id="txtDateDebut" value="#{ecritureVew.printDate}"
+									mask="99/99/9999">
+									<p:ajax event="blur" listener="#{ecritureVew.changeDate()}"
+										update="" />
+								</p:inputMask>
+								
+								<p:outputLabel value="Journal" />
+								<p:inputText value="#{ecritureVew.codeJrnl}">
+								<p:ajax event="blur" listener="#{ecritureVew.searchJournal()}"/>
+								</p:inputText>
+
+								<p:outputLabel value="Compte" />
+								<p:inputText value="#{ecritureVew.codeCpt}">
+								<p:ajax event="blur" listener="#{ecritureVew.searchCpt()}"/>
+								</p:inputText>
+
+								<p:outputLabel value="Débit" />
+								<p:inputNumber id="txtDb" value="#{ecritureVew.montantDeb}"
+									thousandSeparator="&nbsp;" inputStyle="text-align:right"
+									decimalPlaces="0">
+									<p:ajax event="blur"
+										listener="#{ecritureVew.controlDebValue()}" update="txtCrd" />
+								</p:inputNumber>
+
+								<p:outputLabel value="Crédit" />
+								<p:inputNumber id="txtCrd" value="#{ecritureVew.montantCrd}"
+									thousandSeparator="&nbsp;" inputStyle="text-align:right"
+									decimalPlaces="0">
+									<p:ajax event="blur"
+										listener="#{ecritureVew.controlCrdValue()}" update="txtDb" />
+								</p:inputNumber>
+
+							</p:panelGrid>
+
+							<div class="ui-g-12 ui-md-2" />
+							<div class="ui-g-3">
+								<p:commandButton value="Modifier"
+									action="#{ecritureVew.saveModif()}" icon="fa fa-pencil-square-o" update="frm"
+									style="border-radius:10px" id="btnSave" />
+							</div>
+
+
+						</div>
+					</div>
+				</h:form>
+			</p:dialog>
+		</body>
+	</ui:define>
+</ui:composition>
