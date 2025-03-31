@@ -72,7 +72,7 @@ public class EditionEtatFinancier implements Serializable {
 	private List<EtatFinancier> listEFi;
 	private String code;
 	private String libelle;
-	List<Object[]> listSolde;
+	List<Object[]> listSolde,listSoldePrcd;
 	ParametreCompta parametre;
 	SessionFactory factory = DBConfiguration.getSessionFactory();
 
@@ -86,7 +86,7 @@ public class EditionEtatFinancier implements Serializable {
 	User currentUser;
 	Exercice exercicePcd;
 	EcritureModel emodel;
-	String codeEx = "", codeExPrcd = "";
+	String codeEx = "", codeExPrcd = "",codeJC="";
 	String resultAccount="";
 	public RubriqueEFi getSelectedRubrique() {
 		return this.selectedRubrique;
@@ -179,6 +179,8 @@ public class EditionEtatFinancier implements Serializable {
 				parametre=new ParametreComptaModel().getParameter(factory);
 				if(parametre!=null)
 				{
+					codeJC=parametre.getJournalOD();
+					
 					if(parametre.getCompteRs()!=null && !parametre.getCompteRs().equals(""))
 					resultAccount=parametre.getCompteRs();
 				}
@@ -422,12 +424,13 @@ public class EditionEtatFinancier implements Serializable {
 					tabInfo.addCell(cell);
 
 					p = new Paragraph();
-					p.add((Element) new Chunk(HelperC.decimalNumber(rubriqueEFi.getNetAprcd(), 0, true),
+					p.add((Element) new Chunk(HelperC.decimalNumber(rubriqueEFi.getNetAprcd()-rubriqueEFi.getAmortissemntPrcd(), 0, true),
 							FontFactory.getFont("Times", taille, 0)));
 					p.setAlignment(2);
 					cell = HelperItext.getCellule((Element) p, 1, 0, 8, 0, 0.5F, 3.0F, false);
 					tabInfo.addCell(cell);
-				}
+
+			}
 			}
 
 			p = new Paragraph();
@@ -583,8 +586,9 @@ public class EditionEtatFinancier implements Serializable {
 				cell = HelperItext.getCellule((Element) p, 1, 0, 8, 0, 0.5F, 3.0F, false);
 				tabInfo.addCell(cell);
 
+				
 				p = new Paragraph();
-				p.add((Element) new Chunk(HelperC.decimalNumber(rubriqueEFi.getNetAprcd(), 0, true),
+				p.add((Element) new Chunk(HelperC.decimalNumber(rubriqueEFi.getNetAprcd()-rubriqueEFi.getAmortissemntPrcd(), 0, true),
 						FontFactory.getFont("Times", taille, 0)));
 				p.setAlignment(2);
 				cell = HelperItext.getCellule((Element) p, 1, 0, 8, 0, 0.5F, 3.0F, false);
@@ -659,13 +663,13 @@ public class EditionEtatFinancier implements Serializable {
 			cellStyle.setFillPattern((short) 1);
 			row.getCell(0).setCellStyle(cellStyle);
 
-			row.createCell(1).setCellValue("EXERCICE N");
+			row.createCell(1).setCellValue("EXERCICE "+codeEx);
 			cellStyle.setFillForegroundColor((short) 13);
 			sheet.addMergedRegion(new CellRangeAddress(0, 0, 1, 3));
 			cellStyle.setFillPattern((short) 1);		
 			row.getCell(1).setCellStyle(cellStyle);
 
-			row.createCell(4).setCellValue("EXERCICE N-1");
+			row.createCell(4).setCellValue("EXERCICE "+codeExPrcd);
 			cellStyle.setFillForegroundColor((short) 13);
 			cellStyle.setFillPattern((short) 1);
 			row.getCell(4).setCellStyle(cellStyle);
@@ -718,12 +722,12 @@ public class EditionEtatFinancier implements Serializable {
 					cellE.setCellType(0);
 					row.getCell(2).setCellStyle(style);
 
-					row.createCell(3).setCellValue(rubriqueEFi.getNetAn());
+					row.createCell(3).setCellValue(rubriqueEFi.getBrut() - rubriqueEFi.getAmortissemnt());
 					cellE = row.getCell(3);
 					cellE.setCellType(0);
 					row.getCell(3).setCellStyle(style);
 
-					row.createCell(4).setCellValue(rubriqueEFi.getNetAprcd());
+					row.createCell(4).setCellValue(rubriqueEFi.getNetAprcd()-rubriqueEFi.getAmortissemntPrcd());
 					cellE = row.getCell(4);
 					cellE.setCellType(0);
 					row.getCell(4).setCellStyle(style);
@@ -894,8 +898,9 @@ public class EditionEtatFinancier implements Serializable {
 	public void chargerRubrique() {
 		this.listRubrique = this.model.getListRubrique(this.factory, this.selectedEfi);
 
-		Long valeurCode = (long) 0, valeur = (long) 0, valeurAN = (long) 0, valeurAmrt = (long) 0, valeurCodePcd = (long) 0, amort = (long) 0;
-		String formuleResult = "", formule = "", formulePcd = "", formuleAmrt = "";
+		Long valeurCode = (long) 0, valeur = (long) 0, valeurAN = (long) 0, valeurAmrt = (long) 0,
+				valeurCodePcd = (long) 0, amort = (long) 0, amortAP = (long) 0, valeurAmortAP = (long) 0;
+		String formuleResult = "", formule = "", formulePcd = "", formuleAmrt = "",formuleAmrtPrcd="";
 
 		String compte = "";
 
@@ -905,13 +910,15 @@ public class EditionEtatFinancier implements Serializable {
 
 				formulgle = rubriqueEFi.getFormule();
 
-				//formule = chercherFormule(rubriqueEFi);
-				formule=formulgle;
+				// formule = chercherFormule(rubriqueEFi);
+				formule = formulgle;
 				formuleResult = HelperC.getElementFormule(this.formulgle);
 				String[] codes = formuleResult.split(" ");
+				
 				formulePcd = this.formulgle;
 				formuleAmrt = this.formulgle;
-
+				formuleAmrtPrcd=this.formulgle;
+				
 				for (int i = 0; i < codes.length; i++) {
 
 					RubriqueEFi detail = GetEtatParametreDetail(codes[i].toString());
@@ -919,6 +926,7 @@ public class EditionEtatFinancier implements Serializable {
 					if (detail != null) {
 
 						if (detail.getListCompte().size() > 0) {
+							
 							for (CompteEFi ce : detail.getListCompte()) {
 
 								compte = String.valueOf(compte) + ce.getCompteDeb();
@@ -932,68 +940,119 @@ public class EditionEtatFinancier implements Serializable {
 
 								case 0:
 									if (!ce.isCalucule()) {
-										if(ce.getSigne().equals("P"))
-										valeurCode += getValeurCompte(ce, this.selecetdExercice);
-										if(ce.getSigne().equals("M"))
-											valeurCode -= getValeurCompte(ce, this.selecetdExercice);
+										if (ce.getSigne().equals("P")) {
+											
+											valeurCode += getValeurCompte(ce,false ,this.selecetdExercice);
+
+											if (this.exercicePcd != null) {
+												valeurCodePcd += getValeurCompte(ce,true, this.exercicePcd);
+											}
+
+										}
+										if (ce.getSigne().equals("M")) {
+											valeurCode -= getValeurCompte(ce,false, this.selecetdExercice);
+
+											if (this.exercicePcd != null) {
+												valeurCodePcd -= getValeurCompte(ce,true, this.exercicePcd);
+											}
+
+										}
 										break;
 									}
-									if(ce.getSigne().equals("P"))
-									valeurCode +=ce.getValeur(); 
-									if(ce.getSigne().equals("M"))
-										valeurCode -=ce.getValeur(); 
+									if (ce.getSigne().equals("P")) {
+										valeurCode += ce.getValeur();
+										
+										if (this.exercicePcd != null) {
+											 valeurCodePcd += ce.getValeurPrecedent();
+										}
+									}
+									if (ce.getSigne().equals("M"))
+									{
+										valeurCode -= ce.getValeur();
+										
+										if (this.exercicePcd != null) {
+											 valeurCodePcd -= ce.getValeurPrecedent();
+										}
+									}
 									break;
 								case 1:
 									if (!ce.isCalucule()) {
-										if(ce.getSigne().equals("P"))
-										valeurAmrt += getValeurCompte(ce, this.selecetdExercice);
-										if(ce.getSigne().equals("M"))
-											valeurAmrt -= getValeurCompte(ce, this.selecetdExercice);
+										if (ce.getSigne().equals("P"))
+										{
+											valeurAmrt += getValeurCompte(ce,false, this.selecetdExercice);
+											
+											if (this.exercicePcd != null)
+												valeurAmortAP+=getValeurCompte(ce,true, this.selecetdExercice);
+										}
+										if (ce.getSigne().equals("M"))
+										{
+											valeurAmrt -= getValeurCompte(ce,false, this.selecetdExercice);
+											if (this.exercicePcd != null)
+												valeurAmortAP-=getValeurCompte(ce,true, this.selecetdExercice);
+										}
 										break;
 									}
-									if(ce.getSigne().equals("P"))
-									valeurAmrt += ce.getValeur();
-									if(ce.getSigne().equals("M"))
+									if (ce.getSigne().equals("P"))
+									{
+										valeurAmrt += ce.getValeur();
+										if (this.exercicePcd != null)
+											valeurAmortAP+=getValeurCompte(ce,true,this.exercicePcd);
+									}
+									if (ce.getSigne().equals("M"))
+									{
 										valeurAmrt -= ce.getValeur();
+										if (this.exercicePcd != null)
+											valeurAmortAP-=getValeurCompte(ce,true,this.exercicePcd);
+									}
 									break;
 								}
-								if (this.exercicePcd != null) {
-									valeurCodePcd = getValeurCompte(ce, this.exercicePcd);
-								}
+
 							}
 						}
-						
-						  else {
-						
-						  if(!detail.isCalculated()) detail.setCalculated(true);
-						  valeurCode+=(long)detail.getBrut();
-						  valeurAmrt+=(long)detail.getAmortissemnt();
-						  }
-						 
-						
+
+						else {
+
+							if (!detail.isCalculated())
+								detail.setCalculated(true);
+							valeurCode += (long) detail.getBrut();
+							valeurAmrt += (long) detail.getAmortissemnt();
+							valeurCodePcd += (long) detail.getNetAprcd();
+							valeurAmortAP+=(long) detail.getAmortissemntPrcd();
+						}
+
 						formule = formule.replace(codes[i], String.valueOf(valeurCode));
-						formulePcd = formulePcd.replace(codes[i], String.valueOf(valeurCodePcd));
 						formuleAmrt = formuleAmrt.replace(codes[i], String.valueOf(valeurAmrt));
-						
-					
-						
+						if(exercicePcd!=null) {
+						formulePcd = formulePcd.replace(codes[i], String.valueOf(valeurCodePcd));
+						formuleAmrtPrcd = formuleAmrtPrcd.replace(codes[i], String.valueOf(valeurAmortAP));
+						}
 						valeurCode = (long) 0.0D;
 						valeurCodePcd = (long) 0.0D;
 						valeurAmrt = (long) 0.0D;
+						valeurAmortAP=(long)0.0D;
 					}
 				}
 
 				valeur = (long) HelperC.getFormulaValue(formule);
-				valeurAN = (long) HelperC.getFormulaValue(formulePcd);
 				amort = (long) HelperC.getFormulaValue(formuleAmrt);
-
+				
+				if(exercicePcd!=null)
+				{
+				valeurAmortAP=(long) HelperC.getFormulaValue(formuleAmrtPrcd);
+				valeurAN = (long) HelperC.getFormulaValue(formulePcd);
+				}
 				if (valeur == Double.NaN)
 					valeur = (long) 0.0D;
 				if (valeurAN == Double.NaN)
 					valeurAN = (long) 0.0D;
+				if(valeurAmortAP==Double.NaN)
+					valeurAmortAP=(long) 0.0D;
+				if(valeurAmrt==Double.NaN)
+					valeurAmrt=(long) 0.0D;
+				
 				formule = "";
 				formulePcd = "";
-				
+
 				if (rubriqueEFi.getSigne().equals("P"))
 					rubriqueEFi.setBrut(valeur);
 				if (rubriqueEFi.getSigne().equals("M"))
@@ -1001,14 +1060,32 @@ public class EditionEtatFinancier implements Serializable {
 				if (rubriqueEFi.getSigne().equals("N"))
 					rubriqueEFi.setBrut(valeur);
 				
+				if (exercicePcd != null) {
+					if (rubriqueEFi.getSigne().equals("P"))
+						rubriqueEFi.setNetAprcd(valeurAN);
+					if (rubriqueEFi.getSigne().equals("M"))
+						rubriqueEFi.setNetAprcd(-valeurAN);
+					if (rubriqueEFi.getSigne().equals("N"))
+						rubriqueEFi.setNetAprcd(valeurAN);
+					
+					rubriqueEFi.setAmortissemntPrcd(valeurAmortAP);
+					
+				}
 				rubriqueEFi.setAmortissemnt(amort);
-				rubriqueEFi.setNetAprcd(valeurCodePcd);
-				
 				rubriqueEFi.setCalculated(true);
+				
+				valeurCode = (long) 0.0D;
+				valeurCodePcd = (long) 0.0D;
+				valeurAmrt = (long) 0.0D;
+				amortAP=(long)0.0D;
+				valeurAmortAP=(long)0.0D;
+				
+				
 				continue;
 			}
 			if (!rubriqueEFi.isCalculated() && rubriqueEFi.getListCompte().size() > 0) {
 
+				
 				for (CompteEFi ce : rubriqueEFi.getListCompte()) {
 
 					compte = String.valueOf(compte) + ce.getCompteDeb();
@@ -1022,78 +1099,111 @@ public class EditionEtatFinancier implements Serializable {
 
 					case 0:
 						if (!ce.isCalucule()) {
-							if(ce.getSigne().equals("P"))
-							valeurCode += getValeurCompte(ce, this.selecetdExercice);
-							if(ce.getSigne().equals("M"))
-								valeurCode -= getValeurCompte(ce, this.selecetdExercice);
+							if (ce.getSigne().equals("P"))
+							{
+								valeurCode += getValeurCompte(ce,false, this.selecetdExercice);
+								if (this.exercicePcd != null) {
+									valeurCodePcd += getValeurCompte(ce,true, this.exercicePcd);
+								}
+							}
+							if (ce.getSigne().equals("M")) {
+								valeurCode -= getValeurCompte(ce,false,this.selecetdExercice);
+								if (this.exercicePcd != null) {
+									valeurCodePcd -= getValeurCompte(ce,true,this.exercicePcd);
+								}
+							}
 							break;
 						}
-						if(ce.getSigne().equals("P"))
-						valeurCode += ce.getValeur();
-						if(ce.getSigne().equals("M"))
+						if (ce.getSigne().equals("P"))
+						{
+							valeurCode += ce.getValeur();
+							
+							if (this.exercicePcd != null) {
+								 valeurCodePcd += ce.getValeurPrecedent();
+							}
+						}
+						if (ce.getSigne().equals("M"))
+						{
 							valeurCode -= ce.getValeur();
+							if (this.exercicePcd != null) {
+								 valeurCodePcd -= ce.getValeurPrecedent();
+							}
+						}
 						break;
 					case 1:
 						if (!ce.isCalucule()) {
-							if(ce.getSigne().equals("P"))
-							valeurAmrt += getValeurCompte(ce, this.selecetdExercice);
-							if(ce.getSigne().equals("M"))
-								valeurAmrt -= getValeurCompte(ce, this.selecetdExercice);
+							if (ce.getSigne().equals("P"))
+							{
+								valeurAmrt += getValeurCompte(ce, false,this.selecetdExercice);
+								
+								if (this.exercicePcd != null) {
+									valeurAmortAP += getValeurCompte(ce,true,this.exercicePcd);
+								}
+							}
+							if (ce.getSigne().equals("M"))
+							{
+								valeurAmrt -= getValeurCompte(ce,false, this.selecetdExercice);
+								
+								if (this.exercicePcd != null) {
+									valeurAmortAP -= getValeurCompte(ce,true,this.exercicePcd);
+								}
+							}
 							break;
 						}
-						if(ce.getSigne().equals("P"))
-						valeurAmrt += ce.getValeur();
-						if(ce.getSigne().equals("M"))
+						if (ce.getSigne().equals("P"))
+						{
+							valeurAmrt += ce.getValeur();
+							if (this.exercicePcd != null) 
+							{	
+							valeurAmortAP+= getValeurCompte(ce,true,this.exercicePcd);
+							
+							}
+						}
+						if (ce.getSigne().equals("M"))
+						{
 							valeurAmrt -= ce.getValeur();
+							if (this.exercicePcd != null) 
+								valeurAmortAP-= getValeurCompte(ce,true,this.exercicePcd);
+						}
 						break;
 					}
-					if (this.exercicePcd != null) {
-						valeurCodePcd = getValeurCompte(ce, this.exercicePcd);
-					}
-					compte="";
+
+					compte = "";
 				}
-				
+
 				if (rubriqueEFi.getSigne().equals("P"))
 					rubriqueEFi.setBrut(valeurCode);
 				if (rubriqueEFi.getSigne().equals("M"))
 					rubriqueEFi.setBrut(-valeurCode);
 				if (rubriqueEFi.getSigne().equals("N"))
 					rubriqueEFi.setBrut(valeurCode);
-			
+				
+				
 				rubriqueEFi.setAmortissemnt(valeurAmrt);
-				rubriqueEFi.setNetAprcd(valeurCodePcd);
+				
+				if(exercicePcd!=null)
+				{
+					if (rubriqueEFi.getSigne().equals("P"))					
+						rubriqueEFi.setNetAprcd(valeurCodePcd);
+					if (rubriqueEFi.getSigne().equals("M"))
+						rubriqueEFi.setNetAprcd(-valeurCodePcd);
+					if (rubriqueEFi.getSigne().equals("N"))
+						rubriqueEFi.setNetAprcd(valeurCodePcd);	
+					
+					rubriqueEFi.setAmortissemntPrcd(valeurAmortAP);
+				
+				}
 
+	
 				rubriqueEFi.setCalculated(true);
+								
 				valeurCode = (long) 0.0D;
 				valeurCodePcd = (long) 0.0D;
 				valeurAmrt = (long) 0.0D;
+				valeurAmortAP=(long) 0.0D;
 			}
-			
+
 		}
-	}
-
-	private String chercherFormule(RubriqueEFi rub) {
-		String formulRes = "";
-
-		if (rub != null && !rub.getFormule().equals("")) {
-
-			formulRes = HelperC.getElementFormule(rub.getFormule());
-
-			String[] codes = formulRes.split(" ");
-
-			for (int i = 0; i < codes.length; i++) {
-
-				RubriqueEFi detail = GetEtatParametreDetail(codes[i].toString());
-
-				if (detail != null && !detail.getFormule().equals("")) {
-
-					formulgle = formulgle.replace(codes[i], detail.getFormule());
-					chercherFormule(detail);
-				}
-			}
-		}
-
-		return this.formulgle;
 	}
 
 	private RubriqueEFi GetEtatParametreDetail(String code) {
@@ -1110,67 +1220,55 @@ public class EditionEtatFinancier implements Serializable {
 		return rub;
 	}
 
-	private Long getValeurCompte(CompteEFi ce, Exercice ex) {
+	private Long getValeurCompte(CompteEFi ce, boolean prcd, Exercice ex) {
 		double valeur = 0.0D;
-		
-		String cpteDb=ce.getCompteDeb();
-		String cpteFn=ce.getCompteFin();
-		
-		
-		  if(cpteFn.equals(null) || cpteFn.equals("")) {
-			  cpteFn=cpteDb+"9999"; 
-			  }
-		 
-		List<Compte> listCpt = new CompteModel().getListeCompte(factory,cpteDb, cpteFn);
-		
+
+		String cpteDb = ce.getCompteDeb();
+		String cpteFn = ce.getCompteFin();
+
+		if (cpteFn.equals(null) || cpteFn.equals("")) {
+			cpteFn = cpteDb + "9999";
+		}
+
+		List<Compte> listCpt = new CompteModel().getListeCompte(factory, cpteDb, cpteFn);
+
 		if (listCpt.size() > 0)
-			for (Compte compte : listCpt) 
-			{
-				
-					if(resultAccount.equals(compte.getCompteCod()))
-					{
-						valeur=calculResultat();
-					}
+			for (Compte compte : listCpt) {
+
+				if (resultAccount.equals(compte.getCompteCod())) {
+					valeur = calculResultat(ex);
+				} else {
+					if (prcd)
+						valeur += getValue(compte.getCompteCod(), ce.getTypeSolde(), listSoldePrcd);
 					else
-						valeur+=getValue(compte.getCompteCod(), ce.getTypeSolde());								
+						valeur += getValue(compte.getCompteCod(), ce.getTypeSolde(), listSolde);
+				}
 			}
-		
-	
-		/*
-		 * switch (ce.getTypeSolde()) { case 1:
-		 * 
-		 * valeur = (new EcritureModel()).getSoldeCompteBetween(this.factory,
-		 * ex.getId(), ce.getCompteDeb(), ce.getCompteFin(), null, null); break;
-		 * 
-		 * case 2: valeur = (new
-		 * EcritureModel()).getDebitCreditCompteBetween(this.factory, ex.getId(),
-		 * ce.getCompteDeb(), ce.getCompteFin(), null, null, "D"); break;
-		 * 
-		 * case 3: valeur = (new
-		 * EcritureModel()).getDebitCreditCompteBetween(this.factory, ex.getId(),
-		 * ce.getCompteDeb(), ce.getCompteFin(), null, null, "C"); break; }
-		 */
 
 		ce.setCalucule(true);
-		ce.setValeur(Long.valueOf(HelperC.decimalNumber(valeur, 0, false)));
-	
 
-		return 	Long.valueOf(HelperC.decimalNumber(valeur, 0, false));
+		if (prcd)
+			ce.setValeurPrecedent(Long.valueOf(HelperC.decimalNumber(valeur, 0, false)));
+		else
+			ce.setValeur(Long.valueOf(HelperC.decimalNumber(valeur, 0, false)));
+
+		return Long.valueOf(HelperC.decimalNumber(valeur, 0, false));
 	}
 
 	private void chargerSolde() {
 
 		listSolde = new EcritureModel().getSoldeCompte(factory, selecetdExercice.getId(), "", "", null, null);
-		
+		if (exercicePcd != null)
+			listSoldePrcd = new EcritureModel().getSoldeCompte(factory, exercicePcd.getId(), "", "", null, null);
 	}
 
-	private double getValue(String compte, int typeValue) {
+	private double getValue(String compte, int typeValue,List<Object[]> list) {
 		double value = 0.0D, db = 0, cd = 0;
 		String cpt = "";
 		switch (typeValue) {
 		case 1:
 	
-			for (Object[] ob : this.listSolde) {
+			for (Object[] ob : list) {
 				cpt = ob[0].toString();
 				
 				if (cpt.startsWith(compte)) {
@@ -1193,7 +1291,7 @@ public class EditionEtatFinancier implements Serializable {
 			break;
 
 		case 2:
-			for (Object[] ob : this.listSolde) {
+			for (Object[] ob : list) {
 				cpt = ob[0].toString();
 				
 				
@@ -1213,7 +1311,7 @@ public class EditionEtatFinancier implements Serializable {
 			break;
 
 		case 3:
-			for (Object[] ob : this.listSolde) {
+			for (Object[] ob : list) {
 				cpt = ob[0].toString();			
 				
 				if (cpt.startsWith(compte)) {
@@ -1236,9 +1334,9 @@ public class EditionEtatFinancier implements Serializable {
 
 		return value;
 	}
-	public double calculResultat() {
+	public double calculResultat(Exercice exercice) {
 		
-		List<Object[]> listeSolde = new EcritureModel().getListEcriture(this.factory, this.selecetdExercice.getId(), "", "6",
+		List<Object[]> listeSolde = new EcritureModel().getListEcriture(this.factory,exercice.getId(), codeJC, "6",
 				"8");
 	
 		double solde = 0.0D, totPrd = 0.0D, totChg = 0.0D;
@@ -1263,10 +1361,6 @@ public class EditionEtatFinancier implements Serializable {
 				}
 				crd=0;deb=0;
 				solde += totPrd - totChg;
-
-				
-
-				
 
 				totChg = 0.0D;
 				totPrd = 0.0D;

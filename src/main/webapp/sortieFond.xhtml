@@ -57,7 +57,7 @@
 								<p:inputText id="txtLblChg" value="#{depenseVew.libelleChrg}"/>
 								<p:commandButton icon="fa fa-search" style="border-radius:10px" update="frmCh"
 									onclick="PF('dlgChg').show();" action="#{depenseVew.chargerCharge()}"/>
-								<h:outputText value="Fournisseur/Bénéficiaire"/>
+								<h:outputText value="Bénéficiaire"/>
 								<p:inputText id="txtCodFrn" value="#{depenseVew.codeFrn}">
 									<p:ajax event="blur" listener="#{depenseVew.searchFournisseur()}"
 										update="txtLblFrn"/>

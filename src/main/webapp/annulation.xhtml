@@ -12,35 +12,28 @@
 			<title>Cloture</title>
 		</h:head>
 		<body>
-			<h:form id="frmClo"
+			<h:form id="frmAnnuler"
 				onkeypress="if (event.keyCode == 13) { return false; }">
-				<p:blockUI block="frmClo" trigger="btnCalculate" />
+				<p:blockUI block="frmAnnuler" trigger="btnCancel" />
 				<p:growl id="frmCloClo" life="21600" showDetail="true"
 					sticky="false" />
 				<div class="ui-g">
 					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
 
+					
+
 						<div class="ui-g-12 ui-fluid card">
-
-
-							<p:panelGrid columns="2"
+						<p:panelGrid columns="2"
 								columnClasses="ui-grid-col-2,ui-grid-col-6,ui-grid-col-3"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
 
-								<h:outputText value="Résultat  de l'exercice" />
-								<p:inputNumber id="txtRes"
-									value="#{clotureOuvertureVew.resultatExercice}" readonly="true"
-									inputStyle="text-align:right;font-weight:bold;color:blue"
-									thousandSeparator="&nbsp;" decimalPlaces="0" />
-
-
-
-								<h:outputText value="Type de résultat" />
-								<p:inputText id="txtTypeRes"
-									value="#{clotureOuvertureVew.typeResultat}" readonly="true" />
-
-
+								<h:outputText value="Opération à annuler " />
+								<p:selectOneMenu value="#{clotureOuvertureVew.typeAnnulation}" autoWidth="false">
+									<f:selectItem itemLabel="Ouverture" itemValue="0" />
+									<f:selectItem itemLabel="Clôture" itemValue="1" />									
+									
+								</p:selectOneMenu>
 							</p:panelGrid>
 							<p:panelGrid columns="1" columnClasses="ui-grid-col-6"
 								layout="grid" styleClass="ui-panelgrid-blank"
@@ -48,38 +41,16 @@
 								<p:outputLabel value="#{clotureOuvertureVew.message}"
 									id="txtMsg" style="color:red" />
 							</p:panelGrid>
-							<p:panelGrid rendered="#{clotureOuvertureVew.disableBtn}">
-								<p:messages id="messages" showDetail="true" closable="false">
-									<p:autoUpdate />
-								</p:messages>
-							</p:panelGrid>
-						</div>
-
-
-						<div class="ui-g-12 ui-fluid card">
-
-							<div class="ui-g-2">
-								<p:commandButton value="Calculer le Résultat"
-									disabled="#{clotureOuvertureVew.disableBtn}"
-									action="#{clotureOuvertureVew.calculResultat()}"
-									icon="fa fa-calculator" update="frmJrnl,txtRes,txtTypeRes"
-									style="border-radius:10px" id="btnCalculate" />
-							</div>
-							<div class="ui-g-2">
-								<p:commandButton value="Ecritures comptables" id="btnEcrt"
-									action="A" disabled="#{clotureOuvertureVew.disableBtn}"
-									icon="fa fa-edit" update="frmClo" style="border-radius:10px"
-									onclick="PF('dlgJrnl').show();" />
-							</div>
-							<div class="ui-g-2">
-								<p:commandButton value="Clôturer"
-									disabled="#{clotureOuvertureVew.disableBtn}"
-									action="#{clotureOuvertureVew.saveCloture()}" icon="fa fa-lock"
-									id="btnCancel" update="frmClo" styleClass="orange-btn"
+							<div class="ui-g-2"/>
+							<div class="ui-g-4">
+								<p:commandButton value="Annuler"
+								
+									action="#{clotureOuvertureVew.annuler()}" icon="fa fa-lock"
+									id="btnCancel" update="frmAnnuler" styleClass="red-btn"
 									style="border-radius:10px">
 									<p:confirm header="Confirmation"
-										disabled="#{clotureOuvertureVew.disableMsg}"
-										message="Cette opération est irréversible. Voulez-vous vraiment clôturer l'exercice ?"
+										
+										message="Voulez-vous vraiment faire l'annulation  ?"
 										icon="ui-icon-alert" />
 								</p:commandButton>
 
@@ -142,31 +113,6 @@
 										style="float:right" />
 								</p:column>
 
-								<p:columnGroup type="footer">
-									<p:row>
-										<p:column colspan="4" footerText="Total"
-											style="text-align:left;color:brown" />
-
-										<p:column footerText="#{clotureOuvertureVew.printTotDeb}"
-											style="text-align:right;color:brown" />
-
-										<p:column footerText="#{clotureOuvertureVew.printTotCrd}"
-											style="text-align:right;color:brown" />
-
-									</p:row>
-
-									<p:row>
-										<p:column colspan="4" footerText="Solde"
-											style="text-align:left;color:brown" />
-
-										<p:column footerText="#{clotureOuvertureVew.printSoldeDb}"
-											style="text-align:right;color:brown" />
-
-										<p:column footerText="#{clotureOuvertureVew.printSoldeCd}"
-											style="text-align:right;color:brown" />
-
-									</p:row>
-								</p:columnGroup>
 							</p:dataTable>
 
 

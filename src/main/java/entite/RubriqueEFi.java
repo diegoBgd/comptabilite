@@ -50,12 +50,23 @@
    @JoinColumn(name = "rubrique_id")
    private List<CompteEFi> listCompte = new ArrayList<>();
    @Transient
-   private double brut; @Transient
+   private double brut; 
+   @Transient
    private double amortissemnt;
-   public int getId() { return this.id; } @Transient
-   private double netAn; @Transient
-   private double netAprcd; @Transient
-   private boolean calculated; public void setId(int id) {
+   @Transient
+   private double amortissemntPrcd;
+   @Transient
+   private double netAn; 
+   @Transient
+   private double netAprcd;
+   @Transient
+   private boolean calculated; 
+   
+   public int getId()
+   { 
+	   return this.id; 
+   }
+   public void setId(int id) {
      this.id = id;
    }
    
@@ -147,7 +158,7 @@
    }
    
    public double getNetAn() {
-	   netAn= getBrut()-getAmortissemnt();
+	  
      return this.netAn;
    }
    
@@ -170,6 +181,13 @@
    public void setCalculated(boolean calculated) {
      this.calculated = calculated;
    }
+public double getAmortissemntPrcd() {
+	return amortissemntPrcd;
+}
+public void setAmortissemntPrcd(double amortissemntPrcd) {
+	this.amortissemntPrcd = amortissemntPrcd;
+}
+   
  }
 
 

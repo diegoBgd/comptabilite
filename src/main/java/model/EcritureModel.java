@@ -1,7 +1,7 @@
 package model;
 
+import entite.CloseOpen;
 import entite.Ecriture;
-import entite.SoldeCompte;
 import utils.HelperC;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class EcritureModel {
 		ss.close();
 	}
 
-	public String saveEcriture(SessionFactory factory, List<Ecriture> list,List<Ecriture>dList) {
+	public String saveEcriture(SessionFactory factory, List<Ecriture> list, List<Ecriture> dList) {
 		String msg = "";
 		Session ss = null;
 
@@ -35,12 +35,32 @@ public class EcritureModel {
 			else
 				ss.update(ecriture);
 		}
-		if(dList!=null &&dList.size()>0)
-		{
+		if (dList != null && dList.size() > 0) {
 			for (Ecriture ecriture : dList) {
 				ss.delete(ecriture);
 			}
 		}
+
+		ss.getTransaction().commit();
+		ss.close();
+		msg = "Opération réussie";
+		return msg;
+	}
+
+	public String saveOpenClosePeriod(SessionFactory factory, List<Ecriture> list, CloseOpen close) {
+		String msg = "";
+		Session ss = null;
+
+		ss = factory.openSession();
+		ss.beginTransaction();
+		for (Ecriture ecriture : list) {
+			if (ecriture.getId() == 0)
+				ss.save(ecriture);
+			else
+				ss.update(ecriture);
+		}
+		ss.save(close);
+
 		ss.getTransaction().commit();
 		ss.close();
 		msg = "Opération réussie";
@@ -56,7 +76,7 @@ public class EcritureModel {
 		ss.close();
 	}
 
-	public void deleteListEcriture(SessionFactory factory,  List<Ecriture> list) {
+	public void deleteListEcriture(SessionFactory factory, List<Ecriture> list) {
 		Session ss = null;
 
 		ss = factory.openSession();
@@ -68,6 +88,7 @@ public class EcritureModel {
 		ss.getTransaction().commit();
 		ss.close();
 	}
+
 	public void deletEcriture(SessionFactory factory, Ecriture ecr) {
 		Session ss = null;
 
@@ -77,6 +98,45 @@ public class EcritureModel {
 		ss.getTransaction().commit();
 		ss.close();
 	}
+
+	public boolean isJournalUsed(SessionFactory factory, String codeJrnl) {
+		Session ss = null;
+		boolean bl = false;
+
+		ss = factory.openSession();
+		ss.beginTransaction();
+		String sql = "Select e from Ecriture e where e.jrnl=:jnl";
+
+		Query<?> query = ss.createQuery(sql);
+		query.setParameter("jnl", codeJrnl);
+
+		if (query.getResultList().size() > 0)
+			bl = true;
+
+		ss.getTransaction().commit();
+		ss.close();
+		return bl;
+	}
+
+	public boolean isCompteUsed(SessionFactory factory, String compte) {
+		Session ss = null;
+		boolean bl = false;
+
+		ss = factory.openSession();
+		ss.beginTransaction();
+		String sql = "Select e from Ecriture e where e.cpte=:cpt";
+
+		Query<?> query = ss.createQuery(sql);
+		query.setParameter("cpt", compte);
+
+		if (query.getResultList().size() > 0)
+			bl = true;
+
+		ss.getTransaction().commit();
+		ss.close();
+		return bl;
+	}
+
 	@SuppressWarnings("unchecked")
 	public List<Ecriture> getListEcriture(SessionFactory factory, int idExercice, String codeJrnl, String compte,
 			String piece, Date deb, Date fin) {
@@ -102,7 +162,8 @@ public class EcritureModel {
 			if (piece != null && !piece.equals(""))
 				sql = sql + " AND e.pieceCpb=:pce";
 
-			sql = sql + " ORDER BY e.id,e.dateOperation";
+			// sql = sql + " ORDER BY e.id,e.dateOperation";
+			sql = sql + " ORDER BY e.dateOperation";
 
 			Query<?> query = session.createQuery(sql);
 			query.setParameter("ex", idExercice);
@@ -132,8 +193,8 @@ public class EcritureModel {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Ecriture> getListEcritureCompteLIKE(SessionFactory factory, int idExercice, String codeJrnl, String compte,
-			String piece, Date deb, Date fin) {
+	public List<Ecriture> getListEcritureCompteLIKE(SessionFactory factory, int idExercice, String codeJrnl,
+			String compte, String piece, Date deb, Date fin) {
 
 		List<Ecriture> list = null;
 		try {
@@ -169,7 +230,7 @@ public class EcritureModel {
 			}
 
 			if (compte != null && !compte.equals(""))
-				query.setParameter("cpt", compte+"%");
+				query.setParameter("cpt", compte + "%");
 			if (codeJrnl != null && !codeJrnl.equals(""))
 				query.setParameter("jnl", codeJrnl);
 			if (piece != null && !piece.equals(""))
@@ -236,10 +297,8 @@ public class EcritureModel {
 		return list;
 	}
 
-	
-
 	public double getSoldeCompte(SessionFactory factory, int idExercice, String compte) {
-		
+
 		double solde = 0.0D;
 		try {
 
@@ -247,35 +306,33 @@ public class EcritureModel {
 			session.beginTransaction();
 
 			String sql = "Select SUM(e.debit-e.credit) from Ecriture e where e.idExercise=:ex";
-			
+
 			if (compte != null && !compte.equals("")) {
 				sql += " AND e.cpte =:cptDb ";
 			}
-			
+
 			Query<?> query = session.createQuery(sql);
 
 			query.setParameter("ex", idExercice);
 
 			if (compte != null && !compte.equals("")) {
 				query.setParameter("cptDb", compte);
-				
+
 			}
 
-			
 			solde = (double) query.uniqueResult();
 
 			session.getTransaction().commit();
 			session.close();
 
-			
 		} catch (Exception e) {
 			System.out.println(e.toString());
 		}
 		return solde;
 	}
-	
+
 	public double getSoldeJournal(SessionFactory factory, int idExercice, String jrnle) {
-		
+
 		double solde = 0.0D;
 		try {
 
@@ -283,37 +340,34 @@ public class EcritureModel {
 			session.beginTransaction();
 
 			String sql = "Select SUM(e.debit-e.credit) from Ecriture e where e.idExercise=:ex";
-			
+
 			if (jrnle != null && !jrnle.equals("")) {
 				sql += " AND e.jrnl=:jnl ";
 			}
-			
+
 			Query<?> query = session.createQuery(sql);
 
 			query.setParameter("ex", idExercice);
 
 			if (jrnle != null && !jrnle.equals("")) {
 				query.setParameter("jnl", jrnle);
-				
+
 			}
 
-			
 			solde = (double) query.uniqueResult();
 
 			session.getTransaction().commit();
 			session.close();
 
-			
 		} catch (Exception e) {
 			System.out.println(e.toString());
 		}
 		return solde;
 	}
-	
-	
-	public List<Object[]> getListSoldeJournal(SessionFactory factory, int idExercice, String jrnal,Date deb, Date fin) {
-		
-		
+
+	public List<Object[]> getListSoldeJournal(SessionFactory factory, int idExercice, String jrnal, Date deb,
+			Date fin) {
+
 		Object[] soldeCpt = new Object[3];
 		List<Object[]> listSold = new ArrayList<Object[]>();
 		List<?> list = null;
@@ -323,7 +377,7 @@ public class EcritureModel {
 			session.beginTransaction();
 
 			String sql = "Select e.jrnl,SUM(e.debit),SUM(e.credit) from Ecriture e where e.idExercise=:ex";
-			
+
 			if (jrnal != null && !jrnal.equals("")) {
 				sql += " AND e.jrnl =:jrn";
 			}
@@ -333,10 +387,9 @@ public class EcritureModel {
 			if (fin != null) {
 				sql += " AND e.dateOperation<=:dteFn";
 			}
-			
+
 			sql = String.valueOf(sql) + "  group by e.jrnl";
 
-			
 			Query<?> query = session.createQuery(sql);
 
 			query.setParameter("ex", idExercice);
@@ -347,14 +400,14 @@ public class EcritureModel {
 			if (fin != null) {
 				query.setParameter("dteFn", fin);
 			}
-			
+
 			if (jrnal != null && !jrnal.equals("")) {
 				query.setParameter("jrn", jrnal);
-				
+
 			}
-			
+
 			list = query.getResultList();
-			
+
 			session.getTransaction().commit();
 			session.close();
 
@@ -362,7 +415,7 @@ public class EcritureModel {
 				soldeCpt = (Object[]) ob;
 				listSold.add(soldeCpt);
 			}
-			
+
 		} catch (Exception e) {
 			System.out.println(e.toString());
 		}
@@ -430,7 +483,6 @@ public class EcritureModel {
 		return solde;
 	}
 
-	
 	public List<Object[]> getListEcriture(SessionFactory factory, int idExercice, String journal, String compteDeb,
 			String compteFin) {
 		List<?> list = null;
@@ -443,7 +495,7 @@ public class EcritureModel {
 			String sql = "Select e.cpte,SUM(e.debit),SUM(e.credit) from Ecriture e where e.idExercise=:ex";
 
 			if (journal != null && !journal.equals("")) {
-				sql = String.valueOf(sql) + " AND e.jrnl=:jnl";
+				sql = String.valueOf(sql) + " AND e.jrnl<>:jnl";
 			}
 			if (compteDeb != null && !compteDeb.equals("") && compteFin != null && !compteFin.equals("")) {
 				sql = String.valueOf(sql) + " AND e.cpte BETWEEN :cptDb AND :cptFn";
@@ -477,7 +529,7 @@ public class EcritureModel {
 		}
 		return listSold;
 	}
-	 
+
 	public List<Object[]> getBalanceEntree(SessionFactory factory, int idExercice, String journal, String compteDeb,
 			String compteFin) {
 		List<?> list = null;
@@ -569,8 +621,9 @@ public class EcritureModel {
 		}
 		return listSold;
 	}
-	
-	public List<Object[]> getSoldeCompte(SessionFactory factory, int idExercice, String journal, String cpte, Date deb,Date fin) {
+
+	public List<Object[]> getSoldeCompte(SessionFactory factory, int idExercice, String journal, String cpte, Date deb,
+			Date fin) {
 		List<?> list = null;
 		Object[] soldeCpt = new Object[3];
 		List<Object[]> listSold = new ArrayList<Object[]>();
@@ -598,28 +651,25 @@ public class EcritureModel {
 			query.setParameter("ex", Integer.valueOf(idExercice));
 
 			if (cpte != null && !cpte.equals("")) {
-				query.setParameter("cpt", cpte+"%");
-			
+				query.setParameter("cpt", cpte + "%");
+
 			}
 
 			if (journal != null && !journal.equals("")) {
 				query.setParameter("jnl", journal);
 			}
-			
-			
+
 			if (deb != null) {
 				query.setParameter("dteDb", deb);
 			}
 			if (fin != null) {
 				query.setParameter("dteFn", fin);
 			}
-			
+
 			list = query.getResultList();
 
 			session.getTransaction().commit();
 			session.close();
-			
-
 
 			for (Object ob : list) {
 				soldeCpt = (Object[]) ob;

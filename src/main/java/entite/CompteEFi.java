@@ -38,6 +38,8 @@
    @Transient
    private Long valeur;
    @Transient
+   private Long valeurPrecedent;
+   @Transient
    private boolean calucule;
    
    public int getId() {
@@ -130,6 +132,15 @@
    public void setCalucule(boolean calucule) {
      this.calucule = calucule;
    }
+
+public Long getValeurPrecedent() {
+	return valeurPrecedent;
+}
+
+public void setValeurPrecedent(Long valeurPrecedent) {
+	this.valeurPrecedent = valeurPrecedent;
+}
+   
  }
 
 

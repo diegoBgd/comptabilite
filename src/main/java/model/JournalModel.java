@@ -55,6 +55,7 @@
        ss.close();
      } catch (Exception e) {
        e.getMessage();
+       ss.close();
      } 
      return jrnl;
    }
@@ -79,8 +80,9 @@
    
    public List<Journal> getListJouranl(SessionFactory factory) {
      List<Journal> list = null;
+     Session session = factory.openSession();
      try {
-       Session session = factory.openSession();
+       
        session.beginTransaction();
        Criteria cr = session.createCriteria(Journal.class);
        
@@ -92,6 +94,7 @@
      }
      catch (Exception e) {
        System.out.println(e.toString());
+       session.close();
      } 
      return list;
    }
@@ -99,8 +102,9 @@
    
    public List<Journal> getListJouranl(SessionFactory factory, String libelle) {
      List<Journal> list = null;
+     Session session = factory.openSession();
      try {
-       Session session = factory.openSession();
+      
        session.beginTransaction();
        Criteria cr = session.createCriteria(Journal.class);
        if (libelle != null && !libelle.equals(""))
@@ -113,6 +117,7 @@
      }
      catch (Exception e) {
        System.out.println(e.toString());
+       session.close();
      } 
      return list;
    }

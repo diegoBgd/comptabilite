@@ -27,7 +27,7 @@
 						 	<p:menuitem icon="fa fa-star" value="Taxe" outcome="/taxe" />
 						 	<p:menuitem icon="fa fa-star" value="Centre coût" outcome="/centreCout" rendered="false"/>							 	
 						 	<p:menuitem icon="fa fa-star" value="Client" outcome="/client" />	
-						 	<p:menuitem icon="fa fa-star" value="Fournisseur/Bénéficiaire" outcome="/fournisseur" />
+						 	<p:menuitem icon="fa fa-star" value="Fournisseur / Bénéficiaire" outcome="/fournisseur" />
 						 </p:submenu>
 						
 						<p:submenu label="Comptabilité générale" icon="fa fa-gears" >	
@@ -50,6 +50,17 @@
 							<p:menuitem icon="fa fa-star" value="Parametrage" outcome="/parametreImmo" />
 							<p:menuitem icon="fa fa-star" value="Saisie des immo" outcome="/saisieImmo"/>
 							<p:menuitem icon="fa fa-star" value="Amortissements" outcome="/amortissement" />
+							<p:menuitem icon="fa fa-star" value="Liste des immo" outcome="/listImmo" />
+						</p:submenu>
+						<p:submenu label="Cloture et ouverture" icon="fa fa-gears">
+							<p:menuitem icon="fa fa-star" value="Ouverture"
+								outcome="/ouverture" />
+							<p:menuitem icon="fa fa-star" value="Clôture" outcome="/cloture" />
+
+						</p:submenu>
+						<p:submenu label="Utilitaires" icon="fa fa-gears">
+						<p:menuitem icon="fa fa-star" value="Corriger écritures"
+								outcome="/correctionEcriture" />
 						</p:submenu>
 						<p:submenu label="Gestion financière" icon="fa fa-gears">
 						<p:submenu label="Parametrage" icon="fa fa-gears">	
@@ -70,6 +81,8 @@
 							<p:menuitem icon="fa fa-star" value="Entrée de fonds" outcome="/entreeFond" />
 							<p:menuitem icon="fa fa-star" value="Factures clients" outcome="/factureClient" />
 							<p:menuitem icon="fa fa-star" value="Règlement client" outcome="/reglementClient" />
+							<p:menuitem icon="fa fa-star" value="Liste encaissements" outcome="/listEncaissement" />
+							
 						</p:submenu>
 						<p:submenu label="Dépenses" icon="fa fa-gears">
 							<p:menuitem icon="fa fa-star" value="Sortie de fonds" outcome="/sortieFond"/>							
@@ -93,30 +106,34 @@
 						 	<p:menuitem icon="fa fa-star" value="Journal" outcome="/journal" />	
 						 	<p:menuitem icon="fa fa-star" value="Plan comptable" outcome="/planComptable" />
 							</p:submenu>
-							<p:submenu label="Opérations comptables" icon="fa fa-gears" >						 					 	
-						 	<p:menuitem icon="fa fa-star" value="Ecritures comptables" outcome="/ecritureComptable" />	
-						 	<p:menuitem icon="fa fa-star" value="Edtion du journal" outcome="/editionJournal" />	
-						 	<p:menuitem icon="fa fa-star" value="Historique du compte" outcome="/editionCompte" />	
-						 	<p:menuitem icon="fa fa-star" value="Soldes d'un compte" outcome="/editionSoldeCompte" />
-						 	<p:menuitem icon="fa fa-star" value="Soldes des journaux" outcome="/editionSoldeJournal" />
-						 	<p:menuitem icon="fa fa-star" value="Grand livre" outcome="/editionGrandLivre" />
-						 	<p:menuitem icon="fa fa-star" value="Balance" outcome="/editionBalance" />
-						 	<p:menuitem icon="fa fa-star" value="Etats financiers" outcome="/editionEtatFinancier" />
+							<p:submenu label="Opérations comptables" icon="fa fa-calculator" >						 					 	
+						 	<p:menuitem icon="fa fa-pencil-square-o" value="Ecritures comptables" outcome="/ecritureComptable" />	
+						 	<p:menuitem icon="fa fa-newspaper-o" value="Edition du journal" outcome="/editionJournal" />	
+						 	<p:menuitem icon="fa fa-calendar" value="Historique du compte" outcome="/editionCompte" />	
+						 	<p:menuitem icon="fa fa-tachometer" value="Soldes d'un compte" outcome="/editionSoldeCompte" />
+						 	<p:menuitem icon="fa fa-newspaper-o" value="Soldes des journaux" outcome="/editionSoldeJournal" />
+						 	<p:menuitem icon="fa fa-book" value="Grand livre" outcome="/editionGrandLivre" />
+						 	<p:menuitem icon="fa fa-balance-scale" value="Balance" outcome="/editionBalance" />
+						 	<p:menuitem icon="fa fa-sticky-note-o" value="Etats financiers" outcome="/editionEtatFinancier" />
 						</p:submenu>
-						<p:submenu label="Gestion des immobilisés" icon="fa fa-gears" rendered="false">
+						<p:submenu label="Gestion des immobilisés" icon="fa fa-bus" rendered="false">
 							<p:menuitem icon="fa fa-star" value="Parametrage" outcome="/parametreImmo" />
 							<p:menuitem icon="fa fa-star" value="Saisie des immo" outcome="/saisieImmo"/>
 							<p:menuitem icon="fa fa-star" value="Amortissements" outcome="/amortissement" />
+							<p:menuitem icon="fa fa-star" value="Liste des immo" outcome="/listImmo" />
 						</p:submenu>
 						<p:submenu label="Cloture et ouverture" icon="fa fa-gears">
-							<p:menuitem icon="fa fa-star" value="Ouverture"
+							<p:menuitem icon="fa fa-unlock" value="Ouverture"
 								outcome="/ouverture" />
-							<p:menuitem icon="fa fa-star" value="Clôture" outcome="/cloture" />
+							<p:menuitem icon="fa fa-lock" value="Clôture" outcome="/cloture" />
 
 						</p:submenu>
 						<p:submenu label="Utilitaires" icon="fa fa-gears">
-						<p:menuitem icon="fa fa-star" value="Corriger écritures"
+							<p:menuitem icon="fa fa-wrench" value="Corriger écritures"
 								outcome="/correctionEcriture" />
+
+							<p:menuitem icon="fa fa-history" value="Annuler:clôture-ouverture"
+								outcome="/annulation" />
 						</p:submenu>
 					</pa:menu>
                 </h:form>

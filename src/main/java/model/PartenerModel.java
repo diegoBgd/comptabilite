@@ -44,7 +44,8 @@ public class PartenerModel {
 		Partenaire p = null;
 		Session ss = null;
 		try {
-			ss = factory.openSession();
+			
+		ss = factory.openSession();
 			ss.beginTransaction();
 			p = ss.get(Partenaire.class, Integer.valueOf(id));
 			ss.getTransaction().commit();

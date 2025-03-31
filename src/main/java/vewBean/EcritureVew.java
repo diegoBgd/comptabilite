@@ -1,6 +1,8 @@
  package vewBean;
  
- import entite.Compte;
+ import entite.CloseOpen;
+
+import entite.Compte;
  import entite.Ecriture;
  import entite.Exercice;
  import entite.Journal;
@@ -22,7 +24,9 @@ import javax.faces.bean.ManagedBean;
  import javax.faces.bean.ViewScoped;
  import javax.faces.context.FacesContext;
  import javax.servlet.http.HttpSession;
- import model.CompteModel;
+
+import model.ClotureExerciceModel;
+import model.CompteModel;
  import model.EcritureModel;
  import model.ExerciceModel;
  import model.JournalModel;
@@ -65,6 +69,7 @@ import persistances.DBConfiguration;
    private boolean keepPice;
    private boolean keepJrnal;
    private boolean autoAdd;
+   private boolean checkClose;
    private String printDate;
    private String rechPiece;
    SessionFactory factory = DBConfiguration.getSessionFactory(); 
@@ -101,9 +106,17 @@ import persistances.DBConfiguration;
    List<Ecriture>listDelete;
    int idEcr = 0;
    int index=0;
+   CloseOpen cloture;
  
  
- 
+	public boolean isCheckClose() {
+	return checkClose;
+}
+
+public void setCheckClose(boolean checkClose) {
+	this.checkClose = checkClose;
+}
+
 	public String getSoldeJrnl() {
 		return soldeJrnl;
 	}
@@ -498,9 +511,16 @@ import persistances.DBConfiguration;
 		if (this.session != null) {
 			this.exerCode = (String) this.session.getAttribute("exercice");
 			this.currUserCode = (String) this.session.getAttribute("operateur");
-
+			infoMsg="";checkClose=false;
 			if (this.exerCode != null) {
 				this.selecetdExercice = (new ExerciceModel()).getExercByCode(this.factory, this.exerCode);
+				cloture=new ClotureExerciceModel().getExerciceCloture(selecetdExercice.getId(), factory,"C");
+				if(cloture!=null) {
+					disableSave=true;
+					disableMsg=true;
+					checkClose=true;
+					 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Attention", "Aucune saisie comptable n'est possible car l'exercice "+selecetdExercice.getExCode()+" est déjà clôturé"));
+				}
 			}
 			if (this.currUserCode != null) {
 				this.currentUser = (new UserModel()).getUserByCode(this.factory, this.currUserCode);
@@ -516,6 +536,7 @@ import persistances.DBConfiguration;
 				}
 			} else {
 				listeSaisie = new ArrayList<Ecriture>();
+				
 			}
 		}
 	}
@@ -627,6 +648,19 @@ import persistances.DBConfiguration;
 	public void controlCrdValue() {
 		if (this.montantCrd > 0.0D)
 			this.montantDeb = 0.0D;
+	}
+	
+	private boolean isCompteUsed(String cpt){
+		boolean used=false;
+		if(listeSaisie!=null && listeSaisie.size()>0)
+			for (Ecriture ec : this.listeSaisie) {
+				if(ec.getCpte().equals(cpt))
+				{
+					used=true;
+					break;
+				}
+			}
+		return used;
 	}
 
 	private void calculTotauxEcriture() {
@@ -884,6 +918,11 @@ import persistances.DBConfiguration;
 			HelperC.afficherAttention("Attention", "Ce compte ne peut pas être utilisé pour une opération comptable !");
 			return;
 		}
+		if(isCompteUsed(codeCpt))
+		{
+			HelperC.afficherAttention("Attention", "Ce compte ne peut pas être utilisé encore dans ces écritures !");
+			return;
+		}
 		if (selectedEcriture == null)
 			selectedEcriture = new Ecriture();
 
@@ -912,6 +951,7 @@ import persistances.DBConfiguration;
 		initializeControl();
 	}
 
+	
 	
 	private void contrePartie() {
 		double montant = 0, db = 0, cd = 0;
@@ -1020,8 +1060,8 @@ import persistances.DBConfiguration;
 	
 	
 //**RECUPERATION DES ECRITURES A PARTIR DU FICHIER EXCEL
-	private void getEcriture() {
-		File f = new File("D:\\VIRAGO\\COMPTAVIRAGO\\SALAIRE2023.xlsx");
+	public void recupererEcriture() {
+		File f = new File("C:\\infinity\\bancobu-decembre.xlsx");
 
 		try {
 			FileInputStream file = new FileInputStream(f);
@@ -1031,45 +1071,106 @@ import persistances.DBConfiguration;
 
 			Journal jnl = null;
 			String cpte = null, libelle = null, jrnl = null, piece = null;
-			int tmp = 0, i = 0;
+			int cpt = 0, i = 0;
 			Date dateOp = null;
 			double deb = 0.0D, crd = 0.0D;
-
-			for (int k = 3; k <= rownumber; k++) {
+List<Ecriture>listeEcr=new ArrayList<Ecriture>();
+			for (int k = 0; k <= rownumber; k++) {
 
 				Row row = s.getRow(k);
 
 				if (row != null) {
-					Cell cell1 = row.getCell(0);
-					Cell cell2 = row.getCell(1);
-					Cell cell3 = row.getCell(2);
-					Cell cell4 = row.getCell(3);
-					Cell cell5 = row.getCell(4);
-					Cell cell6 = row.getCell(5);
-					Cell cell7 = row.getCell(6);
-
-					dateOp = cell1.getDateCellValue();
-					jrnl = cell2.getStringCellValue();
-					piece = cell3.getStringCellValue();
-					cpte = cell4.getStringCellValue();
+					Cell cell0 = row.getCell(0);
+					Cell cell1 = row.getCell(1);
+					Cell cell2 = row.getCell(2);
+					Cell cell3= row.getCell(3);
+					Cell cell4 = row.getCell(4);
+					Cell cell5 = row.getCell(5);
+					
+					dateOp = cell0.getDateCellValue();
+					jrnl = "01";
+					piece = cell4.getStringCellValue();
+					cpte=cell3.getStringCellValue();
+				
 					libelle = cell5.getStringCellValue();
 
-					deb = cell6.getNumericCellValue();
-					crd = cell7.getNumericCellValue();
+					deb = (int)cell1.getNumericCellValue();
+					crd = (int)cell2.getNumericCellValue();
+					
+					if(cpte.equals("56000"))
+					{
+						this.selectedEcriture = new Ecriture();
 
+						this.selectedEcriture.setCpte("56000");
+						this.selectedEcriture.setCredit(0);
+						this.selectedEcriture.setDateOperation(dateOp);
+						this.selectedEcriture.setDebit(deb);
+						this.selectedEcriture.setIdExercise(this.selecetdExercice.getId());
+						this.selectedEcriture.setJrnl(jrnl);
+						this.selectedEcriture.setLibelle(libelle);
+						this.selectedEcriture.setPieceCpb(piece);
+						
+						listeEcr.add(selectedEcriture);
+					}
+					if(!cpte.equals("56000") && deb>0)
+					{
 					this.selectedEcriture = new Ecriture();
 
-					this.selectedEcriture.setCpte(cpte);
-					this.selectedEcriture.setCredit(crd);
+					this.selectedEcriture.setCpte("56000");
+					this.selectedEcriture.setCredit(0);
 					this.selectedEcriture.setDateOperation(dateOp);
 					this.selectedEcriture.setDebit(deb);
 					this.selectedEcriture.setIdExercise(this.selecetdExercice.getId());
 					this.selectedEcriture.setJrnl(jrnl);
 					this.selectedEcriture.setLibelle(libelle);
 					this.selectedEcriture.setPieceCpb(piece);
+					
+					listeEcr.add(selectedEcriture);
+					
+					this.selectedEcriture = new Ecriture();
 
-					this.model.saveEcriture(this.factory, this.selectedEcriture);
+					this.selectedEcriture.setCpte(cpte);
+					this.selectedEcriture.setCredit(deb);
+					this.selectedEcriture.setDateOperation(dateOp);
+					this.selectedEcriture.setDebit(0);
+					this.selectedEcriture.setIdExercise(this.selecetdExercice.getId());
+					this.selectedEcriture.setJrnl(jrnl);
+					this.selectedEcriture.setLibelle(libelle);
+					this.selectedEcriture.setPieceCpb(piece);
+					
+					listeEcr.add(selectedEcriture);
+					}
+					
+					if(!cpte.equals("56000") && crd>0)
+					{
+						this.selectedEcriture = new Ecriture();
 
+						this.selectedEcriture.setCpte(cpte);
+						this.selectedEcriture.setCredit(0);
+						this.selectedEcriture.setDateOperation(dateOp);
+						this.selectedEcriture.setDebit(crd);
+						this.selectedEcriture.setIdExercise(this.selecetdExercice.getId());
+						this.selectedEcriture.setJrnl(jrnl);
+						this.selectedEcriture.setLibelle(libelle);
+						this.selectedEcriture.setPieceCpb(piece);
+						
+						listeEcr.add(selectedEcriture);
+						
+						this.selectedEcriture = new Ecriture();
+
+						this.selectedEcriture.setCpte("56000");
+						this.selectedEcriture.setCredit(crd);
+						this.selectedEcriture.setDateOperation(dateOp);
+						this.selectedEcriture.setDebit(0);
+						this.selectedEcriture.setIdExercise(this.selecetdExercice.getId());
+						this.selectedEcriture.setJrnl(jrnl);
+						this.selectedEcriture.setLibelle(libelle);
+						this.selectedEcriture.setPieceCpb(piece);
+						
+						listeEcr.add(selectedEcriture);	
+					}
+					this.model.saveEcriture(this.factory, listeEcr,null);
+					listeEcr.clear();
 					System.out.println(
 							dateOp + " - " + jrnl + "-" + piece + "-" + cpte + "-" + libelle + "-" + deb + "-" + crd);
 				}

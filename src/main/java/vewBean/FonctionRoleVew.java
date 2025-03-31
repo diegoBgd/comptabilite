@@ -44,7 +44,12 @@
    private String motRecherche;
    private FonctionRole selectedRole;
    private List<Fonctionalite> listFonction;
-   int idRole = 0; private List<FonctionRole> listRole; FonctionRoleModel model; Exercice selecetdExercice; HttpSession session; String exerCode;
+   int idRole = 0; 
+   private List<FonctionRole> listRole; 
+   FonctionRoleModel model; 
+   Exercice selecetdExercice; 
+   HttpSession session; 
+   String exerCode;
    String currUserCode;
    String fonctionSelected;
    User currentUser;
@@ -140,7 +145,8 @@
    
    private void chargerFonction() {
      Fonctionalite fx = null; byte b; int i; Constante.Fonction[] arrayOfFonction;
-     for (i = (arrayOfFonction = Constante.Fonction.values()).length, b = 0; b < i; ) { Constante.Fonction f = arrayOfFonction[b];
+     for (i = (arrayOfFonction = Constante.Fonction.values()).length, b = 0; b < i; ) { 
+    	 Constante.Fonction f = arrayOfFonction[b];
        
        fx = new Fonctionalite();
        fx.setLibelle(Constante.getLibelle(f));
@@ -220,7 +226,7 @@
    public void saveRole() {
      if (this.code == null || this.code.equals("")) {
        
-       HelperC.afficherAttention("Attention", "Il faut prÃ©ciser la rÃ©fÃ©rence !");
+       HelperC.afficherAttention("Attention", "Il faut préciser la référence !");
        return;
      } 
      if (this.selectedRole == null)

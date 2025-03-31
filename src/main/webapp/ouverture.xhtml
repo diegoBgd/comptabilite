@@ -39,11 +39,11 @@
 								
 								<p:spacer/>
 								<p:commandButton value="Afficher" icon="fa fa-newspaper-o"
-									style="border-radius:10px"
+									style="border-radius:10px" disabled="#{clotureOuvertureVew.disableBtn}"
 									action="#{clotureOuvertureVew.soldeCompteBilan()}" update="tbl,txtMsg" />
-								<p:commandButton value="Enregistrer" icon="fa fa-file-pdf-o"
-									style="border-radius:10px" ajax="false"
-									action="#{clotureOuvertureVew.save()}" update="txtMsg" />
+								<p:commandButton value="Enregistrer" icon="ui-icon-disk"
+									style="border-radius:10px" ajax="false" disabled="#{clotureOuvertureVew.disableBtn}"
+									action="#{clotureOuvertureVew.saveOuverture()}" update="txtMsg" />
 								
 							
 							</p:panelGrid>
@@ -54,6 +54,11 @@
 									style="color:red" />
 
 							</p:panelGrid>
+							<p:panelGrid rendered="#{clotureOuvertureVew.disableBtn}">
+									<p:messages id="messages" showDetail="true" closable="false">
+										<p:autoUpdate />
+									</p:messages>
+								</p:panelGrid>
 						</div>
 
 						<div class="ui-g-12 ui-fluid card">
@@ -80,7 +85,31 @@
 									<h:outputText value="#{ecr.printCredit}" style="float:right" />
 								</p:column>
 								
-								
+								<p:columnGroup type="footer">
+									<p:row>
+										<p:column colspan="2" footerText="Total"
+											style="text-align:left;color:brown" />
+
+										<p:column footerText="#{clotureOuvertureVew.printTotDeb}"
+											style="text-align:right;color:brown" />
+
+										<p:column footerText="#{clotureOuvertureVew.printTotCrd}"
+											style="text-align:right;color:brown" />
+										
+									</p:row>
+
+									<p:row>
+										<p:column colspan="2" footerText="Solde"
+											style="text-align:left;color:brown" />
+
+										<p:column footerText="#{clotureOuvertureVew.printSoldeDb}"
+											style="text-align:right;color:brown" />
+
+										<p:column footerText="#{clotureOuvertureVew.printSoldeCd}"
+											style="text-align:right;color:brown" />
+										
+									</p:row>
+								</p:columnGroup>
 							</p:dataTable>
 						</div>
 

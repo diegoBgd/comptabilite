@@ -1,6 +1,5 @@
  package model;
  
- import entite.TypeCharge;
  import entite.TypeRecette;
  import java.util.List;
  import org.hibernate.Criteria;
@@ -68,7 +67,7 @@
      
      ss = factory.openSession();
      ss.beginTransaction();
-     Criteria cr = ss.createCriteria(TypeCharge.class);
+     Criteria cr = ss.createCriteria(TypeRecette.class);
      SimpleExpression simpleExpression = Restrictions.eq("codeRec", code);
      cr.add((Criterion)simpleExpression);
      trc = (TypeRecette)cr.uniqueResult();

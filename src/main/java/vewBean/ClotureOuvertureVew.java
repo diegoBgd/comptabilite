@@ -1,5 +1,6 @@
 package vewBean;
 
+import entite.CloseOpen;
 import entite.Compte;
 import entite.Ecriture;
 import entite.Exercice;
@@ -12,11 +13,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
-import model.CompteModel;
+import model.ClotureExerciceModel;
 import model.EcritureModel;
 import model.ExerciceModel;
 import model.JournalModel;
@@ -33,11 +36,12 @@ public class ClotureOuvertureVew implements Serializable {
 	private List<Ecriture> listEcriture;
 	private String typeResultat;
 	private String message, codeJrl, libelleJrnl;
+	private String printTotCrd,printTotDeb,printSoldeCd,printSoldeDb;
 	private boolean pagination;
-	private boolean disableMsg;
+	private boolean disableMsg,disableBtn;
 	private double resultatExercice;
 	private Journal selectedJrnl;
-
+	private int typeAnnulation;
 	EcritureModel model;
 	Exercice selecetdExercice,exercicePrcd;
 	HttpSession session;
@@ -46,9 +50,10 @@ public class ClotureOuvertureVew implements Serializable {
 	User currentUser;
 	ParametreCompta prmt;
 	SessionFactory factory = DBConfiguration.getSessionFactory();
-
+	double solde;
 	List<Compte> listeCompte;
-
+	CloseOpen cloture,ouverture,closePrcd;
+	
 	public List<Ecriture> getListEcriture() {
 		return this.listEcriture;
 	}
@@ -121,6 +126,54 @@ public class ClotureOuvertureVew implements Serializable {
 		this.selectedJrnl = selectedJrnl;
 	}
 
+	public boolean isDisableBtn() {
+		return disableBtn;
+	}
+
+	public void setDisableBtn(boolean disableBtn) {
+		this.disableBtn = disableBtn;
+	}
+
+	public String getPrintTotCrd() {
+		return printTotCrd;
+	}
+
+	public void setPrintTotCrd(String printTotCrd) {
+		this.printTotCrd = printTotCrd;
+	}
+
+	public String getPrintTotDeb() {
+		return printTotDeb;
+	}
+
+	public void setPrintTotDeb(String printTotDeb) {
+		this.printTotDeb = printTotDeb;
+	}
+
+	public String getPrintSoldeCd() {
+		return printSoldeCd;
+	}
+
+	public void setPrintSoldeCd(String printSoldeCd) {
+		this.printSoldeCd = printSoldeCd;
+	}
+
+	public String getPrintSoldeDb() {
+		return printSoldeDb;
+	}
+
+	public void setPrintSoldeDb(String printSoldeDb) {
+		this.printSoldeDb = printSoldeDb;
+	}
+
+	public int getTypeAnnulation() {
+		return typeAnnulation;
+	}
+
+	public void setTypeAnnulation(int typeAnnulation) {
+		this.typeAnnulation = typeAnnulation;
+	}
+
 	@PostConstruct
 	public void initialize() {
 		this.model = new EcritureModel();
@@ -139,7 +192,16 @@ public class ClotureOuvertureVew implements Serializable {
 				if(selecetdExercice!=null)
 				{
 					if(selecetdExercice.getExPrcdCode()!=null && !selecetdExercice.getExPrcdCode().equals(""))
-					exercicePrcd=(new ExerciceModel()).getExercByCode(this.factory,selecetdExercice.getExPrcdCode());
+					{
+						exercicePrcd=(new ExerciceModel()).getExercByCode(this.factory,selecetdExercice.getExPrcdCode());
+						if(exercicePrcd!=null)
+							closePrcd=new ClotureExerciceModel().getExerciceCloture(selecetdExercice.getId(), factory,"C");
+					}
+					cloture=new ClotureExerciceModel().getExerciceCloture(selecetdExercice.getId(), factory,"C");					
+					ouverture=new ClotureExerciceModel().getExerciceCloture(selecetdExercice.getId(), factory,"O");
+					
+					
+					
 				}
 			}
 
@@ -156,12 +218,75 @@ public class ClotureOuvertureVew implements Serializable {
 					e.printStackTrace();
 				}
 			} else {
-
+				listEcriture=new ArrayList<Ecriture>();
 				this.prmt = (new ParametreComptaModel()).getParameter(this.factory);
+				
+				UIComponent frmClose = null;
+				FacesContext context = FacesContext.getCurrentInstance();
+				frmClose = context.getViewRoot().findComponent("frmClo");
+
+				UIComponent frmOpen = null;
+				frmOpen = context.getViewRoot().findComponent("frmOpn");
+				
+				UIComponent frmCancel= null;
+				frmCancel = context.getViewRoot().findComponent("frmClo");
+
+				if(frmCancel!=null)
+				{
+					if(cloture!=null || ouverture!=null)
+					disableMsg=false;
+				}
 				if(prmt!=null)
 				{
-					codeJrl=prmt.getJournalAN();
-			
+					if(frmOpen!=null)
+					{
+						codeJrl=prmt.getJournalAN();
+												
+						if(ouverture!=null)
+						{
+							
+							disableMsg=true;
+							disableBtn=true;
+							FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Attention : ", "L'exercice "+selecetdExercice.getExCode()+" est déjà ouvert"));
+							disableMsg=false;	
+						}
+						else {
+							message="";
+							if(exercicePrcd!=null)
+							{
+								if(closePrcd==null)
+								{
+									disableMsg=true;
+									disableBtn=true;
+									FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Attention : ", "L'exercice "+exercicePrcd.getExCode()+" n'est pas clôturé"));
+									
+								}
+							}
+							
+						}
+					}
+					if(frmClose!=null)
+					{
+						codeJrl=prmt.getJournalOD();	
+						if(ouverture==null)
+						{
+							disableMsg=true;
+							disableBtn=true;
+							FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Attention : ", "il faut d'abord ouvrir l'exercice "+selecetdExercice.getExCode()));
+							
+						}
+					}
+					if(cloture!=null)
+					{
+						
+						disableMsg=true;
+						disableBtn=true;
+						FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Attention : ", "L'exercice "+selecetdExercice.getExCode()+" est déjà clôturé"));
+							
+					}
+					else {
+						message="";
+					}
 					selectedJrnl=new JournalModel().getJouralByCode(factory, codeJrl);
 					if(selectedJrnl!=null)
 						libelleJrnl=selectedJrnl.getLibelle();
@@ -170,32 +295,31 @@ public class ClotureOuvertureVew implements Serializable {
 		}
 	}
 
-	private void chargermentCompteGestion() {
-		this.listeCompte = (new CompteModel()).getListCompteCO(this.factory, 1);
-	}
-
-	private void chargermentCompteBilan() {
-		this.listeCompte = (new CompteModel()).getListCompteCO(this.factory, 0);
-	}
-
-	private void soldeCompteGestion() {
-		this.listEcriture = (new EcritureModel()).getListEcritureCompteBetween(this.factory,
-				this.selecetdExercice.getId(), "6", "8", null, null);
-	}
+	
 
 	public void soldeCompteBilan() {
 		message="";
 		if(exercicePrcd!=null) {
 		List<Object[]> listeSolde = this.model.getListEcriture(this.factory, exercicePrcd.getId(), "", "1",
 				"6");
-		double deb=0,crd=0;
+		double deb=0,crd=0,solde=0;
 		for (Object[] objects : listeSolde) {
 
 			deb = Double.valueOf(objects[1].toString()).doubleValue();
 			crd = Double.valueOf(objects[2].toString()).doubleValue();
-			createEcriture(codeJrl,objects[0].toString(),deb,crd,"SOLDE D'OUVERTURE",selecetdExercice.getDateFin());
-			deb=0;crd=0;
+			if(deb-crd>0)
+			{
+				solde=deb-crd;
+			createEcriture(codeJrl,objects[0].toString(),solde,0,"SOLDE D'OUVERTURE",selecetdExercice.getDateDebut());
+			}
+			if(crd>deb)
+			{
+				solde=crd-deb;
+				createEcriture(codeJrl,objects[0].toString(),0,solde,"SOLDE D'OUVERTURE",selecetdExercice.getDateDebut());
+			}
+			deb=0;crd=0;solde=0;
 		}
+		calculTotaux();
 		}
 		else {
 		message="L'exercice précédent n'est pas parametré";
@@ -273,7 +397,30 @@ public class ClotureOuvertureVew implements Serializable {
 				this.typeResultat = "RESULTAT DEFICITAIRE";
 				this.resultatExercice = -solde;
 			}
+			calculTotaux();
+			
 		}
+	}
+
+	private void calculTotaux() {
+		double totDeb = 0.0D, totCrd = 0.0D;
+		printTotCrd = "0";
+		printTotDeb = "0";
+		printSoldeCd = "0";
+		printSoldeDb = "0";
+		for (Ecriture ec : this.listEcriture) {
+			totDeb += ec.getDebit();
+			totCrd += ec.getCredit();
+		}
+
+		solde = totDeb - totCrd;
+		this.printTotCrd = HelperC.decimalNumber(totCrd, 0, true);
+		this.printTotDeb = HelperC.decimalNumber(totDeb, 0, true);
+		
+		if (solde > 0.0D)
+			this.printSoldeDb = HelperC.decimalNumber(solde, 0, true);
+		if (solde < 0.0D)
+			this.printSoldeCd = HelperC.decimalNumber(Math.abs(solde), 0, true);
 	}
 
 	private void createEcriture(String jrnal, String cpte, double montantDeb, double montantCrd,
@@ -291,10 +438,54 @@ public class ClotureOuvertureVew implements Serializable {
 		this.listEcriture.add(ecr);
 	}
 
-	public void save() {
-		if (this.listEcriture != null && this.listEcriture.size() > 0)
-			this.message = this.model.saveEcriture(this.factory, this.listEcriture,null);
-		else
-			message="La liste des écritures est vide"	;
+	public void saveCloture() {
+		if (this.listEcriture != null && this.listEcriture.size() > 0) {
+			if (solde != 0) {
+				if (cloture == null)
+					cloture = new CloseOpen();
+				cloture.setDateOperation(new Date());
+				cloture.setIdExercice(selecetdExercice.getId());
+				cloture.setCodeJournal(codeJrl);
+				cloture.setTypeOperation("C");
+				this.message = this.model.saveOpenClosePeriod(this.factory, this.listEcriture, cloture);
+			} else
+				message = "Le journal n'est pas équilibré";
+		} else
+			message = "La liste des écritures est vide";
+	}
+	public void saveOuverture() {
+		if (this.listEcriture != null && this.listEcriture.size() > 0) {
+			
+			if (solde != 0) {
+			if(ouverture==null)
+				ouverture = new CloseOpen();
+			ouverture.setDateOperation(new Date());
+			ouverture.setIdExercice(selecetdExercice.getId());
+			ouverture.setCodeJournal(codeJrl);
+			ouverture.setTypeOperation("O");
+				this.message = this.model.saveOpenClosePeriod(this.factory, this.listEcriture, ouverture);
+			}
+			else
+				message = "Le journal n'est pas équilibré";
+		} else
+			message = "La liste des écritures est vide";
+	}
+	public void annuler() {
+	
+		switch (typeAnnulation) {
+		case 0:
+			if(ouverture!=null)
+			message =new ClotureExerciceModel().cancelCloseOrOpenPeriod (factory, ouverture);
+			break;
+			
+		case 1:
+			if(cloture!=null )
+			{				
+				message =new ClotureExerciceModel().cancelCloseOrOpenPeriod(factory, cloture);
+			}
+			break;
+		}
+		
+		
 	}
 }

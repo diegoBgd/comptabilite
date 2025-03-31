@@ -114,6 +114,7 @@
      {
        for (Exercice ex : list) {
          this.listExerc.add(new SelectItem(Integer.valueOf(ex.getId()), ex.getExCode()));
+         
        }
      }
    }
@@ -136,7 +137,7 @@
        
        if (getCode().trim().equals("") || getPwd().trim().equals(""))
        {
-         HelperC.afficherMessage("Information", "Veuillez prÃ©ciser votre code utilisateur et mot de passe !", FacesMessage.SEVERITY_ERROR);
+         HelperC.afficherMessage("Information", "Veuillez préciser votre code utilisateur et mot de passe !", FacesMessage.SEVERITY_ERROR);
        
        }
        else
@@ -155,7 +156,7 @@
              
              if (getCodeExercice() == null || getCodeExercice().equals("")) {
                
-               HelperC.afficherMessage("Information", "Il prÃ©ciser l'exercice!", FacesMessage.SEVERITY_ERROR);
+               HelperC.afficherMessage("Information", "Il préciser l'exercice!", FacesMessage.SEVERITY_ERROR);
                
                return;
              } 
@@ -163,11 +164,11 @@
            }
            else {
              
-             HelperC.afficherMessage("Avertissement", "EchÃ©c d'authentification", FacesMessage.SEVERITY_ERROR);
+             HelperC.afficherMessage("Avertissement", "Echéc d'authentification", FacesMessage.SEVERITY_ERROR);
            } 
          } else {
            
-           HelperC.afficherMessage("Information", "L'utilisateur n'est pas reconnu par le systÃ¨me!", FacesMessage.SEVERITY_ERROR);
+           HelperC.afficherMessage("Information", "L'utilisateur n'est pas reconnu par le système!", FacesMessage.SEVERITY_ERROR);
          }
        
        }

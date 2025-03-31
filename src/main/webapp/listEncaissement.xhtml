@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/masterPage.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+		<h:head>
+			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
+			<title>Entree et sortie de fonds</title>
+		</h:head>
+		<body>
+			<h:form id="frm"
+				onkeypress="if (event.keyCode == 13) { return false; }">
+				<p:blockUI block="frm" trigger="" />
+				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
+
+						<div class="ui-g-12 ui-fluid card">
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-3"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+
+								<p:outputLabel value="Date début" />
+								<p:inputMask id="txtDateDebut"
+									value="#{entreeSortieFond.rechDateDeb}" mask="99/99/9999">
+									<p:ajax event="blur"
+										listener="#{entreeSortieFond.changeDateDebut()}"
+										update="txtDateDebut" />
+								</p:inputMask>
+
+
+
+								<p:outputLabel value="Banque" />
+								<p:selectOneMenu id="txtBk" value="#{entreeSortieFond.idBk}"
+									valueChangeListener="#{entreeSortieFond.changeBankElement}">
+									<f:selectItem itemLabel=" " itemValue="" />
+									<f:selectItems value="#{entreeSortieFond.listBanque}" />
+									<p:ajax event="change" update="txtBk,txtCpt" />
+								</p:selectOneMenu>
+
+								<p:outputLabel value="Date fin" />
+								<p:inputMask id="txtDateFin"
+									value="#{entreeSortieFond.rechDateFin}" mask="99/99/9999">
+									<p:ajax event="blur"
+										listener="#{entreeSortieFond.changeDateFin()}"
+										update="txtDateFin" />
+								</p:inputMask>
+
+								<p:outputLabel value="Compte" />
+								<p:selectOneMenu id="txtCpt" value="#{entreeSortieFond.idCpte}"
+									valueChangeListener="#{entreeSortieFond.changeBankAcountElement}">
+									<f:selectItem itemLabel=" " itemValue="0" />
+									<f:selectItems value="#{encaissementVew.listCompte}" />
+									<p:ajax event="change" update="txtCpt" />
+								</p:selectOneMenu>
+
+							</p:panelGrid>
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+
+								<p:spacer/>
+								<p:commandButton value="Afficher" icon="fa fa-newspaper-o"
+									style="border-radius:10px"
+									action="#{entreeSortieFond.chargerOperation()}" update="tbl" />
+								<p:commandButton value="Editer en pdf" icon="fa fa-file-pdf-o"
+									style="border-radius:10px" ajax="false" action="#" />
+								<p:commandButton value="Editer en excel"
+									icon="fa fa-file-excel-o" style="border-radius:10px" action="#"
+									ajax="false" />
+							</p:panelGrid>
+						</div>
+
+					</div>
+					<div class="ui-g-12 ui-fluid card">
+						<p:dataTable var="es" value="#{entreeSortieFond.listES}" id="tbl"
+							reflow="true" emptyMessage=""
+							paginatorAlwaysVisible="#{entreeSortieFond.pagination}"
+							paginator="true" paginatorPosition="bottom">
+
+							<p:column headerText="Date" width="7%">
+								<h:outputText value="#{es.printDate}" />
+							</p:column>
+
+							<p:column headerText="Reference" width="20%">
+								<h:outputText value="#{es.paiment}" />
+							</p:column>
+							
+							<p:column headerText="Provenance" width="25%">
+								<h:outputText value="#{es.tiers}" />
+							</p:column>
+							
+							<p:column headerText="Libelle" width="40%">
+								<h:outputText value="#{es.comment}" />
+							</p:column>
+
+
+							<p:column headerText="Montant" width="10%">
+								<h:outputText value="#{es.printTTC}" style="float:right" />
+							</p:column>
+
+							<p:columnGroup type="footer">
+							<p:row>
+								<p:column colspan="4" footerText="Total"
+									style="text-align:left;color:brown" />
+
+								<p:column footerText="#{entreeSortieFond.printTot}"
+									style="text-align:right;color:brown" />
+							</p:row>
+						</p:columnGroup>
+						</p:dataTable>
+
+						
+					</div>
+
+				</div>
+
+
+			</h:form>
+
+
+		</body>
+	</ui:define>
+</ui:composition>

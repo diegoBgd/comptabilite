@@ -16,6 +16,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 import model.CompteModel;
+import model.EcritureModel;
 import model.ExerciceModel;
 import model.UserModel;
 import org.apache.poi.ss.usermodel.Cell;
@@ -200,9 +201,13 @@ public class CompteVew implements Serializable {
 
 	public void delete() {
 		if (this.selectedCompte != null && this.selectedCompte.getId() > 0) {
-
-			this.model.deleteCompte(this.factory, this.selectedCompte);
-			initializeControl();
+			boolean used = new EcritureModel().isCompteUsed(factory, selectedCompte.getCompteCod());
+			if (!used) {
+				this.model.deleteCompte(this.factory, this.selectedCompte);
+				initializeControl();
+			}
+			else
+				HelperC.afficherAttention("Attention", "Impossible de supprimer un compte déjà utilisé !");
 		}
 	}
 
@@ -245,7 +250,9 @@ public class CompteVew implements Serializable {
 					Cell cellCode = row.getCell(0);
 					Cell cellNom = row.getCell(1);
 
-					code = cellCode.getStringCellValue();
+					int a=(int)cellCode.getNumericCellValue();
+
+					code =String.valueOf(a);
 					libelle = cellNom.getStringCellValue();
 
 					cpt = this.model.getCompteByCode(this.factory, code);

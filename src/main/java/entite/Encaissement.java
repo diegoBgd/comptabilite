@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import utils.HelperC;
 
@@ -21,6 +23,7 @@ public class Encaissement implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "enc_id")
 	private int id;
+	@Temporal(TemporalType.DATE)
 	@Column(name = "date_operation")
 	private Date dateOperation;
 	@Column(name = "reference")

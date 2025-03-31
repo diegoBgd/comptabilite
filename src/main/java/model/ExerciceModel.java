@@ -2,7 +2,10 @@
  
  import entite.Exercice;
  import java.util.List;
- import org.hibernate.Criteria;
+
+import javax.persistence.Query;
+
+import org.hibernate.Criteria;
  import org.hibernate.Session;
  import org.hibernate.SessionFactory;
  import org.hibernate.criterion.Criterion;
@@ -76,18 +79,17 @@
    }
  
    
-   public List<Exercice> getListExercice(SessionFactory factory) {
+   @SuppressWarnings("unchecked")
+public List<Exercice> getListExercice(SessionFactory factory) {
      List<Exercice> list = null;
      try {
-       Session session = factory.openSession();
-       session.beginTransaction();
-       Criteria cr = session.createCriteria(Exercice.class);
-       
-       cr.addOrder(Order.desc("exCode"));
-       
-       list = cr.list();
-       session.getTransaction().commit();
-       session.close();
+    	 Session session = factory.openSession();
+	       session.beginTransaction();
+	       Query query = session.createQuery("SELECT E from Exercice E ORDER BY E.exCode ASC");	     	 
+	       
+	       list = query.getResultList();
+	       session.getTransaction().commit();
+	       session.close();
      }
      catch (Exception e) {
        System.out.println(e.toString());

@@ -18,6 +18,7 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
 import model.CompteModel;
+import model.EcritureModel;
 import model.ExerciceModel;
 import model.JournalModel;
 import model.UserModel;
@@ -254,19 +255,24 @@ public class JournalVew implements Serializable {
 			chargerJournal();
 		} else {
 
-			HelperC.afficherAttention("Attention", "Il faut prÃ©ciser la rÃ©fÃ©rence !");
+			HelperC.afficherAttention("Attention", "Il faut préciser la référence !");
 		}
 	}
 
 	public void delete() {
 		if (this.selectedJournal != null && this.selectedJournal.getId() > 0) {
-
-			this.model.deleteJournal(this.factory, this.selectedJournal);
-			initializeControls();
-			chargerJournal();
+			boolean used = new EcritureModel().isJournalUsed(factory, selectedJournal.getCodeJrnl());
+			if (!used) {
+				this.model.deleteJournal(this.factory, this.selectedJournal);
+				initializeControls();
+				chargerJournal();
+			}
+			else
+				HelperC.afficherAttention("Attention", "Impossible de supprimer un journal déjà utilisé !");
+			
 		}
 	}
-
+	
 	public void initializeControls() {
 		this.idJrn = 0;
 		this.code = "";

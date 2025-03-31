@@ -15,25 +15,31 @@ public class DBConfiguration {
 			try {
 				Configuration config = new Configuration();
 				config.setProperty("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
-
-				/*
-				 * config.setProperty("hibernate.connection.url",
-				 * "jdbc:mysql://localhost:3306/comptavirago");
-				 * config.setProperty("hibernate.connection.username", "root");
-				 * config.setProperty("hibernate.connection.password", "123");
-				 */
+				
+				
+				
 				
 				  config.setProperty("hibernate.connection.url",
 				  "jdbc:mysql://localhost:3306/comptavirago");
 				  config.setProperty("hibernate.connection.username", "root");
-				  config.setProperty("hibernate.connection.password", "virago/2024");
-				 
-
+				  config.setProperty("hibernate.connection.password", "123");
+				  
+				 	 	 	 
+					
+					
+					
+				/*
+				 * config.setProperty("hibernate.connection.url",
+				 * "jdbc:mysql://192.168.0.128:3306/comptavirago");
+				 * config.setProperty("hibernate.connection.username", "root");
+				 * config.setProperty("hibernate.connection.password", "virago/2024");
+				 */ 
+					 
 				config.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
 				config.setProperty("hibernate.hbm2ddl.auto", "update");
 				config.setProperty("show_sql", "true");
-				config.setProperty("hibernate.c3p0.max_size", "3");
-				config.setProperty("hibernate.c3p0.min_size", "1");
+				config.setProperty("hibernate.c3p0.max_size", "20");
+				config.setProperty("hibernate.c3p0.min_size", "5");
 				config.setProperty("hibernate.c3p0.timeout", "5000");
 				config.setProperty("hibernate.c3p0.max_statements", "100");
 				config.setProperty("hibernate.c3p0.idle_test_period", "300");
@@ -76,6 +82,7 @@ public class DBConfiguration {
 				config.addAnnotatedClass(ParametreCompta.class);
 				config.addAnnotatedClass(Partenaire.class);
 				config.addAnnotatedClass(ParametreFinance.class);
+				config.addAnnotatedClass(CloseOpen.class);
 				
 				StandardServiceRegistry standardServiceRegistry = (new StandardServiceRegistryBuilder())
 						.applySettings(config.getProperties()).build();

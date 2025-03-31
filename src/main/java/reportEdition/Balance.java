@@ -78,7 +78,7 @@ public class Balance implements Serializable {
 	List<Object[]> listSoldeAn;
 	List<Compte> listeCpte;
 	ParametreCompta prmCpt;
-	String codeJAN;
+	String codeJAN,codeJC;
 	String resultAccount="";
 	
 	public int getTypeBalance() {
@@ -144,6 +144,7 @@ public class Balance implements Serializable {
 		if (this.prmCpt != null) {
 			codeJAN = this.prmCpt.getJournalAN();
 			resultAccount=this.prmCpt.getCompteRs();
+			codeJC=prmCpt.getJournalOD();
 		} else {
 			codeJAN = "";
 			resultAccount="";
@@ -279,7 +280,7 @@ public class Balance implements Serializable {
 			writer.setPageEvent((PdfPageEvent) new ItextFooterHelper(
 					new Phrase("Produit Gatech                          "+HelperC.convertDateHeureMin(Calendar.getInstance().getTime()), new Font(Font.FontFamily.TIMES_ROMAN, 8.0F, 0))));
 
-			doc.add((Element) pageHeader("BALANCE"));
+			doc.add((Element) pageHeader("BALANCE : EXERCIE"+selecetdExercice.getExCode()));
 			switch (this.typeBalance) {
 			case 1:
 				doc.add((Element) getBalance4());

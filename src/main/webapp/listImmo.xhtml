@@ -14,42 +14,51 @@
 		<body>
 			<h:form id="frm"
 				onkeypress="if (event.keyCode == 13) { return false; }">
-				<p:blockUI block="frm" trigger="btnSave" />
+				<p:blockUI block="frm" />
 				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
 				<div class="ui-g">
 					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
 						<div class="ui-g-12 ui-fluid card no-margin">
 
 							
-							<div class="ui-g-12 ui-md-4">
-								<p:commandButton value="Afficher les amortissements"
+							<div class="ui-g-12 ui-md-3">
+								<p:commandButton value="Afficher "
 									icon="fa fa-search" style="border-radius:10px"
 									onclick="PF('pbAjax').start();PF('poll').start();"
 									onstart="PF('dlg').show();"
 									oncomplete="PF('dlg').hide();PF('poll').stop();PF('pbAjax').cancel();"
-									action="#{amortisementVew.calculAmortissement()}" update=":frm" />
+									action="#{listeImmo.calculAmortissement()}" update=":frm" />
 
 							</div>
-							<div class="ui-g-12 ui-md-4">
-							<p:outputLabel value="#{amortisementVew.msg}" style="color:red"/>
+							<div class="ui-g-12 ui-md-3">
+							<p:commandButton value="Exporter en pdf" icon="fa fa-file-pdf-o"
+									style="border-radius:10px" ajax="false"
+									action="#{listeImmo.printPdf()}" /> 
+								
 							</div>
-							
+							<div class="ui-g-12 ui-md-3">
+							<p:commandButton value="Exporter en excel"
+									icon="fa fa-file-excel-o" style="border-radius:10px"
+									action="#{listeImmo.printExcel()}" ajax="false" />
+							</div>
 						</div>
 
 						<div class="ui-g-12 ui-fluid card">
-							<p:dataTable var="amrt" value="#{amortisementVew.listAmrt}"
+							<p:dataTable var="amrt" value="#{listeImmo.listAmrt}"
 								id="tbl" emptyMessage="" selectionMode="single"
 								rowKey="#{amrt.numero}" reflow="true" scrollable="true"
-								scrollHeight="200">
+								scrollHeight="400">
 
 								<p:column headerText="" width="5%">
 									<h:outputText value="#{amrt.numero}" />
 								</p:column>
 
-								<p:column headerText="Immobilisé" width="30%">
+								<p:column headerText="Code" width="10%">
+									<h:outputText value="#{amrt.immo.codeImmo}" />
+								</p:column>
+								<p:column headerText="Libellé" width="40%">
 									<h:outputText value="#{amrt.immo.libelle}" />
 								</p:column>
-
 								<p:column headerText="Date d'acquisition" width="10%">
 									<h:outputText value="#{amrt.dateAcq}" />
 								</p:column>
@@ -60,21 +69,11 @@
 								</p:column>
 
 
-								<p:column headerText="Taux " width="5%">
-									<h:outputText value="#{amrt.tauxAmrt}" style="float:right" />
+								<p:column headerText="Durée de vie " width="5%">
+									<h:outputText value="#{amrt.immo.nbrAnne} ans"/>
 								</p:column>
 
-								<p:column headerText="Amort.antérieur" width="10%">
-									<h:outputText value="#{amrt.montantAnterieur}"
-										style="float:right" />
-								</p:column>
-
-								<p:column headerText="Amort. encours" width="10%">
-									<h:outputText value="#{amrt.montantExercice}"
-										style="float:right" />
-								</p:column>
-
-								<p:column headerText="cumul" width="10%">
+								<p:column headerText="Valeur amortie" width="10%">
 									<h:outputText value="#{amrt.montantCumul}" style="float:right" />
 								</p:column>
 
@@ -88,47 +87,12 @@
 
 
 
-						<div class="ui-g-12 ui-fluid card">
-							<div class="ui-g-12 ui-md-1" />
-							<div class="ui-g-3">
-								<p:commandButton value="Enregistrer" id="btnSave"
-									action="#{amortisementVew.save()}" icon="ui-icon-disk"
-									update="frm" style="border-radius:10px" />
-							</div>
-							<div class="ui-g-3">
-								<p:commandButton value="Supprimer" 
-									action="#{amortisementVew.delete()}" icon="ui-icon-trash"
-									update="frm" id="btnDelete" styleClass="orange-btn"
-									style="border-radius:10px">
-									<p:confirm header="Confirmation"
-										disabled="#{amortisementVew.disableMsg}"
-										message="Voulez vous vraiment annuler ?"
-										icon="ui-icon-alert" />
-								</p:commandButton>
-							</div>
-							<div class="ui-g-3">
-								<p:commandButton value="Initialiser" id="btnClean"
-									action="#{amortisementVew.initializeControls()}"
-									icon="ui-icon ui-icon-refresh" update="frm"
-									style="border-radius:10px" />
-							</div>
-						</div>
 					</div>
 				</div>
 			</h:form>
 
-			<h:form>
-				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
-					widgetVar="cd">
-					<p:commandButton value="Oui" type="button"
-						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-					<p:commandButton value="Non" type="button"
-						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-				</p:confirmDialog>
-			</h:form>
-			
 			<p:dialog widgetVar="dlg" appendTo="@(body)" modal="true"
-			header="Génération des amortissents" draggable="false"
+			header="chargement des immobilisés" draggable="false"
 			closeOnEscape="false" resizable="false" minimizable="false"
 			closable="false">
 
@@ -137,9 +101,9 @@
 					update=":prgFrm:txt" immediate="true" />
 				<h:outputLabel id="txt" value=" " />
 				<p:progressBar widgetVar="pbAjax" ajax="true"
-					value="#{amortisementVew.progressValue}" labelTemplate="{value}%"
+					value="#{listeImmo.progressValue}" labelTemplate="{value}%"
 					styleClass="animated" global="false">
-					<p:ajax event="complete" listener="#{amortisementVew.onComplete}"
+					<p:ajax event="complete" 
 						oncomplete="PF('start').enable();" />
 				</p:progressBar>
 

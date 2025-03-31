@@ -25,7 +25,11 @@
 					<div class="card">
 						<div class="ui-g">
 							<div class="ui-g-12 ui-md-9">
-
+								<p:panelGrid rendered="#{ecritureVew.checkClose}">
+									<p:messages id="messages" showDetail="true" closable="false">
+										<p:autoUpdate />
+									</p:messages>
+								</p:panelGrid>
 								<p:panelGrid columns="4"
 									columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-8,ui-grid-col-1"
 									layout="grid" styleClass="ui-panelgrid-blank"
@@ -155,6 +159,17 @@
 									<p:outputLabel value="#{ecritureVew.soldeCpte}" style="float:right;font-weight:bold;color:blue"/>
 									
 								</p:panelGrid>
+								
+								<p:panelGrid columns="1"
+									columnClasses="ui-grid-col-12"
+									layout="grid" styleClass="ui-panelgrid-blank" 
+									style="border:0px none; background-color:transparent;" rendered="false">
+									
+									<p:commandButton value="Récupérer"
+									icon="fa fa-search" style="border-radius:10px;background: #fff;border:solid 1px #1989AC;color:orange" 
+									action="#{ecritureVew.recupererEcriture()}"/> 
+									
+								</p:panelGrid>
 							</div>
 
 						</div>
@@ -281,7 +296,7 @@
 
 			</h:form>
 			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
-				widgetVar="cd">
+				widgetVar="cd" style="color:red">
 				<p:commandButton value="Oui" type="button"
 					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
 				<p:commandButton value="Non" type="button"
@@ -444,11 +459,11 @@
 									listener="#{ecritureVew.getSelectedSaisie()}" update=":frm:tblSaisie,:frm:pnlTotaux,:frm:btnDelete" />
 
 								<p:column headerText="Date" width="7%">
-									<h:outputText value="#{ecr.printDate}" />
+									<h:outputText value="#{ecr.printDate}" />							
 								</p:column>
 
 								<p:column headerText="Compte" width="10%">
-									<h:outputText value="#{ecr.cpte}" />
+									<h:outputText value="#{ecr.cpte}" />							
 								</p:column>
 
 								<p:column headerText="Journal" width="5%">
