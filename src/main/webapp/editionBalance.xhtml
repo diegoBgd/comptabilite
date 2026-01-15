@@ -6,11 +6,12 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
+	<ui:define name="title">Solde du compte</ui:define>
+	<ui:define name="head">
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/style.css" />
+	</ui:define>
 	<ui:define name="content">
-		<h:head>
-			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
-			<title>journal</title>
-		</h:head>
 		<body>
 			<h:form id="frm"
 				onkeypress="if (event.keyCode == 13) { return false; }">
@@ -22,7 +23,7 @@
 
 
 
-							<p:panelGrid columns="4"
+							<p:panelGrid columns="4" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
@@ -45,7 +46,7 @@
 							
 							</p:panelGrid>
 
-							<p:panelGrid columns="2"
+							<p:panelGrid columns="2" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-5,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
@@ -64,24 +65,24 @@
 
 							</p:selectOneMenu>
 							</p:panelGrid>
-							<p:panelGrid columns="3"
+							<p:panelGrid columns="3" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2" layout="grid"
 								styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
 								<p:spacer/>
 								
-								<p:commandButton value="Editer en pdf" icon="fa fa-file-pdf-o"
+								<p:commandButton value="Editer en pdf" icon="pi pi-file-pdf"
 									style="border-radius:10px" ajax="false"
 									action="#{balance.printBalancePdf()}" />
 								<p:commandButton value="Editer en excel"
-									icon="fa fa-file-excel-o" style="border-radius:10px" action="#{balance.printeBalanceExcel()}"
+									icon="pi pi-file-excel" style="border-radius:10px" action="#{balance.printeBalanceExcel()}"
 									ajax="false" />
 
 
 							</p:panelGrid>
 
 							<p:panelGrid columns="1" columnClasses="ui-grid-col-6"
-								layout="grid" styleClass="ui-panelgrid-blank"
+								layout="grid" styleClass="ui-panelgrid-blank" contentStyleClass="compact-grid"
 								style="background-color:transparent;">
 								<p:outputLabel value="#{balance.infoMsg}" id="txtMsg"
 									style="color:red" />

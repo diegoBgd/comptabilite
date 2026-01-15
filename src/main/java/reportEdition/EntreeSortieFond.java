@@ -266,7 +266,7 @@ public class EntreeSortieFond implements Serializable{
 		}
 	}
 	public void chargerOperation() {
-		listEntre=new EncaissementModel().getHistoriquEncaissement(factory, selecetdExercice.getId(), dateDebut, dateFin,selectedBk,selectedCompte,TypeEcriture.entreeFond);
+		listEntre=new EncaissementModel().getHistoriquEncaissement(factory, selecetdExercice.getId(), dateDebut, dateFin,selectedBk,selectedCompte);
 		listRglClt=new ReglementClientModel().getHistoriqueReglement(factory, selecetdExercice.getId(), dateDebut, dateFin,selectedBk,selectedCompte);
 		listES=new ArrayList<MoneyInOut>();
 		total=0;
@@ -274,15 +274,16 @@ public class EntreeSortieFond implements Serializable{
 		pagination=false;
 		for (Encaissement enc : listEntre) {
 			enc.calculMontantTTC();
-			total+=enc.getMontantTTC();
+			total+=enc.getMontantTTC().doubleValue();
 			
 			mio=new MoneyInOut();
 			mio.setComment(enc.getCommentaire());
-			mio.setMotantTTC(enc.getMontantTTC());
+			mio.setMotantTTC(enc.getMontantTTC().doubleValue());
 			mio.setPrintDate(enc.getDateToPrint());
 			mio.setReference(enc.getNumOperation());
 			mio.setPrintTTC(enc.getAmountToPrint());
 			mio.setTiers(enc.getRecette().getLibelle());
+			
 			
 			switch (enc.getModeReglement()) {
 			case 1:
@@ -300,18 +301,19 @@ public class EntreeSortieFond implements Serializable{
 			default:
 				break;
 			}
-			
+			if(enc.getTypeEntree().equals(TypeEcriture.factureClient))
+				mio.setPaiment(enc.getNumOperation());
 			listES.add(mio);
 			
 		}
 		
 		for (ReglementClient rgl : listRglClt) {
 			rgl.calculMontantTTC();
-			total+=rgl.getMontantTTC();
+			total+=rgl.getMontantTTC().doubleValue();
 			
 			mio=new MoneyInOut();
 			mio.setComment(rgl.getComment());
-			mio.setMotantTTC(rgl.getMontantTTC());
+			mio.setMotantTTC(rgl.getMontantTTC().doubleValue());
 			mio.setPrintDate(rgl.getDateToPrint());
 			mio.setPrintTTC(rgl.getAmountToPrint());
 			mio.setTiers("REGLEMENT CLIENT");

@@ -46,14 +46,12 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 import entite.Amortissement;
 import entite.CalculAmortissement;
-import entite.Compte;
-import entite.Ecriture;
+
 import entite.Exercice;
 import entite.Immobilise;
-import entite.SoldeCompte;
+
 import entite.User;
 import model.AmortisementModel;
-import model.CompteModel;
 import model.ExerciceModel;
 import model.ImmobiliseModel;
 import model.UserModel;

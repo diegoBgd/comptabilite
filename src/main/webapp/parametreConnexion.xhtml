@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+	<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pa="http://primefaces.org/apollo">
+      
+    
+      	<h:head>			
+			<title>Connexion à la Base de Données</title>
+			<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/style.css" />
+		</h:head>  
+		
+		<body>
+	<h:form id="frm">
+	
+	<p:blockUI block="frm" trigger="btnSave"/>
+		<div class="ui-g" style="position:fixed;
+             top: 50%;
+             left: 50%;
+             width:40%;
+             height:40%;
+             margin-top: -9em; 
+             margin-left: -15em">
+			<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
+				<div class="card">
+					
+						<p:panelGrid columns="2" style="width:100%" contentStyleClass="compact-grid">
+
+							<p:outputLabel value="Nom / I.P du serveur" />
+							<p:inputText value="#{parametreConnectionB.serveur}" autocomplete="off"/>
+
+							<p:outputLabel value="Utilisateur" />
+							<p:inputText value="#{parametreConnectionB.user}" autocomplete="off"/>
+
+							<p:outputLabel value="Mot de passe" />
+							<p:inputText value="#{parametreConnectionB.pwd}" autocomplete="off"/>
+
+							<p:outputLabel value="Base de données" />
+							<p:inputText value="#{parametreConnectionB.dataBase}" autocomplete="off"/>
+													
+						</p:panelGrid>
+						<p:commandButton id="btnSave" value=" Enregistrer" action="#{parametreConnectionB.save()}" update="pnlMsg"/>
+					
+					<p:panelGrid id="pnl1" columns="2" contentStyleClass="compact-grid"
+							columnClasses="ui-grid-col-6,ui-grid-col-6"
+							layout="grid" styleClass="ui-panelgrid-blank"
+							style="border:0px none; background-color:transparent;">
+							<p:commandLink icon="fa fa-home" value="Retour à la page d'acceuil" action="#{parametreConnectionB.returnLogin()}"/>
+							<p:commandLink icon="fa fa-spinner fa-spin" value="Tester la connexion" action="#{parametreConnectionB.testConnection()}" update="pnlMsg"/>
+	
+					</p:panelGrid>
+					<p:panelGrid id="pnlMsg" columns="1" columnClasses="ui-grid-col-12"
+								layout="grid" styleClass="ui-panelgrid-blank"
+					visible="#{parametreConnectionB.showMsg}" contentStyleClass="compact-grid">
+						<p:outputLabel value="#{parametreConnectionB.infoMsg}" style="color:red"/>
+					</p:panelGrid>
+					
+				</div>
+			</div>
+		</div>
+	</h:form>
+
+    <h:outputStylesheet name="css/layout-blue-light.css" library="apollo-layout" />
+</body>
+		    
+     
+ </html>

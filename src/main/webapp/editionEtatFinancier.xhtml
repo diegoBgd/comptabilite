@@ -6,11 +6,12 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
+	<ui:define name="title">Solde du compte</ui:define>
+	<ui:define name="head">
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/style.css" />
+	</ui:define>
 	<ui:define name="content">
-		<h:head>
-			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
-			<title>journal</title>
-		</h:head>
 		<body>
 			<h:form id="frm"
 				onkeypress="if (event.keyCode == 13) { return false; }">
@@ -20,7 +21,7 @@
 					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
 						<div class="ui-g-12 ui-fluid card no-margin">
 
-							<p:panelGrid columns="4"
+							<p:panelGrid columns="4" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-6,ui-grid-col-1"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
@@ -37,21 +38,21 @@
 									value="#{editionEtatFinancier.libelle}" maxlength="200"
 									rows="1" readonly="true" />
 
-								<p:commandButton icon="fa fa-search" style="border-radius:10px"
-									onclick="PF('dlgEfi').show();" />
+								<p:commandButton  style="border-radius:10px"
+									onclick="PF('dlgEfi').show();" icon="pi pi-search" process="@this"/>
 							</p:panelGrid>
 
 
-							<p:panelGrid columns="3"
-								columnClasses="ui-grid-col-2,ui-grid-col-3,ui-grid-col-3" layout="grid"
+							<p:panelGrid columns="3" contentStyleClass="compact-grid"
+								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2" layout="grid"
 								styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
 								<p:spacer/>
-								<p:commandButton value="Editer en pdf" icon="fa fa-file-pdf-o"
+								<p:commandButton value="Editer en pdf" icon="pi pi-file-pdf"
 									style="border-radius:10px" ajax="false"
 									action="#{editionEtatFinancier.printBilanPdf()}" />
 								<p:commandButton value="Editer en excel"
-									icon="fa fa-file-excel-o" style="border-radius:10px"
+									icon="pi pi-file-excel" style="border-radius:10px"
 									action="#{editionEtatFinancier.printExel()}" ajax="false" />
 
 
@@ -70,7 +71,7 @@
 					<div class="ui-g">
 						<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
 
-							<p:panelGrid columns="3"
+							<p:panelGrid columns="3" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="background-color:transparent;">
@@ -83,7 +84,7 @@
 								id="tbl" emptyMessage="" selectionMode="single"
 								selection="#{editionEtatFinancier.selectedEfi}"
 								rowKey="#{efi.id}" reflow="true" scrollable="true"
-								scrollHeight="200">
+								scrollHeight="200"  size="small">
 
 								<p:ajax event="rowSelect"
 									listener="#{editionEtatFinancier.getSelectedEFiValue()}"

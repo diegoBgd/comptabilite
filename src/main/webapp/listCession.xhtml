@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/masterPage.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title">Liste des immo cédés</ui:define>
+	<ui:define name="head">
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/style.css" />
+	</ui:define>
+	<ui:define name="content">
+	<body>
+			<h:form id="frm"
+				onkeypress="if (event.keyCode == 13) { return false; }">
+				<p:blockUI block="frm" />
+				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
+						<div class="ui-g-12 ui-fluid card no-margin">
+
+							
+							<div class="ui-g-12 ui-md-3">
+								<p:commandButton value="Afficher "
+									icon="pi pi-file" style="border-radius:10px"
+									onclick="PF('pbAjax').start();PF('poll').start();"
+									onstart="PF('dlg').show();"
+									oncomplete="PF('dlg').hide();PF('poll').stop();PF('pbAjax').cancel();"
+									action="#{listeCession.chargerment()}" update=":frm" />
+
+							</div>
+							
+						</div>
+
+						<div class="ui-g-12 ui-fluid card">
+						
+							<div style="display: flex; justify-content: flex-end; gap: 15px;">
+								<p:commandButton ajax="false" icon="pi pi-file-pdf"
+									action="#{listeCession.printPdf()}"
+									update="txtMsg" styleClass="ui-button-outlined ui-button-danger" />
+
+								<p:commandButton ajax="false" icon="pi pi-file-excel"
+									styleClass="ui-button-outlined ui-button-success"
+									action="#{listeCession.printExcel()}"
+									update="txtMsg" />
+							</div>
+							
+							<p:dataTable var="ces" value="#{listeCession.listCession}"
+								id="tbl" emptyMessage="" selectionMode="single"
+								rowKey="#{ces.id}" reflow="true" scrollable="true"
+								scrollHeight="400" size="small" showGridlines="true">
+
+								<p:column headerText="" width="5%">
+									<h:outputText value="#{ces.id}" />
+								</p:column>
+
+								<p:column headerText="Code" width="10%">
+									<h:outputText value="#{ces.immo.codeImmo}" />
+								</p:column>
+								<p:column headerText="Libellé" width="40%">
+									<h:outputText value="#{ces.immo.libelle}" />
+								</p:column>
+								<p:column headerText="Date Cession" width="10%">
+									<h:outputText value="#{ces.printDateCession}" />
+								</p:column>
+
+								<p:column headerText="Type cession" width="5%">
+									<h:outputText value="#{ces.typeCession}"/>
+								</p:column>
+								
+								<p:column headerText="Valeur acquisition" width="10%">
+									<h:outputText value="#{ces.immo.printAcqValue}"
+										style="float:right" />
+								</p:column>
+
+							<p:column headerText="V.N.C" width="12%">
+									<h:outputText value="#{ces.printVnc}" style="float:right" />
+								</p:column>
+
+								<p:column headerText="Montant cession " width="10%">
+									<h:outputText value="#{ces.printMontant}" style="float:right" />
+								</p:column>
+
+
+							</p:dataTable>
+						</div>
+
+
+
+					</div>
+				</div>
+			</h:form>
+
+			<p:dialog widgetVar="dlg" appendTo="@(body)" modal="true"
+			header="chargement des cession" draggable="false"
+			closeOnEscape="false" resizable="false" minimizable="false"
+			closable="false">
+
+			<h:form id="prgFrm">
+				<p:poll interval="1" widgetVar="poll" autoStart="false" async="true"
+					update=":prgFrm:txt" immediate="true" />
+				<h:outputLabel id="txt" value=" " />
+				<p:progressBar widgetVar="pbAjax" ajax="true"
+					value="#{listeCession.progressValue}" labelTemplate="{value}%"
+					styleClass="animated" global="false">
+					<p:ajax event="complete" 
+						oncomplete="PF('start').enable();" />
+				</p:progressBar>
+
+			</h:form>
+
+		</p:dialog>
+		</body>
+	</ui:define>
+</ui:composition>

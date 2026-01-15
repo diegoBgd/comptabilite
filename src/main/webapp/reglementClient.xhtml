@@ -6,11 +6,12 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
+	<ui:define name="title">Règlement client</ui:define>
+	<ui:define name="head">
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/style.css" />
+	</ui:define>
 	<ui:define name="content">
-		<h:head>
-			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
-			<title>Reglements clients</title>
-		</h:head>
 		<body>
 			<h:form id="frm"
 				onkeypress="if (event.keyCode == 13) { return false; }">
@@ -22,19 +23,19 @@
 						<div class="ui-g-12 ui-fluid card">
 							<div class="ui-g-12 ui-md-1" />
 							<div class="ui-g-12 ui-md-3">
-								<p:commandButton value="Recherche des factures client"
-									icon="fa fa-search" style="border-radius:10px"
+								<p:commandButton value="Liste des factures clients"
+									icon="pi pi-list" style="border-radius:10px"
 									oncomplete="PF('dlgFclt').show();" />
 							</div>
 							<div class="ui-g-12 ui-md-3">
-								<p:commandButton value="Recherche des règlements client"
-									icon="fa fa-search" style="border-radius:10px"
+								<p:commandButton value="Liste des règlements clients"
+									icon="pi pi-list" style="border-radius:10px"
 									oncomplete="PF('dlgRglClt').show();" />
 							</div>
 						</div>
 						<div class="ui-g-12 ui-fluid card">
 
-							<p:panelGrid columns="4"
+							<p:panelGrid columns="4" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-5,ui-grid-col-2,ui-grid-col-2"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
@@ -50,7 +51,7 @@
 									decimalPlaces="2" />
 
 							</p:panelGrid>
-							<p:panelGrid columns="3"
+							<p:panelGrid columns="3" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-7"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
@@ -69,7 +70,7 @@
 
 							</p:panelGrid>
 
-							<p:panelGrid columns="2"
+							<p:panelGrid columns="2" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-9" layout="grid"
 								styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
@@ -87,7 +88,7 @@
 						</div>
 
 						<div class="ui-g-12 ui-fluid card">
-							<p:panelGrid columns="4"
+							<p:panelGrid columns="4" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-5,ui-grid-col-2,ui-grid-col-2"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
@@ -187,7 +188,7 @@
 									decimalPlaces="2" readonly="true" />
 
 							</p:panelGrid>
-							<p:panelGrid columns="4"
+							<p:panelGrid columns="4" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-5,ui-grid-col-2,ui-grid-col-2"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
@@ -208,52 +209,60 @@
 
 						<div class="ui-g-12 ui-fluid card">
 							<div class="ui-g-12 ui-md-1" />
-							<div class="ui-g-3">
+							<div class="ui-g-2">
 								<p:commandButton value="Enregistrer"
-									action="#{reglementCltVew.save()}" icon="ui-icon-disk"
+									action="#{reglementCltVew.save()}" icon="pi pi-save"
 									update="frm" style="border-radius:10px" id="btnSave" />
 							</div>
-							<div class="ui-g-3">
+							<div class="ui-g-2">
 								<p:commandButton value="Supprimer"
-									action="#{reglementCltVew.delete()}" icon="ui-icon-trash"
-									id="btnDelete" update="frm" styleClass="orange-btn"
-									style="border-radius:10px">
-									<p:confirm header="Confirmation"
-										disabled="#{reglementCltVew.disableMsg}"
-										message="Voulez vous vraiment supprimer ?"
-										icon="ui-icon-alert" />
-								</p:commandButton>
+									onclick="PF('deleteDialog').show()" 
+									icon="pi pi-trash" id="btnDelete"
+									styleClass="ui-button-danger" 
+									style="border-radius:10px"/>
+									
 							</div>
-							<div class="ui-g-3">
+							<div class="ui-g-2">
 								<p:commandButton value="Initialiser" id="btnClean"
 									action="#{reglementCltVew.initializeControl()}"
-									icon="ui-icon ui-icon-refresh" update="frm"
-									style="border-radius:10px" />
+									icon="pi pi-sync" update="frm"
+									style="border-radius:10px" 
+									styleClass="ui-button-secondary"/>
 							</div>
 						</div>
 					</div>
 
 				</div>
 			</h:form>
-			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
-				widgetVar="cd">
-				<p:commandButton value="Oui" type="button"
-					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-				<p:commandButton value="Non" type="button"
-					style="background-color:red" styleClass="ui-confirmdialog-no"
-					icon="ui-icon-close" />
-			</p:confirmDialog>
+			<h:form>
+				<p:confirmDialog id="deleteDialogId" widgetVar="deleteDialog" rendered="#{reglementCltVew.disableMsg}"
+					header="Confirmation" message="Voulez-vous vraiment supprimer ?"
+					icon="pi pi-question-circle" showEffect="fade" hideEffect="fade">
+
+					<p:commandButton value="Oui" icon="pi pi-check-circle"
+						styleClass="ui-button-outlined ui-button-danger"
+						action="#{reglementCltVew.delete()}" update="frm"
+						oncomplete="PF('deleteDialog').hide();" />
+
+					<p:commandButton value="Non" type="button"
+						icon="pi pi-times-circle"
+						styleClass="ui-button-outlined ui-button-info"
+						onclick="PF('deleteDialog').hide();" />
+
+				</p:confirmDialog>
+
+			</h:form>
 
 
 
 			<p:dialog widgetVar="dlgFclt" header="Liste des factures clients"
-				modal="true" appendTo="@(body)" width="1200" responsive="true">
+				modal="true" dynamic="true" width="900" responsive="true">
 				<h:form id="frmClt">
 
 					<div class="ui-g">
 						<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
-							<p:panelGrid columns="6"
-								columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,
+							<p:panelGrid columns="6" contentStyleClass="compact-grid"
+								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,
 										  ui-grid-col-1,ui-grid-col-2"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="background-color:transparent;">
@@ -283,7 +292,8 @@
 							</p:panelGrid>
 							<p:panelGrid columns="1" columnClasses="ui-grid-col-6"
 								layout="grid" styleClass="ui-panelgrid-blank"
-								style="background-color:transparent;">
+								style="background-color:transparent;"
+								contentStyleClass="compact-grid">
 								<p:outputLabel value="#{reglementCltVew.infoMsg}" id="txtMsg"
 									style="color:red" />
 
@@ -294,7 +304,8 @@
 								selectionMode="single"
 								selection="#{reglementCltVew.selectedEncaissement}"
 								rowKey="#{enc.id}" reflow="true" scrollable="true"
-								scrollHeight="250" emptyMessage="">
+								scrollHeight="250" emptyMessage="" 
+								showGridlines="true" size="small">
 
 								<p:ajax event="rowSelect"
 									listener="#{reglementCltVew.takeSelectedFacture()}"
@@ -339,13 +350,13 @@
 			</p:dialog>
 
 			<p:dialog widgetVar="dlgRglClt" header="Liste des règlements"
-				modal="true" appendTo="@(body)" width="1200" responsive="true">
+				modal="true" dynamic="true" width="900" responsive="true" >
 				<h:form id="frmReg">
 
 					<div class="ui-g">
 						<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
-							<p:panelGrid columns="6"
-								columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,
+							<p:panelGrid columns="6" contentStyleClass="compact-grid"
+								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,
 										  ui-grid-col-1,ui-grid-col-2"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="background-color:transparent;">
@@ -374,6 +385,7 @@
 							</p:panelGrid>
 							<p:panelGrid columns="1" columnClasses="ui-grid-col-6"
 								layout="grid" styleClass="ui-panelgrid-blank"
+								contentStyleClass="compact-grid"
 								style="background-color:transparent;">
 								<p:outputLabel value="#{reglementCltVew.infoMsg}" id="txtMsg"
 									style="color:red" />
@@ -384,7 +396,8 @@
 								id="tbl" selectionMode="single"
 								selection="#{reglementCltVew.selectedReglement}"
 								rowKey="#{reg.id}" reflow="true" scrollable="true"
-								scrollHeight="250" emptyMessage="">
+								scrollHeight="250" emptyMessage=""
+								showGridlines="true" size="small">
 
 								<p:ajax event="rowSelect"
 									listener="#{reglementCltVew.takeSelectedReglement()}"

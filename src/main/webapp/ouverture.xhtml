@@ -6,11 +6,12 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
+	<ui:define name="title">Ouverture</ui:define>
+	<ui:define name="head">
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/style.css" />
+	</ui:define>
 	<ui:define name="content">
-		<h:head>
-			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
-			<title>ouverture</title>
-		</h:head>
 		<body>
 			<h:form id="frmOpn"
 				onkeypress="if (event.keyCode == 13) { return false; }">
@@ -20,7 +21,7 @@
 					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
 						<div class="ui-g-12 ui-fluid card no-margin">
 
-							<p:panelGrid columns="4"
+							<p:panelGrid columns="4"  contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-8,ui-grid-col-1"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
@@ -34,27 +35,29 @@
 							
 							
 							<p:panelGrid columns="4" columnClasses="ui-grid-col-3,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
-								layout="grid" styleClass="ui-panelgrid-blank"
+								layout="grid" styleClass="ui-panelgrid-blank"  contentStyleClass="compact-grid"
 								style="background-color:transparent;">
 								
 								<p:spacer/>
-								<p:commandButton value="Afficher" icon="fa fa-newspaper-o"
+								<p:commandButton value="Afficher" icon="pi pi-file"
 									style="border-radius:10px" disabled="#{clotureOuvertureVew.disableBtn}"
 									action="#{clotureOuvertureVew.soldeCompteBilan()}" update="tbl,txtMsg" />
-								<p:commandButton value="Enregistrer" icon="ui-icon-disk"
+								<p:commandButton value="Enregistrer" icon="pi pi-save"
 									style="border-radius:10px" ajax="false" disabled="#{clotureOuvertureVew.disableBtn}"
 									action="#{clotureOuvertureVew.saveOuverture()}" update="txtMsg" />
 								
 							
 							</p:panelGrid>
 							<p:panelGrid columns="1" columnClasses="ui-grid-col-6"
-								layout="grid" styleClass="ui-panelgrid-blank"
+								layout="grid" styleClass="ui-panelgrid-blank"  contentStyleClass="compact-grid"
 								style="background-color:transparent;">
 								<p:outputLabel value="#{clotureOuvertureVew.message}" id="txtMsg"
 									style="color:red" />
 
 							</p:panelGrid>
-							<p:panelGrid rendered="#{clotureOuvertureVew.disableBtn}">
+							<p:panelGrid columns="1"  rendered="#{clotureOuvertureVew.disableBtn}"  contentStyleClass="compact-grid"
+							columnClasses="ui-grid-col-8" layout="grid" styleClass="ui-panelgrid-blank"  
+								style="background-color:transparent;"> 
 									<p:messages id="messages" showDetail="true" closable="false">
 										<p:autoUpdate />
 									</p:messages>
@@ -64,7 +67,7 @@
 						<div class="ui-g-12 ui-fluid card">
 							<p:dataTable var="ecr"
 								value="#{clotureOuvertureVew.listEcriture}" id="tbl"
-								reflow="true" emptyMessage=""
+								reflow="true" emptyMessage="" size="small"
 								paginatorAlwaysVisible="#{clotureOuvertureVew.pagination}"
 								paginator="true" paginatorPosition="bottom" rows="10" >
 

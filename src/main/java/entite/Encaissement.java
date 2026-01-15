@@ -1,269 +1,211 @@
 package entite;
 
+import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 import utils.HelperC;
 
 @Entity
 @Table(name = "tb_encaissement")
 public class Encaissement implements Serializable {
-	private static final long serialVersionUID = -6359812495672782954L;
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "enc_id")
-	private int id;
-	@Temporal(TemporalType.DATE)
-	@Column(name = "date_operation")
-	private Date dateOperation;
-	@Column(name = "reference")
-	private String numOperation;
-	@Column(name = "exercice")
-	private int idExercise;
-	@Column(name = "type_entree")
-	private TypeEcriture typeEntree;
-	@ManyToOne
-	@JoinColumn(name = "type_recette")
-	private TypeRecette recette;
-	@Column(name = "mode_reglement")
-	private int modeReglement;
-	@ManyToOne
-	@JoinColumn(name = "banque")
-	private Banque bank;
-	@ManyToOne
-	@JoinColumn(name = "client")
-	private Partenaire partener;
-	@ManyToOne
-	@JoinColumn(name = "compte_bank")
-	private BankAccount compteBank;
-	@ManyToOne
-	@JoinColumn(name = "devise")
-	private Devise devise;
-	@ManyToOne
-	@JoinColumn(name = "taxe")
-	private Taxes taxe;
-	@Column(name = "taux_taxe")
-	private double tauxTaxe;
-	@Column(name = "cours")
-	private double coursDev;
-	@Column(name = "piece")
-	private String piece;
-	@Column(name = "comment")
-	private String commentaire;
-	@Column(name = "montant")
-	private double montant;
-	@ManyToOne
-	@JoinColumn(name = "centre_cout")
-	private CentreCout centre;
-	@Transient
-	private String dateToPrint;
-	@Transient
-	private String amountToPrint;
-	@Transient
-	private double montantTTC;
 
-	public int getId() {
-		return this.id;
-	}
+    private static final long serialVersionUID = -6359812495672782954L;
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "enc_id")
+    private int id;
 
-	public String getNumOperation() {
-		return this.numOperation;
-	}
+    @Temporal(TemporalType.DATE)
+    @Column(name = "date_operation")
+    private Date dateOperation;
 
-	public void setNumOperation(String numOperation) {
-		this.numOperation = numOperation;
-	}
+    @Column(name = "reference")
+    private String numOperation;
 
-	public Date getDateOperation() {
-		return this.dateOperation;
-	}
+    @Column(name = "exercice")
+    private int idExercise;
 
-	public void setDateOperation(Date dateOperation) {
-		this.dateOperation = dateOperation;
-	}
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type_entree")
+    private TypeEcriture typeEntree;
 
-	public int getIdExercise() {
-		return this.idExercise;
-	}
+    @ManyToOne
+    @JoinColumn(name = "type_recette")
+    private TypeRecette recette;
 
-	public void setIdExercise(int idExercise) {
-		this.idExercise = idExercise;
-	}
+    @Column(name = "mode_reglement")
+    private int modeReglement;
 
-	public TypeRecette getRecette() {
-		return this.recette;
-	}
+    @ManyToOne
+    @JoinColumn(name = "banque")
+    private Banque bank;
 
-	public void setRecette(TypeRecette recette) {
-		this.recette = recette;
-	}
+    @ManyToOne
+    @JoinColumn(name = "client")
+    private Partenaire partener;
 
-	public int getModeReglement() {
-		return this.modeReglement;
-	}
+    @ManyToOne
+    @JoinColumn(name = "compte_bank")
+    private BankAccount compteBank;
 
-	public void setModeReglement(int modeReglement) {
-		this.modeReglement = modeReglement;
-	}
+    @ManyToOne
+    @JoinColumn(name = "devise")
+    private Devise devise;
 
-	public Banque getBank() {
-		return this.bank;
-	}
+    @ManyToOne
+    @JoinColumn(name = "taxe")
+    private Taxes taxe;
 
-	public void setBank(Banque bank) {
-		this.bank = bank;
-	}
+    @Column(name = "taux_taxe", precision = 10, scale = 2)
+    private BigDecimal tauxTaxe = BigDecimal.ZERO;
 
-	public BankAccount getCompteBank() {
-		return this.compteBank;
-	}
+    @Column(name = "cours", precision = 18, scale = 4)
+    private BigDecimal coursDev = BigDecimal.ONE;
 
-	public void setCompteBank(BankAccount compteBank) {
-		this.compteBank = compteBank;
-	}
+    @Column(name = "piece")
+    private String piece;
 
-	public Devise getDevise() {
-		return this.devise;
-	}
+    @Column(name = "comment")
+    private String commentaire;
 
-	public void setDevise(Devise devise) {
-		this.devise = devise;
-	}
+    @Column(name = "montant", precision = 18, scale = 2)
+    private BigDecimal montant = BigDecimal.ZERO;
 
-	public Taxes getTaxe() {
-		return this.taxe;
-	}
+    @ManyToOne
+    @JoinColumn(name = "centre_cout")
+    private CentreCout centre;
 
-	public void setTaxe(Taxes taxe) {
-		this.taxe = taxe;
-	}
+    @Transient
+    private String dateToPrint;
 
-	public double getTauxTaxe() {
-		return this.tauxTaxe;
-	}
+    @Transient
+    private String amountToPrint;
 
-	public void setTauxTaxe(double tauxTaxe) {
-		this.tauxTaxe = tauxTaxe;
-	}
+    @Transient
+    private BigDecimal montantTTC = BigDecimal.ZERO;
 
-	public double getCoursDev() {
-		return this.coursDev;
-	}
+    // --------------------
+    // Getters & Setters
+    // --------------------
 
-	public void setCoursDev(double coursDev) {
-		this.coursDev = coursDev;
-	}
+    public int getId() { return id; }
 
-	public String getPiece() {
-		return this.piece;
-	}
+    public void setId(int id) { this.id = id; }
+ 
+    public String getNumOperation() { return numOperation; }
 
-	public void setPiece(String piece) {
-		this.piece = piece;
-	}
+    public void setNumOperation(String numOperation) { this.numOperation = numOperation; }
 
-	public String getCommentaire() {
-		return this.commentaire;
-	}
+    public Date getDateOperation() { return dateOperation; }
 
-	public void setCommentaire(String commentaire) {
-		this.commentaire = commentaire;
-	}
+    public void setDateOperation(Date dateOperation) { this.dateOperation = dateOperation; }
 
-	public double getMontant() {
-		return this.montant;
-	}
+    public int getIdExercise() { return idExercise; }
 
-	public void setMontant(double montant) {
-		this.montant = montant;
-	}
+    public void setIdExercise(int idExercise) { this.idExercise = idExercise; }
 
-	public CentreCout getCentre() {
-		return this.centre;
-	}
+    public TypeRecette getRecette() { return recette; }
 
-	public void setCentre(CentreCout centre) {
-		this.centre = centre;
-	}
+    public void setRecette(TypeRecette recette) { this.recette = recette; }
 
-	public String getDateToPrint() {
-		this.dateToPrint = HelperC.convertDate(getDateOperation());
-		return this.dateToPrint;
-	}
+    public int getModeReglement() { return modeReglement; }
 
-	public void setDateToPrint(String dateToPrint) {
-		this.dateToPrint = dateToPrint;
-	}
+    public void setModeReglement(int modeReglement) { this.modeReglement = modeReglement; }
 
-	public String getAmountToPrint() {
-		calculMontantTTC();
-		this.amountToPrint = HelperC.decimalNumber(getMontantTTC(), 0, true);
-		return this.amountToPrint;
-	}
+    public Banque getBank() { return bank; }
 
-	public void setAmountToPrint(String amountToPrint) {
-		this.amountToPrint = amountToPrint;
-	}
+    public void setBank(Banque bank) { this.bank = bank; }
 
-	public double getMontantTTC() {
-		return this.montantTTC;
-	}
+    public BankAccount getCompteBank() { return compteBank; }
 
-	public void setMontantTTC(double montantTTC) {
-		this.montantTTC = montantTTC;
-	}
+    public void setCompteBank(BankAccount compteBank) { this.compteBank = compteBank; }
 
-	public TypeEcriture getTypeEntree() {
-		return this.typeEntree;
-	}
+    public Devise getDevise() { return devise; }
 
-	public void setTypeEntree(TypeEcriture typeEntree) {
-		this.typeEntree = typeEntree;
-	}
+    public void setDevise(Devise devise) { this.devise = devise; }
 
-	public Partenaire getPartener() {
-		return partener;
-	}
+    public Taxes getTaxe() { return taxe; }
 
-	public void setPartener(Partenaire partener) {
-		this.partener = partener;
-	}
+    public void setTaxe(Taxes taxe) { this.taxe = taxe; }
 
-	public void calculMontantTTC() {
-		double ttc = 0.0D;
-		if (getTauxTaxe() > 0.0D) {
+    public BigDecimal getTauxTaxe() { return tauxTaxe; }
 
-			ttc = getMontant() * (1.0D + getTauxTaxe() / 100.0D);
-			setMontantTTC(ttc);
-		} else {
+    public void setTauxTaxe(BigDecimal tauxTaxe) { this.tauxTaxe = tauxTaxe != null ? tauxTaxe : BigDecimal.ZERO; }
 
-			setMontantTTC(getMontant());
-		}
-	}
+    public BigDecimal getCoursDev() { return coursDev; }
 
-	public void calculMontantHT() {
-		double ttc = 0.0D;
-		if (getTauxTaxe() > 0.0D) {
+    public void setCoursDev(BigDecimal coursDev) { this.coursDev = coursDev != null ? coursDev : BigDecimal.ONE; }
 
-			ttc = getMontantTTC() / (1.0D + getTauxTaxe() / 100.0D);
-			setMontant(ttc);
-		} else {
+    public String getPiece() { return piece; }
 
-			setMontant(getMontantTTC());
-		}
-	}
+    public void setPiece(String piece) { this.piece = piece; }
+
+    public String getCommentaire() { return commentaire; }
+
+    public void setCommentaire(String commentaire) { this.commentaire = commentaire; }
+
+    public BigDecimal getMontant() { return montant; }
+
+    public void setMontant(BigDecimal montant) { this.montant = montant != null ? montant : BigDecimal.ZERO; }
+
+    public CentreCout getCentre() { return centre; }
+
+    public void setCentre(CentreCout centre) { this.centre = centre; }
+
+    public TypeEcriture getTypeEntree() { return typeEntree; }
+
+    public void setTypeEntree(TypeEcriture typeEntree) { this.typeEntree = typeEntree; }
+
+    public Partenaire getPartener() { return partener; }
+
+    public void setPartener(Partenaire partener) { this.partener = partener; }
+
+    // --------------------
+    // Formattage affichage
+    // --------------------
+
+    public String getDateToPrint() {
+        this.dateToPrint = HelperC.convertDate(getDateOperation());
+        return this.dateToPrint;
+    }
+
+    public String getAmountToPrint() {
+        calculMontantTTC();
+        this.amountToPrint = HelperC.decimalNumber(getMontantTTC().doubleValue(), 0, true);
+        return this.amountToPrint;
+    }
+
+    // --------------------
+    // Calculs financiers
+    // --------------------
+
+    public void calculMontantTTC() {
+        if (montant == null) montant = BigDecimal.ZERO;
+        if (tauxTaxe == null) tauxTaxe = BigDecimal.ZERO;
+
+        BigDecimal facteur = BigDecimal.ONE.add(tauxTaxe.divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP));
+        montantTTC = montant.multiply(facteur).setScale(2, RoundingMode.HALF_UP);
+    }
+
+    public void calculMontantHT() {
+        if (montantTTC == null) montantTTC = BigDecimal.ZERO;
+        if (tauxTaxe == null) tauxTaxe = BigDecimal.ZERO;
+
+        BigDecimal diviseur = BigDecimal.ONE.add(tauxTaxe.divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP));
+        montant = montantTTC.divide(diviseur, 2, RoundingMode.HALF_UP);
+    }
+
+    public BigDecimal getMontantTTC() {
+        if (montantTTC == null || montantTTC.compareTo(BigDecimal.ZERO) == 0) {
+            calculMontantTTC();
+        }
+        return montantTTC;
+    }
+
+    public BigDecimal getMontantTVA() {
+        return getMontantTTC().subtract(getMontant()).setScale(2, RoundingMode.HALF_UP);
+    }
 }

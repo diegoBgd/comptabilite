@@ -280,7 +280,7 @@ public class Balance implements Serializable {
 			writer.setPageEvent((PdfPageEvent) new ItextFooterHelper(
 					new Phrase("Produit Gatech                          "+HelperC.convertDateHeureMin(Calendar.getInstance().getTime()), new Font(Font.FontFamily.TIMES_ROMAN, 8.0F, 0))));
 
-			doc.add((Element) pageHeader("BALANCE : EXERCIE"+selecetdExercice.getExCode()));
+			doc.add((Element) pageHeader("BALANCE : EXERCICE "+selecetdExercice.getExCode()));
 			switch (this.typeBalance) {
 			case 1:
 				doc.add((Element) getBalance4());

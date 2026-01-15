@@ -6,11 +6,12 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
+	<ui:define name="title">Saisie des immo</ui:define>
+	<ui:define name="head">
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/style.css" />
+	</ui:define>
 	<ui:define name="content">
-		<h:head>
-			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
-			<title>Saisie des immo</title>
-		</h:head>
 		<body>
 			<h:form id="frm"
 				onkeypress="if (event.keyCode == 13) { return false; }">
@@ -23,14 +24,14 @@
 							<div class="ui-g-12 ui-md-1"/>
 							<div class="ui-g-12 ui-md-4">
 							<p:commandButton value="Recherche des immobilisés"
-								icon="fa fa-search" style="border-radius:10px"
+								icon="pi pi-search" process="@this" style="border-radius:10px"
 								oncomplete="PF('dlgImmo').show();" />
 						</div>
 						</div>
 						<div class="ui-g-12 ui-fluid card">
 							<p:tabView id="sIm" style="font-size:13px">
 							<p:tab id="tab1" title="Immobilisé">
-							<p:panelGrid columns="4"
+							<p:panelGrid columns="4" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-3"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
@@ -50,7 +51,7 @@
 								
 								 	
 							</p:panelGrid>
-							<p:panelGrid columns="2"
+							<p:panelGrid columns="2" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-9"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
@@ -61,7 +62,7 @@
 								
 									
 							</p:panelGrid>
-							<p:panelGrid columns="4"
+							<p:panelGrid columns="4" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-3"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
@@ -109,7 +110,7 @@
 							</p:panelGrid>
 							
 							
-							<p:panelGrid columns="4"
+							<p:panelGrid columns="4" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-7,ui-grid-col-1"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
@@ -121,7 +122,7 @@
 								</p:inputText>	
 												
 								<p:inputText id="txtLblCptIm" value="#{immoVew.lblCptImmo}" readonly="true"/>
-								<p:commandButton icon="fa fa-search" style="border-radius:10px" update="frmCptIm"
+								<p:commandButton icon="pi pi-search" process="@this" style="border-radius:10px" update="frmCptIm"
 									onclick="PF('dlgCptImmo').show();" action="#{immoVew.chargerCompteImmo()}"/>
 								
 								<h:outputText value="Compte d'amortissement"/>
@@ -131,7 +132,7 @@
 								</p:inputText>	
 												
 								<p:inputText id="txtLblCptAm" value="#{immoVew.lblCptAmrt}" readonly="true"/>
-								<p:commandButton icon="fa fa-search" style="border-radius:10px" update="frmCptAmrt"
+								<p:commandButton icon="pi pi-search" process="@this" style="border-radius:10px" update="frmCptAmrt"
 									onclick="PF('dlgCptAmrt').show();" action="#{immoVew.chargerCompteAmrt()}"/>
 								
 								<h:outputText value="Compte dotation amrt."/>
@@ -141,7 +142,7 @@
 								</p:inputText>	
 												
 								<p:inputText id="txtLblCptDot" value="#{immoVew.lblCptDotAmrt}" readonly="true"/>
-								<p:commandButton icon="fa fa-search" style="border-radius:10px" update="frmCptDot"
+								<p:commandButton icon="pi pi-search" process="@this" style="border-radius:10px" update="frmCptDot"
 									onclick="PF('dlgCptDotAmrt').show();" action="#{immoVew.chargerCompteDot()}"/>
 									
 										
@@ -149,7 +150,7 @@
 							</p:tab>
 							<p:tab id="tab2" title="Amortissement">
 							<p:dataTable var="amrt" value="#{immoVew.listAmrt}" id="tblAmrt"
-								 reflow="true" 
+								 reflow="true" size="small" showGridlines="true"
 								scrollable="true" scrollHeight="250" emptyMessage="">
 
 								
@@ -182,38 +183,49 @@
 							<div class="ui-g-12 ui-md-1" />
 							<div class="ui-g-3">
 								<p:commandButton value="Enregistrer"
-									action="#{immoVew.save()}" icon="ui-icon-disk" update="frm"
+									action="#{immoVew.save()}" icon="pi pi-save" update="frm"
 									style="border-radius:10px" id="btnSave" />
 							</div> 
 							<div class="ui-g-3">
 								<p:commandButton value="Supprimer"
-									action="#{immoVew.delete()}" icon="ui-icon-trash" id="btnDelete"
-									update="frm" styleClass="orange-btn" style="border-radius:10px">
-									<p:confirm header="Confirmation"
-										disabled="#{immoVew.disableMsg}"
-										message="Voulez vous vraiment supprimer ?"
-										icon="ui-icon-alert" />
-								</p:commandButton>
+									icon="pi pi-trash" id="btnDelete"
+									update="frm" styleClass="ui-button-danger"
+									style="border-radius:10px"
+									onclick="PF('deleteDialog').show(); return false;" />
+									
+								
 							</div>
 							<div class="ui-g-3">  
 								<p:commandButton value="Initialiser" id="btnClean"
 									action="#{immoVew.initializeControl()}"
-									icon="ui-icon ui-icon-refresh" update="frm"
-									style="border-radius:10px" />
+									icon="pi pi-sync" update="frm"
+									style="border-radius:10px" 
+									styleClass="ui-button-secondary"/>
 							</div>
 						</div>
 					</div>
 
 				</div>
 			</h:form>
-			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
-				widgetVar="cd">
-				<p:commandButton value="Oui" type="button"
-					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-				<p:commandButton value="Non" type="button"
-					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-			</p:confirmDialog>
 			
+			<h:form>
+				<p:confirmDialog id="deleteDialogId" widgetVar="deleteDialog"
+					header="Confirmation" message="Voulez-vous vraiment supprimer ?"
+					icon="pi pi-question-circle" showEffect="fade" hideEffect="fade">
+
+					<p:commandButton value="Oui" icon="pi pi-check-circle"
+						styleClass="ui-button-outlined ui-button-danger"
+						action="#{immoVew.delete()}" update=":frm"
+						oncomplete="PF('deleteDialog').hide();" />
+
+					<p:commandButton value="Non" type="button"
+						icon="pi pi-times-circle"
+						styleClass="ui-button-outlined ui-button-info"
+						onclick="PF('deleteDialog').hide();" />
+
+				</p:confirmDialog>
+
+			</h:form>
 			
 		
 		
@@ -228,7 +240,7 @@
 							var="cptIm" selectionMode="single" id="tblCptIm"
 							selection="#{immoVew.selectedCptImmo}" rowKey="#{cptIm.id}"
 							reflow="true" scrollable="true" scrollHeight="200"
-							emptyMessage="">
+							emptyMessage="" size="small" showGridlines="true">
 
 							<p:ajax event="rowSelect"
 								listener="#{immoVew.getSelecedCptImmoValue()}"
@@ -262,7 +274,7 @@
 							var="cptAm" selectionMode="single" id="tblCptAmrt"
 							selection="#{immoVew.selectedCptAmrt}" rowKey="#{cptAm.id}"
 							reflow="true" scrollable="true" scrollHeight="200"
-							emptyMessage="">
+							emptyMessage="" size="small" showGridlines="true">
 
 							<p:ajax event="rowSelect"
 								listener="#{immoVew.getSelecedCptAmrtValue()}"
@@ -296,7 +308,7 @@
 							var="cptDt" selectionMode="single" id="tblCptDot"
 							selection="#{immoVew.selectedCptDot}" rowKey="#{cptDt.id}"
 							reflow="true" scrollable="true" scrollHeight="200"
-							emptyMessage="">
+							emptyMessage="" size="small" showGridlines="true">
 
 							<p:ajax event="rowSelect"
 								listener="#{immoVew.getSelecedCptDotAmrtValue()}"
@@ -324,7 +336,7 @@
 
 				<div class="ui-g">
 					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
-						<p:panelGrid columns="4"
+						<p:panelGrid columns="4" contentStyleClass="compact-grid"
 							columnClasses="ui-grid-col-2,ui-grid-col-6,ui-grid-col-2,ui-grid-col-2"
 							layout="grid" styleClass="ui-panelgrid-blank"
 							style="background-color:transparent;">
@@ -343,7 +355,7 @@
 							
 						<p:dataTable var="im" value="#{immoVew.listImmo}" id="tbl"
 								selectionMode="single" selection="#{immoVew.selectedImmo}"
-								rowKey="#{im.id}" reflow="true" 
+								rowKey="#{im.id}" reflow="true"  size="small" showGridlines="true"
 								scrollable="true" scrollHeight="250" emptyMessage="">
 
 								<p:ajax event="rowSelect" listener="#{immoVew.takeSelectedValues()}"

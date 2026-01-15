@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -35,7 +37,8 @@ public class Ecriture implements Serializable {
 	@Column(name = "exerice_id")
 	private int idExercise;
 	@Column(name = "type_operation")
-	private int typeOperation;
+	@Enumerated(EnumType.STRING)
+	private TypeEcriture typeOperation;
 	@Column(name = "source_operation")
 	private int sourceOperation;
 	@Column(name = "debit")
@@ -100,11 +103,11 @@ public class Ecriture implements Serializable {
 		this.dateOperation = dateOperation;
 	}
 
-	public int getTypeOperation() {
+	public TypeEcriture getTypeOperation() {
 		return this.typeOperation;
 	}
 
-	public void setTypeOperation(int typeOperation) {
+	public void setTypeOperation(TypeEcriture typeOperation) {
 		this.typeOperation = typeOperation;
 	}
 

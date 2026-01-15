@@ -1,70 +1,87 @@
 package entite;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
+
 import utils.HelperC;
 
 @Entity
 @Table(name = "tb_depense")
 public class Depense implements Serializable {
 	private static final long serialVersionUID = -7019025387429924200L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "dep_id")
 	private int id;
+
 	@ManyToOne
 	@JoinColumn(name = "type_charge")
 	private TypeCharge charge;
-	@Column(name = "montant")
-	private double montant;
+
+	@Column(name = "montant", precision = 18, scale = 2)
+	private BigDecimal montant = BigDecimal.ZERO;
+
 	@ManyToOne
 	@JoinColumn(name = "taxe")
 	private Taxes taxe;
-	@Column(name = "taux")
-	private double tauxTaxe;
+
+	@Column(name = "taux", precision = 10, scale = 2)
+	private BigDecimal tauxTaxe = BigDecimal.ZERO;
+
 	@ManyToOne
 	@JoinColumn(name = "fournisseur")
 	private Partenaire partener;
+
 	@ManyToOne
 	@JoinColumn(name = "devise")
 	private Devise devise;
-	@Column(name = "cours")
-	private double coursDev;
+
+	@Column(name = "cours", precision = 18, scale = 4)
+	private BigDecimal coursDev = BigDecimal.ONE;
+
 	@Column(name = "libelle")
 	private String libelle;
+
 	@Column(name = "exercice")
 	private int idExercise;
+
+	@Enumerated(EnumType.STRING)
 	@Column(name = "type_depense")
 	private TypeEcriture typeOperation;
+
 	@ManyToOne
 	@JoinColumn(name = "centre_cout")
 	private CentreCout centre;
+
 	@Column(name = "date_operation")
+	@Temporal(TemporalType.DATE)
 	private Date dateOperation;
+
 	@Column(name = "num_piece")
 	private String piece;
+
 	@Column(name = "mode_reglement")
 	private int modeReglement;
+
 	@Transient
 	private String dateToPrint;
+
 	@Transient
 	private String amountToPrint;
+
 	@Transient
-	private double montantTTC;
+	private BigDecimal montantTTC = BigDecimal.ZERO;
+
 	@Transient
-	private double montantTotRegle;
-   
+	private BigDecimal montantTotRegle = BigDecimal.ZERO;
+
+	// --- Getters / Setters ---
 	public int getId() {
-		return this.id;
+		return id;
 	}
 
 	public void setId(int id) {
@@ -72,34 +89,34 @@ public class Depense implements Serializable {
 	}
 
 	public TypeCharge getCharge() {
-		return this.charge;
+		return charge;
 	}
 
 	public void setCharge(TypeCharge charge) {
 		this.charge = charge;
 	}
 
-	public double getMontant() {
-		return this.montant;
+	public BigDecimal getMontant() {
+		return montant;
 	}
 
-	public void setMontant(double montant) {
+	public void setMontant(BigDecimal montant) {
 		this.montant = montant;
 	}
 
 	public Taxes getTaxe() {
-		return this.taxe;
+		return taxe;
 	}
 
 	public void setTaxe(Taxes taxe) {
 		this.taxe = taxe;
 	}
 
-	public double getTauxTaxe() {
-		return this.tauxTaxe;
+	public BigDecimal getTauxTaxe() {
+		return tauxTaxe;
 	}
 
-	public void setTauxTaxe(double tauxTaxe) {
+	public void setTauxTaxe(BigDecimal tauxTaxe) {
 		this.tauxTaxe = tauxTaxe;
 	}
 
@@ -112,23 +129,23 @@ public class Depense implements Serializable {
 	}
 
 	public Devise getDevise() {
-		return this.devise;
+		return devise;
 	}
 
 	public void setDevise(Devise devise) {
 		this.devise = devise;
 	}
 
-	public double getCoursDev() {
-		return this.coursDev;
+	public BigDecimal getCoursDev() {
+		return coursDev;
 	}
 
-	public void setCoursDev(double coursDev) {
+	public void setCoursDev(BigDecimal coursDev) {
 		this.coursDev = coursDev;
 	}
 
 	public String getLibelle() {
-		return this.libelle;
+		return libelle;
 	}
 
 	public void setLibelle(String libelle) {
@@ -136,7 +153,7 @@ public class Depense implements Serializable {
 	}
 
 	public int getIdExercise() {
-		return this.idExercise;
+		return idExercise;
 	}
 
 	public void setIdExercise(int idExercise) {
@@ -144,7 +161,7 @@ public class Depense implements Serializable {
 	}
 
 	public CentreCout getCentre() {
-		return this.centre;
+		return centre;
 	}
 
 	public void setCentre(CentreCout centre) {
@@ -152,7 +169,7 @@ public class Depense implements Serializable {
 	}
 
 	public Date getDateOperation() {
-		return this.dateOperation;
+		return dateOperation;
 	}
 
 	public void setDateOperation(Date dateOperation) {
@@ -160,54 +177,11 @@ public class Depense implements Serializable {
 	}
 
 	public String getPiece() {
-		return this.piece;
+		return piece;
 	}
 
 	public void setPiece(String piece) {
 		this.piece = piece;
-	}
-
-	public String getDateToPrint() {
-		this.dateToPrint = HelperC.convertDate(getDateOperation());
-		return this.dateToPrint;
-	}
-
-	public void setDateToPrint(String dateToPrint) {
-		this.dateToPrint = dateToPrint;
-	}
-
-	public String getAmountToPrint() {
-		calculMontantTTC();
-		this.amountToPrint = HelperC.decimalNumber(getMontantTTC(), 0, true);
-		return this.amountToPrint;
-	}
-
-	public void setAmountToPrint(String amountToPrint) {
-		this.amountToPrint = amountToPrint;
-	}
-
-	public double getMontantTTC() {
-		return this.montantTTC;
-	}
-
-	public void setMontantTTC(double montantTTC) {
-		this.montantTTC = montantTTC;
-	}
-
-	public double getMontantTotRegle() {
-		return this.montantTotRegle;
-	}
-
-	public void setMontantTotRegle(double montantTotRegle) {
-		this.montantTotRegle = montantTotRegle;
-	}
-
-	public TypeEcriture getTypeOperation() {
-		return this.typeOperation;
-	}
-
-	public void setTypeOperation(TypeEcriture typeOperation) {
-		this.typeOperation = typeOperation;
 	}
 
 	public int getModeReglement() {
@@ -218,27 +192,59 @@ public class Depense implements Serializable {
 		this.modeReglement = modeReglement;
 	}
 
+	public TypeEcriture getTypeOperation() {
+		return typeOperation;
+	}
+
+	public void setTypeOperation(TypeEcriture typeOperation) {
+		this.typeOperation = typeOperation;
+	}
+
+	// --- Champs calculés et formatés ---
+	public String getDateToPrint() {
+		this.dateToPrint = HelperC.convertDate(getDateOperation());
+		return this.dateToPrint;
+	}
+
+	public String getAmountToPrint() {
+		calculMontantTTC();
+		this.amountToPrint = HelperC.decimalNumber(getMontantTTC(), 0, true);
+		return this.amountToPrint;
+	}
+
+	// --- Calculs financiers ---
 	public void calculMontantTTC() {
-		double ttc = 0.0D;
-		if (getTauxTaxe() > 0.0D) {
-
-			ttc = getMontant() * (1.0D + getTauxTaxe() / 100.0D);
-			setMontantTTC(ttc);
+		if (tauxTaxe != null && tauxTaxe.compareTo(BigDecimal.ZERO) > 0) {
+			BigDecimal multiplier = tauxTaxe.divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP)
+					.add(BigDecimal.ONE);
+			montantTTC = montant.multiply(multiplier).setScale(2, RoundingMode.HALF_UP);
 		} else {
-
-			setMontantTTC(getMontant());
+			montantTTC = montant;
 		}
 	}
 
 	public void calculMontantHT() {
-		double ttc = 0.0D;
-		if (getTauxTaxe() > 0.0D) {
-
-			ttc = getMontantTTC() / (1.0D + getTauxTaxe() / 100.0D);
-			setMontant(ttc);
+		if (tauxTaxe != null && tauxTaxe.compareTo(BigDecimal.ZERO) > 0) {
+			BigDecimal divisor = tauxTaxe.divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP).add(BigDecimal.ONE);
+			montant = montantTTC.divide(divisor, 2, RoundingMode.HALF_UP);
 		} else {
-
-			setMontant(getMontantTTC());
+			montant = montantTTC;
 		}
+	}
+
+	public BigDecimal getMontantTTC() {
+		return montantTTC;
+	}
+
+	public void setMontantTTC(BigDecimal montantTTC) {
+		this.montantTTC = montantTTC;
+	}
+
+	public BigDecimal getMontantTotRegle() {
+		return montantTotRegle;
+	}
+
+	public void setMontantTotRegle(BigDecimal montantTotRegle) {
+		this.montantTotRegle = montantTotRegle;
 	}
 }

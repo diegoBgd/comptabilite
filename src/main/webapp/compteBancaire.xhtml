@@ -6,12 +6,14 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
+	<ui:define name="title">Compte banque</ui:define>
+	<ui:define name="head">
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/style.css" />
+	</ui:define>
 	<ui:define name="content">
-		<h:head>
-			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
-			<title>Compte bancaire</title>
-		</h:head> 
 		<body>
+		
 			<h:form id="frm"
 				onkeypress="if (event.keyCode == 13) { return false; }">
 				<p:blockUI block="frm" trigger="btnSave" />
@@ -22,7 +24,7 @@
 						
 						<div class="ui-g-12 ui-fluid card">
 
-							<p:panelGrid columns="2"
+							<p:panelGrid columns="2" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-9,ui-grid-col-1,ui-grid-col-7"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
@@ -36,7 +38,7 @@
 								<h:outputText value="Libellé"/>
 								<p:inputText id="txtLbl" value="#{bankAcountVew.designation}"/>
 							</p:panelGrid>
-							<p:panelGrid columns="4"
+							<p:panelGrid columns="4" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-7,ui-grid-col-1"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
@@ -48,7 +50,8 @@
 								</p:inputText>	
 												
 								<p:inputText id="txtLblBk" value="#{bankAcountVew.libelleBk}"/>
-								<p:commandButton icon="fa fa-search" style="border-radius:10px"
+								<p:commandButton icon="pi pi-search" process="@this" 
+								 style="border-radius:10px"
 									onclick="PF('dlgBk').show();" />
 									
 								<p:outputLabel value="Code comptble" />
@@ -57,7 +60,8 @@
 										update="txtLblCpt"/>
 								</p:inputText>
 								<p:inputText id="txtLblCpt" value="#{bankAcountVew.libelleCpt}"/>
-								<p:commandButton icon="fa fa-search" style="border-radius:10px"
+								<p:commandButton icon="pi pi-search" process="@this" 
+								    style="border-radius:10px"
 									onclick="PF('dlgCpt').show();" />
 								
 							</p:panelGrid>
@@ -73,7 +77,7 @@
 							var="cpt" selectionMode="single" id="tbl"
 							selection="#{bankAcountVew.selectedbkAccount}" rowKey="#{cpt.id}"
 							reflow="true" scrollable="true" scrollHeight="200"
-							emptyMessage="">
+							emptyMessage="" showGridlines="true" size="small">
 
 							<p:ajax event="rowSelect"
 								listener="#{bankAcountVew.getBkAccountSelected()}"
@@ -92,49 +96,58 @@
 
 						<div class="ui-g-12 ui-fluid card">
 							<div class="ui-g-12 ui-md-1" />
-							<div class="ui-g-3">
+							<div class="ui-g-2">
 								<p:commandButton value="Enregistrer"
-									action="#{bankAcountVew.save()}" icon="ui-icon-disk" update="frm"
+									action="#{bankAcountVew.save()}" icon="pi pi-save" update="frm"
 									style="border-radius:10px" id="btnSave" />
 							</div> 
-							<div class="ui-g-3">
+							<div class="ui-g-2">
 								<p:commandButton value="Supprimer"
-									action="#{bankAcountVew.delete()}" icon="ui-icon-trash" id="btnDelete"
-									update="frm" styleClass="orange-btn" style="border-radius:10px">
-									<p:confirm header="Confirmation"
-										disabled="#{bankAcountVew.disableMsg}"
-										message="Voulez vous vraiment supprimer ?"
-										icon="ui-icon-alert" />
-								</p:commandButton>
+									onclick="PF('deleteDialog').show()"
+									icon="pi pi-trash" id="btnDelete"
+									update="frm" styleClass="ui-button-danger"
+									style="border-radius:10px"/>
+									
 							</div>
-							<div class="ui-g-3">  
+							<div class="ui-g-2">  
 								<p:commandButton value="Initialiser" id="btnClean"
 									action="#{bankAcountVew.initializeControl()}"
-									icon="ui-icon ui-icon-refresh" update="frm"
-									style="border-radius:10px" />
+									icon="pi pi-sync" update="frm"
+									style="border-radius:10px" 
+									styleClass="ui-button-secondary"/>
 							</div>
 						</div>
 					</div>
 
 				</div>
 			</h:form>
-			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
-				widgetVar="cd">
-				<p:commandButton value="Oui" type="button"
-					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-				<p:commandButton value="Non" type="button"
-					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-			</p:confirmDialog>
-			
+			<h:form>
+				<p:confirmDialog id="deleteDialogId" widgetVar="deleteDialog" rendered="#{bankAcountVew.disableMsg}"
+					header="Confirmation" message="Voulez-vous vraiment supprimer ?"
+					icon="pi pi-question-circle" showEffect="fade" hideEffect="fade">
+
+					<p:commandButton value="Oui" icon="pi pi-check-circle"
+						styleClass="ui-button-outlined ui-button-danger"
+						action="#{bankAcountVew.delete()}" update=":frm"
+						oncomplete="PF('deleteDialog').hide();" />
+
+					<p:commandButton value="Non" type="button"
+						icon="pi pi-times-circle"
+						styleClass="ui-button-outlined ui-button-info"
+						onclick="PF('deleteDialog').hide();" />
+
+				</p:confirmDialog>
+
+			</h:form>
 			
 		
 		<p:dialog widgetVar="dlgCpt" header="Plan comptable"
-			modal="true" appendTo="@(body)" width="700" responsive="true">
+			modal="true" dynamic="true" width="700" responsive="true">
 			<h:form id="frmCpt">
 
 				<div class="ui-g">
 					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
-						<p:panelGrid columns="3"
+						<p:panelGrid columns="3" contentStyleClass="compact-grid"
 							columnClasses="ui-grid-col-1,ui-grid-col-6,ui-grid-col-3"
 							layout="grid" styleClass="ui-panelgrid-blank"
 							style="background-color:transparent;">
@@ -153,7 +166,7 @@
 							var="cpt" selectionMode="single" id="tblCpt"
 							selection="#{bankAcountVew.selectedCpt}" rowKey="#{cpt.id}"
 							reflow="true" scrollable="true" scrollHeight="200"
-							emptyMessage="">
+							emptyMessage="" showGridlines="true" size="small">
 
 							<p:ajax event="rowSelect"
 								listener="#{banqueVew.getSelecedCptValue()}"
@@ -176,12 +189,12 @@
 		</p:dialog>
 		
 		<p:dialog widgetVar="dlgBk" header="Liste des banques"
-			modal="true" appendTo="@(body)" width="700" responsive="true">
+			modal="true" dynamic="true" width="700" responsive="true">
 			<h:form id="frmBk"> 
 
 				<div class="ui-g">
 					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
-						<p:panelGrid columns="3"
+						<p:panelGrid columns="3" contentStyleClass="compact-grid"
 							columnClasses="ui-grid-col-2,ui-grid-col-6,ui-grid-col-3"
 							layout="grid" styleClass="ui-panelgrid-blank"
 							style="background-color:transparent;">
@@ -202,7 +215,8 @@
 						
 						<p:dataTable var="bk" value="#{bankAcountVew.listBk}" id="tblBk" emptyMessage=""
 							selectionMode="single" selection="#{bankAcountVew.selectedBk}"
-							rowKey="#{bk.id}" reflow="true" scrollable="true" scrollHeight="200">
+							rowKey="#{bk.id}" reflow="true" scrollable="true" 
+							scrollHeight="200" showGridlines="true" size="small">
 
 							<p:ajax event="rowSelect" listener="#{bankAcountVew.getSelectedBnkValues()}"
 								update="frm" />

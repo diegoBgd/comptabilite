@@ -15,6 +15,8 @@ import entite.TypePartener;
 import entite.User;
 import java.io.IOException;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -82,13 +84,13 @@ public class ReglementVew implements Serializable {
 	private boolean disableSave;
 	private List<Fournisseur> listFournisseur;
 	private List<Depense> listDepense;
-	private double montantDepense;
-	private double totalRegle;
-	private double courDevse;
-	private double tauxTaxe;
-	private double montantHt;
-	private double montantTTC;
-	private double reste;
+	private BigDecimal montantDepense;
+	private BigDecimal totalRegle;
+	private BigDecimal courDevse;
+	private BigDecimal tauxTaxe;
+	private BigDecimal montantHt;
+	private BigDecimal montantTTC;
+	private BigDecimal reste;
 	ReglementModel model;
 	Exercice selecetdExercice;
 	HttpSession session;
@@ -263,11 +265,11 @@ public class ReglementVew implements Serializable {
 		this.listDepense = listDepense;
 	}
 
-	public double getMontantDepense() {
+	public BigDecimal getMontantDepense() {
 		return this.montantDepense;
 	}
 
-	public void setMontantDepense(double montantDepense) {
+	public void setMontantDepense(BigDecimal montantDepense) {
 		this.montantDepense = montantDepense;
 	}
 
@@ -319,11 +321,11 @@ public class ReglementVew implements Serializable {
 		this.idCaisse = idCaisse;
 	}
 
-	public double getTotalRegle() {
+	public BigDecimal getTotalRegle() {
 		return this.totalRegle;
 	}
 
-	public void setTotalRegle(double totalRegle) {
+	public void setTotalRegle(BigDecimal totalRegle) {
 		this.totalRegle = totalRegle;
 	}
 
@@ -335,35 +337,35 @@ public class ReglementVew implements Serializable {
 		this.dateOperation = dateOperation;
 	}
 
-	public double getCourDevse() {
+	public BigDecimal getCourDevse() {
 		return this.courDevse;
 	}
 
-	public void setCourDevse(double courDevse) {
+	public void setCourDevse(BigDecimal courDevse) {
 		this.courDevse = courDevse;
 	}
 
-	public double getTauxTaxe() {
+	public BigDecimal getTauxTaxe() {
 		return this.tauxTaxe;
 	}
 
-	public void setTauxTaxe(double tauxTaxe) {
+	public void setTauxTaxe(BigDecimal tauxTaxe) {
 		this.tauxTaxe = tauxTaxe;
 	}
 
-	public double getMontantHt() {
+	public BigDecimal getMontantHt() {
 		return this.montantHt;
 	}
 
-	public void setMontantHt(double montantHt) {
+	public void setMontantHt(BigDecimal montantHt) {
 		this.montantHt = montantHt;
 	}
 
-	public double getMontantTTC() {
+	public BigDecimal getMontantTTC() {
 		return this.montantTTC;
 	}
 
-	public void setMontantTTC(double montantTTC) {
+	public void setMontantTTC(BigDecimal montantTTC) {
 		this.montantTTC = montantTTC;
 	}
 
@@ -431,11 +433,11 @@ public class ReglementVew implements Serializable {
 		this.rechCharge = rechCharge;
 	}
 
-	public double getReste() {
+	public BigDecimal getReste() {
 		return reste;
 	}
 
-	public void setReste(double reste) {
+	public void setReste(BigDecimal reste) {
 		this.reste = reste;
 	}
 
@@ -444,7 +446,7 @@ public class ReglementVew implements Serializable {
 		this.disableMsg = true;
 		this.printDate = HelperC.convertDate(new Date());
 		this.model = new ReglementModel();
-		this.courDevse = 1.0D;
+		this.courDevse = BigDecimal.ONE;
 		this.dateOperation = new Date();
 		chargementSession();
 		chargerTaxe();
@@ -588,17 +590,15 @@ public class ReglementVew implements Serializable {
 	}
 
 	private void taxeValue() {
-		if (this.idTaxe > 0) {
-
-			this.selectedTaxe = (new TaxeModel()).getTaxeById(this.idTaxe, this.factory);
-			if (this.selectedTaxe != null) {
-
-				this.tauxTaxe = this.selectedTaxe.getTaux();
-			} else {
-
-				this.tauxTaxe = 0.0D;
-			}
-		}
+	    if (this.idTaxe > 0) {
+	        this.selectedTaxe = (new TaxeModel()).getTaxeById(this.idTaxe, this.factory);
+	        if (this.selectedTaxe != null && this.selectedTaxe.getTaux() != null) {
+	            // Conversion explicite en BigDecimal
+	            this.tauxTaxe = BigDecimal.valueOf(this.selectedTaxe.getTaux().longValue());
+	        } else {
+	            this.tauxTaxe = BigDecimal.ZERO;
+	        }
+	    }
 	}
 
 	public void changeDeviseElement(ValueChangeEvent event) {
@@ -700,29 +700,31 @@ public class ReglementVew implements Serializable {
 	}
 
 	public void calculerMontantTTC() {
-		this.montantTTC = 0.0D;
-		if (this.tauxTaxe > 0.0D) {
+	    if (montantHt == null) montantHt = BigDecimal.ZERO;
+	    if (tauxTaxe == null) tauxTaxe = BigDecimal.ZERO;
 
-			this.montantTTC = this.montantHt * (1.0D + this.tauxTaxe / 100.0D);
-		} else {
-
-			this.montantTTC = this.montantHt;
-		}
+	    if (tauxTaxe.compareTo(BigDecimal.ZERO) > 0) {
+	        BigDecimal facteur = BigDecimal.ONE.add(tauxTaxe.divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP));
+	        montantTTC = montantHt.multiply(facteur).setScale(2, RoundingMode.HALF_UP);
+	    } else {
+	        montantTTC = montantHt.setScale(2, RoundingMode.HALF_UP);
+	    }
 	}
 
 	public void calculerMontantHT() {
-		this.montantHt = 0.0D;
-		if (this.tauxTaxe > 0.0D) {
+	    if (montantTTC == null) montantTTC = BigDecimal.ZERO;
+	    if (tauxTaxe == null) tauxTaxe = BigDecimal.ZERO;
 
-			this.montantHt = this.montantTTC / (1.0D + this.tauxTaxe / 100.0D);
-		} else {
-
-			this.montantHt = this.montantTTC;
-		}
+	    if (tauxTaxe.compareTo(BigDecimal.ZERO) > 0) {
+	        BigDecimal diviseur = BigDecimal.ONE.add(tauxTaxe.divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP));
+	        montantHt = montantTTC.divide(diviseur, 2, RoundingMode.HALF_UP);
+	    } else {
+	        montantHt = montantTTC.setScale(2, RoundingMode.HALF_UP);
+	    }
 	}
 
 	public void chargerDepense() {
-		this.listDepense = (new DepenseModel()).getListDepense(this.factory, this.selecetdExercice.getId(), null,
+		this.listDepense = (new DepenseModel()).getListDepense(this.factory, this.selecetdExercice.getId(), TypeEcriture.factureFournisseur,
 				this.dateDebut, this.dateFin);
 	}
 
@@ -742,21 +744,22 @@ public class ReglementVew implements Serializable {
      this.montantDepense = this.selectedDepense.getMontantTTC();
      
      chargerReglement();
-     if (this.listReglement != null && this.listReglement.size() > 0) {
-       
-       this.totalRegle = 0.0D;
-       for (ReglementFournisseur reg : this.listReglement) {
-         
-         reg.calculMontantTTC();
-         this.totalRegle += reg.getMontantTTC();
-       } 
-       reste=montantDepense-totalRegle;
-     } 
+     if (this.listReglement != null && !this.listReglement.isEmpty()) {
+
+    	    this.totalRegle = BigDecimal.ZERO;
+
+    	    for (ReglementFournisseur reg : this.listReglement) {
+    	        reg.calculMontantTTC(); // doit retourner un BigDecimal
+    	        this.totalRegle = this.totalRegle.add(reg.getMontantTTC());
+    	    }
+
+    	    reste = montantDepense.subtract(totalRegle);
+    	}
    }
 
 	public void chargerReglement() {
-		this.listReglement = this.model.getListReglement(this.factory, this.typeOper, this.selectedDepense,
-				this.selecetdExercice.getId(), this.dateDebut, this.dateFin);
+		this.listReglement = this.model.getListReglement(this.factory,
+				this.selecetdExercice.getId(), this.dateDebut, this.dateFin, this.typeOper, this.selectedDepense);
 	}
 
 	public void getSelectedReglValue() {
@@ -783,7 +786,7 @@ public class ReglementVew implements Serializable {
 		this.selectedCpt = this.selectedReglement.getAccount();
 		this.selectedCharg = this.selectedReglement.getTypeDepense();
 		this.commentaire = this.selectedReglement.getComment();
-		this.courDevse = this.selectedReglement.getCoursRgl().doubleValue();
+		this.courDevse = this.selectedReglement.getCoursRgl();
 		this.dateOperation = this.selectedReglement.getDateReglement();
 		this.printDate = HelperC.convertDate(this.selectedReglement.getDateReglement());
 		this.selectedDev = this.selectedReglement.getDeviseRgl();
@@ -833,7 +836,7 @@ public class ReglementVew implements Serializable {
 					this.selectedReglement = new ReglementFournisseur();
 				this.selectedReglement.setId(this.idRegl);
 				this.selectedReglement.setComment(this.commentaire);
-				this.selectedReglement.setCoursRgl(Double.valueOf(this.courDevse));
+				this.selectedReglement.setCoursRgl(this.courDevse);
 				this.selectedReglement.setDateReglement(this.dateOperation);
 				this.selectedReglement.setDepense(this.selectedDepense);
 				this.selectedReglement.setDeviseRgl(this.selectedDev);
@@ -868,7 +871,7 @@ public class ReglementVew implements Serializable {
 				this.selectedReglement = new ReglementFournisseur();
 			this.selectedReglement.setId(this.idRegl);
 			this.selectedReglement.setComment(this.commentaire);
-			this.selectedReglement.setCoursRgl(Double.valueOf(this.courDevse));
+			this.selectedReglement.setCoursRgl(this.courDevse);
 			this.selectedReglement.setDateReglement(this.dateOperation);
 			this.selectedReglement.setDepense(this.selectedDepense);
 			this.selectedReglement.setDeviseRgl(this.selectedDev);
@@ -893,10 +896,10 @@ public class ReglementVew implements Serializable {
 	}
 
 	private boolean testMontant() {
-		boolean bl = false;
-		if (this.totalRegle + getMontantTTC() <= this.montantDepense)
-			bl = true;
-		return bl;
+		BigDecimal total=BigDecimal.ZERO;
+		if(totalRegle!=null)
+	     total = totalRegle.add(getMontantTTC());
+	    return total.compareTo(montantDepense) <= 0;
 	}
 
 	public void delete() {
@@ -909,15 +912,15 @@ public class ReglementVew implements Serializable {
 
 	public void initializeControl() {
 		this.commentaire = "";
-		this.courDevse = 1.0D;
+		this.courDevse = BigDecimal.ONE;
 		this.dateOperation = new Date();
 		this.selectedDev = null;
 		this.idDevise = 0;
 		this.pieceRegl = "";
 		this.selectedTaxe = null;
-		this.montantTTC = 0.0D;
-		this.tauxTaxe = 0.0D;
-		montantHt=0.0;
+		this.montantTTC = BigDecimal.ZERO;
+		this.tauxTaxe =BigDecimal.ZERO;
+		montantHt=BigDecimal.ZERO;
 		this.codeFrn = "";
 		this.libelleFrn = "";
 		this.idCaisse = 0;
@@ -934,9 +937,9 @@ public class ReglementVew implements Serializable {
 		this.disableMsg = true;
 		this.infoMsg = "";
 		this.printDate = "";
-		this.montantDepense = 0.0D;
+		this.montantDepense = BigDecimal.ZERO;
 		this.numeroDepense = "";
-		this.totalRegle = 0.0D;
+		this.totalRegle = BigDecimal.ZERO;
 		this.printDate = HelperC.convertDate(new Date());
 	}
 }

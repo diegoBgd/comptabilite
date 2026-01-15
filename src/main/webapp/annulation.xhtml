@@ -6,11 +6,12 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
+	<ui:define name="title">Annulation des operation</ui:define>
+	<ui:define name="head">
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/style.css" />
+	</ui:define>
 	<ui:define name="content">
-		<h:head>
-			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
-			<title>Cloture</title>
-		</h:head>
 		<body>
 			<h:form id="frmAnnuler"
 				onkeypress="if (event.keyCode == 13) { return false; }">
@@ -25,7 +26,7 @@
 						<div class="ui-g-12 ui-fluid card">
 						<p:panelGrid columns="2"
 								columnClasses="ui-grid-col-2,ui-grid-col-6,ui-grid-col-3"
-								layout="grid" styleClass="ui-panelgrid-blank"
+								layout="grid" styleClass="ui-panelgrid-blank" contentStyleClass="compact-grid"
 								style="border:0px none; background-color:transparent;">
 
 								<h:outputText value="Opération à annuler " />
@@ -36,7 +37,7 @@
 								</p:selectOneMenu>
 							</p:panelGrid>
 							<p:panelGrid columns="1" columnClasses="ui-grid-col-6"
-								layout="grid" styleClass="ui-panelgrid-blank"
+								layout="grid" styleClass="ui-panelgrid-blank" contentStyleClass="compact-grid"
 								style="background-color:transparent;">
 								<p:outputLabel value="#{clotureOuvertureVew.message}"
 									id="txtMsg" style="color:red" />
@@ -44,15 +45,11 @@
 							<div class="ui-g-2"/>
 							<div class="ui-g-4">
 								<p:commandButton value="Annuler"
-								
-									action="#{clotureOuvertureVew.annuler()}" icon="fa fa-lock"
-									id="btnCancel" update="frmAnnuler" styleClass="red-btn"
-									style="border-radius:10px">
-									<p:confirm header="Confirmation"
-										
-										message="Voulez-vous vraiment faire l'annulation  ?"
-										icon="ui-icon-alert" />
-								</p:commandButton>
+								onclick="PF('deleteDialog').show(); return false;"
+									 icon="pi pi-undo"
+									id="btnCancel" update="frmAnnuler" styleClass="ui-button-danger"
+									style="border-radius:10px"/>
+									
 
 
 							</div>
@@ -64,14 +61,25 @@
 
 				</div>
 			</h:form>
-			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
-				widgetVar="cd" style="color:red">
-				<p:commandButton value="Oui" type="button"
-					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-				<p:commandButton value="Non" type="button" 
-					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-			</p:confirmDialog>
+			
+		<h:form>
+				<p:confirmDialog id="deleteDialogId" widgetVar="deleteDialog"
+					header="Confirmation" message="Voulez-vous vraiment supprimer ?"
+					icon="pi pi-question-circle" showEffect="fade" hideEffect="fade">
 
+					<p:commandButton value="Oui" icon="pi pi-check-circle"
+						styleClass="ui-button-outlined ui-button-danger"
+						action="#{clotureOuvertureVew.annuler()}" update=":frmAnnuler"
+						oncomplete="PF('deleteDialog').hide();" />
+
+					<p:commandButton value="Non" type="button"
+						icon="pi pi-times-circle"
+						styleClass="ui-button-outlined ui-button-info"
+						onclick="PF('deleteDialog').hide();" />
+
+				</p:confirmDialog>
+
+			</h:form>
 
 
 			<p:dialog widgetVar="dlgJrnl" header="Ecritures comptable"

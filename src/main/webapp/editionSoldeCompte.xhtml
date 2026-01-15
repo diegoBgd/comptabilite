@@ -6,23 +6,24 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
+	<ui:define name="title">Solde du compte</ui:define>
+	<ui:define name="head">
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/style.css" />
+	</ui:define>
 	<ui:define name="content">
-		<h:head>
-			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
-			<title>journal</title>
-		</h:head>
 		<body>
 			<h:form id="frm"
 				onkeypress="if (event.keyCode == 13) { return false; }">
 				<p:blockUI block="frm" trigger="" />
 				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
-				<div class="ui-g">
+				
 					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
 						<div class="ui-g-12 ui-fluid card no-margin">
 
 							<p:panelGrid columns="4"
 								columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-8,ui-grid-col-1"
-								layout="grid" styleClass="ui-panelgrid-blank"
+								layout="grid" styleClass="ui-panelgrid-blank" contentStyleClass="compact-grid"
 								style="border:0px none; background-color:transparent;">
 								<h:outputText value="Compte" />
 								<p:inputText id="txtCd" value="#{operationComptable.codeCpt}">
@@ -32,14 +33,14 @@
 								<p:inputText id="txtDsn"
 									value="#{operationComptable.libelleCpt}" readonly="true" />
 
-								<p:commandButton icon="fa fa-search" style="border-radius:10px"
-									onclick="PF('dlgCpt').show();" />
+								<p:commandButton icon="pi pi-search" style="border-radius:10px"
+									onclick="PF('dlgCpt').show();" process="@this"/>
 							</p:panelGrid>
 
 
 							<p:panelGrid columns="6"
-								columnClasses="ui-grid-col-1,ui-grid-col-1,ui-grid-col-1,ui-grid-col-1,ui-grid-col-2,ui-grid-col-5"
-								layout="grid" styleClass="ui-panelgrid-blank"
+								columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,ui-grid-col-2,ui-grid-col-5"
+								layout="grid" styleClass="ui-panelgrid-blank" contentStyleClass="compact-grid"
 								style="border:0px none; background-color:transparent;">
 								<p:outputLabel value="Date début" />
 								<p:inputMask id="txtDateDebut"
@@ -58,38 +59,38 @@
 								</p:inputMask>
 
 							
-
-							</p:panelGrid>
-							
-							<p:panelGrid columns="4" columnClasses="ui-grid-col-3,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
-								layout="grid" styleClass="ui-panelgrid-blank"
-								style="background-color:transparent;">
-								
-								<p:spacer/>
-								<p:commandButton value="Afficher" icon="fa fa-newspaper-o"
+								<p:commandButton value="Afficher" icon="pi pi-file"
 									style="border-radius:10px"
-									action="#{operationComptable.chargerSoldeCompte()}" update="tbl" />
-								<p:commandButton value="Editer en pdf" icon="fa fa-file-pdf-o"
-									style="border-radius:10px" ajax="false"
-									action="#{operationComptable.printSoldeComptePdf()}" />
-								<p:commandButton value="Editer en excel"
-									icon="fa fa-file-excel-o" style="border-radius:10px"
-									action="#{operationComptable.printSoldeCompteExcel()}" ajax="false" />
-							
+									action="#{operationComptable.chargerSoldeCompte()}" update="tbl,txtMsg" />
 							</p:panelGrid>
+							
+							
 							<p:panelGrid columns="1" columnClasses="ui-grid-col-6"
 								layout="grid" styleClass="ui-panelgrid-blank"
-								style="background-color:transparent;">
+								style="background-color:transparent;" 
+								contentStyleClass="compact-grid">
 								<p:outputLabel value="#{operationComptable.infoMsg}" id="txtMsg"
 									style="color:red" />
 
 							</p:panelGrid>
 						</div>
 
+						
 						<div class="ui-g-12 ui-fluid card">
+							<div style="display: flex; justify-content: flex-end; gap: 15px;">
+								<p:commandButton ajax="false" icon="pi pi-file-pdf"
+									action="#{operationComptable.printSoldeComptePdf()}"
+									update="txtMsg" styleClass="ui-button-outlined ui-button-danger" />
+
+								<p:commandButton ajax="false" icon="pi pi-file-excel"
+									styleClass="ui-button-outlined ui-button-succes"
+									action="#{operationComptable.printSoldeCompteExcel()}"
+									update="txtMsg" />
+							</div>
+							
 							<p:dataTable var="solde"
 								value="#{operationComptable.listSolde}" id="tbl"
-								reflow="true" emptyMessage=""
+								reflow="true" emptyMessage="" size="small" 
 								paginatorAlwaysVisible="#{operationComptable.pagination}"
 								paginator="true" paginatorPosition="bottom" rows="10" >
 
@@ -121,7 +122,7 @@
 						</div>
 
 					</div>
-				</div>
+				
 			</h:form>
 
 
@@ -131,7 +132,7 @@
 
 					<div class="ui-g">
 						<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
-							<p:panelGrid columns="3"
+							<p:panelGrid columns="3" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-8" layout="grid"
 								styleClass="ui-panelgrid-blank"
 								style="background-color:transparent;">
@@ -145,7 +146,7 @@
 							</p:panelGrid>
 
 							<p:dataTable value="#{operationComptable.listeCpte}" var="cpt"
-								selectionMode="single" id="tblCpt"
+								selectionMode="single" id="tblCpt" size="small" 
 								selection="#{operationComptable.selectedCpte}"
 								rowKey="#{cpt.id}" reflow="true" scrollable="true"
 								scrollHeight="200" emptyMessage="">

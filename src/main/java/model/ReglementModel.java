@@ -67,7 +67,7 @@
      return reg;
    }
    
-   public List<ReglementFournisseur> getListReglement(SessionFactory factory, TypeEcriture type, Depense dep, int idExercice, Date deb, Date fin) {
+   public List<ReglementFournisseur> getListReglement(SessionFactory factory,int idExercice, Date deb, Date fin, TypeEcriture type, Depense dep) {
      List<ReglementFournisseur> list = null;
      try {
        Session session = factory.openSession();

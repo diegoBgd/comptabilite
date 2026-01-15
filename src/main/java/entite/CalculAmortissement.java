@@ -134,7 +134,7 @@
      ecr.setCredit(0.0D);
      ecr.setIdExercise(idExercice);
      ecr.setLibelle(libelle);
-     ecr.setTypeOperation(TypeEcriture.amortissement.ordinal());
+     ecr.setTypeOperation(TypeEcriture.amortissement);
      ecr.setPieceCpb("");
      ecr.setSourceOperation(0);
      this.listEcriture.add(ecr);
@@ -147,7 +147,7 @@
      ecr.setCredit(immo.getAmortEncour());
      ecr.setIdExercise(idExercice);
      ecr.setLibelle(libelle);
-     ecr.setTypeOperation(TypeEcriture.amortissement.ordinal());
+     ecr.setTypeOperation(TypeEcriture.amortissement);
      ecr.setPieceCpb("");
      ecr.setSourceOperation(0);
      this.listEcriture.add(ecr);

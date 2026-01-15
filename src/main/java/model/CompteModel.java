@@ -183,8 +183,6 @@ public class CompteModel implements Serializable{
 	       Session session = factory.openSession();
 	       session.beginTransaction();
 	       Query query = session.createQuery("SELECT C from Compte C ORDER BY C.compteCod ASC");
-	     
-	 
 	       
 	       listCpt = query.getResultList();
 	       session.getTransaction().commit();

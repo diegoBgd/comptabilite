@@ -195,7 +195,7 @@ public class ClotureOuvertureVew implements Serializable {
 					{
 						exercicePrcd=(new ExerciceModel()).getExercByCode(this.factory,selecetdExercice.getExPrcdCode());
 						if(exercicePrcd!=null)
-							closePrcd=new ClotureExerciceModel().getExerciceCloture(selecetdExercice.getId(), factory,"C");
+							closePrcd=new ClotureExerciceModel().getExerciceCloture(exercicePrcd.getId(), factory,"C");
 					}
 					cloture=new ClotureExerciceModel().getExerciceCloture(selecetdExercice.getId(), factory,"C");					
 					ouverture=new ClotureExerciceModel().getExerciceCloture(selecetdExercice.getId(), factory,"O");
@@ -421,6 +421,7 @@ public class ClotureOuvertureVew implements Serializable {
 			this.printSoldeDb = HelperC.decimalNumber(solde, 0, true);
 		if (solde < 0.0D)
 			this.printSoldeCd = HelperC.decimalNumber(Math.abs(solde), 0, true);
+		System.out.println("solde= "+solde);
 	}
 
 	private void createEcriture(String jrnal, String cpte, double montantDeb, double montantCrd,
@@ -440,7 +441,8 @@ public class ClotureOuvertureVew implements Serializable {
 
 	public void saveCloture() {
 		if (this.listEcriture != null && this.listEcriture.size() > 0) {
-			if (solde != 0) {
+			
+			if (solde == 0) {
 				if (cloture == null)
 					cloture = new CloseOpen();
 				cloture.setDateOperation(new Date());

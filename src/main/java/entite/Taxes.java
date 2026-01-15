@@ -1,7 +1,9 @@
  package entite;
  
  import java.io.Serializable;
- import javax.persistence.Column;
+import java.math.BigDecimal;
+
+import javax.persistence.Column;
  import javax.persistence.Entity;
  import javax.persistence.GeneratedValue;
  import javax.persistence.GenerationType;
@@ -23,7 +25,7 @@
    @Column(name = "libelle")
    private String libelle;
    @Column(name = "taux")
-   private double taux;
+   private BigDecimal taux;
    @Column(name = "compte")
    private String codeCpbl;
    @Column(name = "type_taxe")
@@ -53,11 +55,11 @@
      this.libelle = libelle;
    }
    
-   public double getTaux() {
+   public BigDecimal getTaux() {
      return this.taux;
    }
    
-   public void setTaux(double taux) {
+   public void setTaux(BigDecimal taux) {
      this.taux = taux;
    }
    

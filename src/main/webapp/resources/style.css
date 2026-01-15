@@ -1,0 +1,4 @@
+@charset "ISO-8859-1";
+.compact-grid .ui-panelgrid-cell {
+    padding: 4px !important;
+}

@@ -6,11 +6,12 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
+	<ui:define name="title">Solde du compte</ui:define>
+	<ui:define name="head">
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/style.css" />
+	</ui:define>
 	<ui:define name="content">
-		<h:head>
-			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
-			<title>journal</title>
-		</h:head>
 		<body>
 			<h:form id="frm"
 				onkeypress="if (event.keyCode == 13) { return false; }">
@@ -20,7 +21,7 @@
 					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
 						<div class="ui-g-12 ui-fluid card no-margin">
 
-							<p:panelGrid columns="4"
+							<p:panelGrid columns="4" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-6,ui-grid-col-1"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
@@ -33,8 +34,8 @@
 								<p:inputText id="txtDsnDb"
 									value="#{grandLivre.libelleCptDb}" readonly="true" />
 
-								<p:commandButton icon="fa fa-search" style="border-radius:10px"
-									onclick="PF('dlgCptDb').show();" />
+								<p:commandButton icon="pi pi-search" style="border-radius:10px"
+									onclick="PF('dlgCptDb').show();" process="@this"/>
 									
 									<h:outputText value="Compte fin" />
 								<p:inputText id="txtCdFn" value="#{grandLivre.compteFin}">
@@ -44,12 +45,12 @@
 								<p:inputText id="txtDsnFn"
 									value="#{grandLivre.libelleCptFin}" readonly="true" />
 
-								<p:commandButton icon="fa fa-search" style="border-radius:10px"
-									onclick="PF('dlgCptFn').show();" />
+								<p:commandButton icon="pi pi-search" style="border-radius:10px"
+									onclick="PF('dlgCptFn').show();" process="@this"/>
 							</p:panelGrid>
 
 
-							<p:panelGrid columns="2"
+							<p:panelGrid columns="2" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-2"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
@@ -75,16 +76,16 @@
 							</p:panelGrid>
 
 							<p:panelGrid columns="3" columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
-								layout="grid" styleClass="ui-panelgrid-blank"
+								layout="grid" styleClass="ui-panelgrid-blank" contentStyleClass="compact-grid"
 								style="background-color:transparent;">
 								
 								<p:spacer/>
 								
-								<p:commandButton value="Editer en pdf" icon="fa fa-file-pdf-o"
+								<p:commandButton value="Editer en pdf" icon="pi pi-file-pdf"
 									style="border-radius:10px" ajax="false"
 									action="#{grandLivre.printPdf()}" /> 
 								<p:commandButton value="Editer en excel"
-									icon="fa fa-file-excel-o" style="border-radius:10px"
+									icon="pi pi-file-excel" style="border-radius:10px"
 									action="#{grandLivre.printExcel()}" ajax="false" />
 
 							</p:panelGrid>
@@ -102,7 +103,7 @@
 
 					<div class="ui-g">
 						<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
-							<p:panelGrid columns="3"
+							<p:panelGrid columns="3" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-8" layout="grid"
 								styleClass="ui-panelgrid-blank"
 								style="background-color:transparent;">
@@ -116,7 +117,7 @@
 							</p:panelGrid>
 
 							<p:dataTable value="#{grandLivre.listeCpte}" var="cpt"
-								selectionMode="single" id="tblCpt"
+								selectionMode="single" id="tblCpt" size="small"
 								selection="#{grandLivre.selectedCpteDb}"
 								rowKey="#{cpt.id}" reflow="true" scrollable="true"
 								scrollHeight="200" emptyMessage="">
@@ -151,7 +152,7 @@
 						<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
 							<p:panelGrid columns="3"
 								columnClasses="ui-grid-col-2,ui-grid-col-8" layout="grid"
-								styleClass="ui-panelgrid-blank"
+								styleClass="ui-panelgrid-blank" contentStyleClass="compact-grid"
 								style="background-color:transparent;">
 
 								<p:inputText value="#{grandLivre.rechCodCpt}" />
@@ -163,7 +164,7 @@
 							</p:panelGrid>
 
 							<p:dataTable value="#{grandLivre.listeCpte}" var="cpt"
-								selectionMode="single" id="tblCpt"
+								selectionMode="single" id="tblCpt" size="small"
 								selection="#{grandLivre.selectedCpteFn}"
 								rowKey="#{cpt.id}" reflow="true" scrollable="true"
 								scrollHeight="200" emptyMessage="">

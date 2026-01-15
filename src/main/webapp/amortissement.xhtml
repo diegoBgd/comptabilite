@@ -6,11 +6,12 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
+	<ui:define name="title">Amortissement des immo</ui:define>
+	<ui:define name="head">
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/style.css" />
+	</ui:define>
 	<ui:define name="content">
-		<h:head>
-			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
-			<title>journal</title>
-		</h:head>
 		<body>
 			<h:form id="frm"
 				onkeypress="if (event.keyCode == 13) { return false; }">
@@ -20,10 +21,10 @@
 					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
 						<div class="ui-g-12 ui-fluid card no-margin">
 
-							
-							<div class="ui-g-12 ui-md-4">
+							<div class="ui-g-12 ui-md-1"/>
+							<div class="ui-g-12 ui-md-3">
 								<p:commandButton value="Afficher les amortissements"
-									icon="fa fa-search" style="border-radius:10px"
+									icon="pi pi-list" style="border-radius:10px"
 									onclick="PF('pbAjax').start();PF('poll').start();"
 									onstart="PF('dlg').show();"
 									oncomplete="PF('dlg').hide();PF('poll').stop();PF('pbAjax').cancel();"
@@ -40,7 +41,7 @@
 							<p:dataTable var="amrt" value="#{amortisementVew.listAmrt}"
 								id="tbl" emptyMessage="" selectionMode="single"
 								rowKey="#{amrt.numero}" reflow="true" scrollable="true"
-								scrollHeight="200">
+								scrollHeight="200" size="small" showGridlines="true">
 
 								<p:column headerText="" width="5%">
 									<h:outputText value="#{amrt.numero}" />
@@ -90,27 +91,26 @@
 
 						<div class="ui-g-12 ui-fluid card">
 							<div class="ui-g-12 ui-md-1" />
-							<div class="ui-g-3">
+							<div class="ui-g-2">
 								<p:commandButton value="Enregistrer" id="btnSave"
-									action="#{amortisementVew.save()}" icon="ui-icon-disk"
+									action="#{amortisementVew.save()}" icon="pi pi-save"
 									update="frm" style="border-radius:10px" />
 							</div>
-							<div class="ui-g-3">
+							<div class="ui-g-2">
 								<p:commandButton value="Supprimer" 
-									action="#{amortisementVew.delete()}" icon="ui-icon-trash"
-									update="frm" id="btnDelete" styleClass="orange-btn"
-									style="border-radius:10px">
-									<p:confirm header="Confirmation"
-										disabled="#{amortisementVew.disableMsg}"
-										message="Voulez vous vraiment annuler ?"
-										icon="ui-icon-alert" />
-								</p:commandButton>
+									action="#{amortisementVew.delete()}" icon="pi pi-trash"
+									update="frm" id="btnDelete" styleClass="ui-button-danger"
+									style="border-radius:10px"
+									onclick="PF('deleteDialog').show(); return false;"/>
+									
+								
 							</div>
-							<div class="ui-g-3">
+							<div class="ui-g-2">
 								<p:commandButton value="Initialiser" id="btnClean"
 									action="#{amortisementVew.initializeControls()}"
-									icon="ui-icon ui-icon-refresh" update="frm"
-									style="border-radius:10px" />
+									icon="pi pi-sync" update="frm"
+									style="border-radius:10px" 
+									styleClass="ui-button-secondary" />
 							</div>
 						</div>
 					</div>
@@ -118,13 +118,22 @@
 			</h:form>
 
 			<h:form>
-				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
-					widgetVar="cd">
-					<p:commandButton value="Oui" type="button"
-						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:confirmDialog id="deleteDialogId" widgetVar="deleteDialog"
+					header="Confirmation" message="Voulez-vous vraiment supprimer ?"
+					icon="pi pi-question-circle" showEffect="fade" hideEffect="fade">
+
+					<p:commandButton value="Oui" icon="pi pi-check-circle"
+						styleClass="ui-button-outlined ui-button-danger"
+						action="#{amortisementVew.delete()}" update=":frm"
+						oncomplete="PF('deleteDialog').hide();" />
+
 					<p:commandButton value="Non" type="button"
-						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+						icon="pi pi-times-circle"
+						styleClass="ui-button-outlined ui-button-info"
+						onclick="PF('deleteDialog').hide();" />
+
 				</p:confirmDialog>
+
 			</h:form>
 			
 			<p:dialog widgetVar="dlg" appendTo="@(body)" modal="true"

@@ -3,6 +3,8 @@ package model;
 import entite.Amortissement;
 import entite.Ecriture;
 import entite.Exercice;
+import entite.Immobilise;
+
 import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -81,5 +83,49 @@ public class AmortisementModel {
 			System.out.println(e.toString());
 		}
 		return list;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Amortissement> getListAmortImmo(SessionFactory factory, Immobilise immo) {
+		List<Amortissement> list = null;
+		try {
+			Session session = factory.openSession();
+			session.beginTransaction();
+
+			String sql = "Select A from Amortissement A where A.immo=:im";
+			Query<?> query = session.createQuery(sql);
+			query.setParameter("im", immo);
+
+			list = (List<Amortissement>) query.getResultList();
+
+			session.getTransaction().commit();
+			session.close();
+		} catch (Exception e) {
+			System.out.println(e.toString());
+		}
+		return list;
+	}
+	
+	public Amortissement getLastAmortImmo(SessionFactory factory, Immobilise immo) {
+		Amortissement amrt = null;
+		Session session =null;
+		try {
+			 session =factory.openSession();
+			session.beginTransaction();
+
+			String sql = "SELECT A FROM Amortissement A  WHERE A.immo = :im "+
+					     "ORDER BY A.id DESC";
+			Query<?> query = session.createQuery(sql);
+			query.setParameter("im", immo);
+			query.setMaxResults(1); 
+			
+			amrt = (Amortissement) query.getSingleResult();
+
+			session.getTransaction().commit();
+			session.close();
+		} catch (Exception e) {
+			System.out.println(e.toString());
+		}
+		return amrt;
 	}
 }

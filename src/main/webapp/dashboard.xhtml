@@ -1,0 +1,87 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/masterPage.xhtml">
+
+    <ui:define name="title">Dashboard</ui:define>
+
+    <ui:define name="head">
+            <!-- Dashboard CSS -->
+        <link type="text/css" rel="stylesheet"
+              href="#{request.contextPath}/resources/dashboard.css" />
+    </ui:define>
+
+    <ui:define name="content">
+
+        <!-- ====================== KPI CARDS ====================== -->
+        <div class="kpi-container">
+            <div class="kpi-card bg-gradient-blue">
+                <i class="pi pi-shopping-cart kpi-icon"></i>
+                <div class="kpi-title">Total Ventes</div>
+                <div class="kpi-value">15 230</div>
+                <div class="kpi-trend text-green-300">+12% ce mois</div>
+            </div>
+
+            <div class="kpi-card bg-gradient-purple">
+                <i class="pi pi-users kpi-icon"></i>
+                <div class="kpi-title">Clients Actifs</div>
+                <div class="kpi-value">340</div>
+                <div class="kpi-trend text-green-300">+5%</div>
+            </div>
+
+            <div class="kpi-card bg-gradient-orange">
+                <i class="pi pi-exclamation-triangle kpi-icon"></i>
+                <div class="kpi-title">Stock Faible</div>
+                <div class="kpi-value">12 articles</div>
+                <div class="kpi-trend text-red-300">À surveiller</div>
+            </div>
+
+            <div class="kpi-card bg-gradient-green">
+                <i class="pi pi-dollar kpi-icon"></i>
+                <div class="kpi-title">Chiffre d’affaires</div>
+                <div class="kpi-value">78 900</div>
+                <div class="kpi-trend text-green-300">+8%</div>
+            </div>
+        </div>
+
+        <!-- ====================== CHARTS ====================== -->
+        <div class="chart-row">
+            <div class="chart-card">
+                <h3><i class="pi pi-chart-line"></i> Évolution des ventes</h3>
+                <p:lineChart model="#{dashboard.lineModel}" style="width:100%;height:300px" />
+            </div>
+
+            <div class="chart-card">
+                <h3><i class="pi pi-chart-bar"></i> Ventes par catégorie</h3>
+                <p:barChart model="#{dashboard.barModel}" style="width:100%;height:300px" />
+            </div>
+        </div>
+
+        <div class="chart-row">
+            <div class="chart-card">
+                <h3><i class="pi pi-chart-pie"></i> Répartition (Donut)</h3>
+                <p:donutChart id="donutChart" widgetVar="donutChart" model="#{dashboard.donutModel}" 
+                style="width:100%;height:260px"/>
+			</div>
+
+            <div class="chart-card">
+                <h3><i class="pi pi-star"></i> Performance</h3>
+                <p:pieChart model="#{dashboard.pieModel}" style="width:100%;height:260px" />
+            </div>
+        </div>
+
+        
+        <!-- ====================== TABLEAU ====================== -->
+        <div class="table-card">
+            <h3><i class="pi pi-table"></i> Dernières ventes</h3>
+            <p:dataTable value="#{dashboard.lastSales}" var="v" responsiveLayout="scroll">
+                <p:column headerText="Date">#{v.date}</p:column>
+                <p:column headerText="Client">#{v.client}</p:column>
+                <p:column headerText="Montant">#{v.montant}</p:column>
+            </p:dataTable>
+        </div>
+
+    </ui:define>
+</ui:composition>

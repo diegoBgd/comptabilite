@@ -6,85 +6,106 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
+	<ui:define name="title">journal</ui:define>
+	<ui:define name="head">
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/style.css" />
+	</ui:define>
 	<ui:define name="content">
-		<h:head>
-			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
-			<title>journal</title>
-		</h:head>
+
 		<body>
-			<h:form id="frm" onkeypress="if (event.keyCode == 13) { return false; }">
+			<h:form id="frm"
+				onkeypress="if (event.keyCode == 13) { return false; }">
 				<p:blockUI block="frm" trigger="" />
 				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
 				<div class="ui-g">
 					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
-					<div class="ui-g-12 ui-fluid card no-margin">
+						<div class="ui-g-12 ui-fluid card no-margin">
 
-						<p:panelGrid columns="4"
-							columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-8,ui-grid-col-1"
-							layout="grid" styleClass="ui-panelgrid-blank"
-							style="border:0px none; background-color:transparent;">
-							<h:outputText value="Journal" />
-							<p:inputText id="txtCd" value="#{operationComptable.codeJrnl}">
-							<p:ajax event="blur" listener="#{operationComptable.searchJournal()}" update="txtDsn" />
-							</p:inputText>							
-							<p:inputText id="txtDsn" value="#{operationComptable.libelleJrnl}" readonly="true"/>
-								 
-							<p:commandButton icon="fa fa-search" style="border-radius:10px"
-									onclick="PF('dlgJrnl').show();" />
-						</p:panelGrid>
-						
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-8,ui-grid-col-1"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								contentStyleClass="compact-grid"
+								style="border:0px none; background-color:transparent;">
+								<h:outputText value="Journal" />
+								<p:inputText id="txtCd" value="#{operationComptable.codeJrnl}">
+									<p:ajax event="blur"
+										listener="#{operationComptable.searchJournal()}"
+										update="txtDsn" />
+								</p:inputText>
+								<p:inputText id="txtDsn"
+									value="#{operationComptable.libelleJrnl}" readonly="true" />
 
-						<p:panelGrid columns="7"
-							columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
-							layout="grid" styleClass="ui-panelgrid-blank"
-							style="border:0px none; background-color:transparent;">
-							<p:outputLabel value="Date début"/>
-									<p:inputMask id="txtDateDebut" value="#{operationComptable.rechDateDeb}" mask="99/99/9999">
-										<p:ajax event="blur" listener="#{operationComptable.changeDateDebut()}" update="txtMsg,txtDateDebut" />
-									</p:inputMask>
-								
-									<p:outputLabel value="Date fin"/>
-									<p:inputMask id="txtDateFin" value="#{operationComptable.rechDateFin}" mask="99/99/9999">
-										<p:ajax event="blur" listener="#{operationComptable.changeDateFin()}" update="txtMsg,txtDateFin" />
-									</p:inputMask>
-						
-						<p:commandButton value="Afficher" icon="fa fa-newspaper-o"
-								style="border-radius:10px"
-								action="#{operationComptable.chargerEcriture()}"
-								update="tbl"/>
-						<p:commandButton value="Editer en pdf" icon="fa fa-file-pdf-o"
-								style="border-radius:10px" ajax="false"
-								action="#{operationComptable.printJournalPdf()}"/>
-						<p:commandButton value="Editer en excel" icon="fa fa-file-excel-o"
-								style="border-radius:10px"
-								action="#{operationComptable.printJournalExcel()}"
-								ajax="false"/>
-						
-								
-						</p:panelGrid>
-						
-						<p:panelGrid columns="1"
-							columnClasses="ui-grid-col-6"
-							layout="grid" styleClass="ui-panelgrid-blank"
-							style="background-color:transparent;">
-							<p:outputLabel value="#{operationComptable.infoMsg}" id="txtMsg" style="color:red"/>
-							
+								<p:commandButton icon="pi pi-search" style="border-radius:10px"
+									onclick="PF('dlgJrnl').show();" process="@this" />
 							</p:panelGrid>
-					</div>
 
-					<div class="ui-g-12 ui-fluid card">
-						<p:dataTable var="ecr" value="#{operationComptable.listeEcriture}" id="tbl"
-								rowKey="#{ecr.id}" reflow="true"  emptyMessage="" rows="10"
-								 paginatorAlwaysVisible="#{operationComptable.pagination}"
-                 			     paginator="true" paginatorPosition="bottom">
 
-								
+							<p:panelGrid columns="7"
+								columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-3"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								contentStyleClass="compact-grid"
+								style="border:0px none; background-color:transparent;">
+								<p:outputLabel value="Date début" />
+								<p:inputMask id="txtDateDebut"
+									value="#{operationComptable.rechDateDeb}" mask="99/99/9999">
+									<p:ajax event="blur"
+										listener="#{operationComptable.changeDateDebut()}"
+										update="txtMsg,txtDateDebut" />
+								</p:inputMask>
+
+								<p:outputLabel value="Date fin" />
+								<p:inputMask id="txtDateFin"
+									value="#{operationComptable.rechDateFin}" mask="99/99/9999">
+									<p:ajax event="blur"
+										listener="#{operationComptable.changeDateFin()}"
+										update="txtMsg,txtDateFin" />
+								</p:inputMask>
+								<p:commandButton value="Afficher" icon="pi pi-file"
+									style="border-radius:10px" process="@this"
+									action="#{operationComptable.chargerEcriture()}" update="tbl" />
+
+							</p:panelGrid>
+
+
+							<p:panelGrid columns="1" columnClasses="ui-grid-col-6"
+								contentStyleClass="compact-grid" layout="grid"
+								styleClass="ui-panelgrid-blank"
+								style="background-color:transparent;">
+								<p:outputLabel value="#{operationComptable.infoMsg}" id="txtMsg"
+									style="color:red" />
+
+							</p:panelGrid>
+
+						</div>
+
+						<div class="ui-g-12 ui-fluid card">
+							<div style="display: flex; justify-content: flex-end; gap: 15px;">
+								<p:commandButton ajax="false" icon="pi pi-file-pdf"
+									action="#{operationComptable.printJournalPdf()}"
+									update="txtMsg" styleClass="ui-button-outlined ui-button-danger" />
+
+								<p:commandButton ajax="false" icon="pi pi-file-excel"
+									styleClass="ui-button-outlined ui-button-success"
+									action="#{operationComptable.printJournalExcel()}"
+									update="txtMsg" />
+							</div>
+
+
+							<p:dataTable var="ecr"
+								value="#{operationComptable.listeEcriture}" id="tbl"
+								rowKey="#{ecr.id}" reflow="true" emptyMessage="" rows="10"
+								paginatorAlwaysVisible="#{operationComptable.pagination}"
+								paginator="true" paginatorPosition="bottom" 
+								size="small" showGridlines="true">
+
+
 
 								<p:column headerText="Date" width="7%">
 									<h:outputText value="#{ecr.printDate}" />
 								</p:column>
 
-								<p:column headerText="Compte" width="10%" >
+								<p:column headerText="Compte" width="10%">
 									<h:outputText value="#{ecr.cpte}" />
 								</p:column>
 
@@ -92,104 +113,104 @@
 									<h:outputText value="#{ecr.jrnl}" />
 								</p:column>
 								<p:column headerText="Piece" width="15%">
-									<h:outputText value="#{ecr.pieceCpb}"/>
+									<h:outputText value="#{ecr.pieceCpb}" />
 								</p:column>
 								<p:column headerText="Libellé" width="43%">
-									<h:outputText value="#{ecr.libelle}"/>
+									<h:outputText value="#{ecr.libelle}" />
 								</p:column>
-								
+
 								<p:column headerText="Débit" width="10%">
-									<h:outputText value="#{ecr.printDebit}"  style="float:right"/>
+									<h:outputText value="#{ecr.printDebit}" style="float:right" />
 								</p:column>
-								
+
 								<p:column headerText="Crédit" width="10%">
-									<h:outputText value="#{ecr.printCredit}" style="float:right"/>
+									<h:outputText value="#{ecr.printCredit}" style="float:right" />
 								</p:column>
-								
-							
-							
+
+
+
 								<p:columnGroup type="footer">
 									<p:row>
-										<p:column colspan="5" footerText="Total" 
+										<p:column colspan="5" footerText="Total"
 											style="text-align:left;color:brown" />
-											
+
 										<p:column footerText="#{operationComptable.printTotDeb}"
-											style="text-align:right;color:brown"/>
-										
+											style="text-align:right;color:brown" />
+
 										<p:column footerText="#{operationComptable.printTotCrd}"
-											style="text-align:right;color:brown" />	
-											  						
+											style="text-align:right;color:brown" />
+
 									</p:row>
-									
+
 									<p:row>
-										<p:column colspan="5" footerText="Solde" 
+										<p:column colspan="5" footerText="Solde"
 											style="text-align:left;color:brown" />
-											
+
 										<p:column footerText="#{operationComptable.printSoldeDb}"
 											style="text-align:right;color:brown" />
-											
+
 										<p:column footerText="#{operationComptable.printSoldeCd}"
 											style="text-align:right;color:brown" />
 									</p:row>
 								</p:columnGroup>
 							</p:dataTable>
-					</div>
-			
-				
-				
-						
 						</div>
-							</div>
-			</h:form>
-		
-			
-			<p:dialog widgetVar="dlgJrnl" header="Liste des journaux"
-			modal="true" appendTo="@(body)" width="600" responsive="true">
-			<h:form id="frmJrnl">
 
-				<div class="ui-g">
-					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
-						<p:panelGrid columns="3"
-							columnClasses="ui-grid-col-2,ui-grid-col-6,ui-grid-col-3"
-							layout="grid" styleClass="ui-panelgrid-blank"
-							style="background-color:transparent;">
 
-							<p:outputLabel value="Libellé" />
-							<p:inputText value="#{operationComptable.rechLblJrnl}"/>
-							<p:commandButton value="Rechercher"
-								style="border-radius:10px"
-								action="#{operationComptable.chargerJournal()}"
-								update="tblJrnl" />
-
-						</p:panelGrid>
-
-						<p:dataTable value="#{operationComptable.listJrnl}"
-							var="jrn" selectionMode="single" id="tblJrnl"
-							selection="#{operationComptable.selectedJrnl}" rowKey="#{jrn.id}"
-							reflow="true" scrollable="true" scrollHeight="200"
-							emptyMessage="">
-
-							<p:ajax event="rowSelect"
-								listener="#{operationComptable.getSelecedJrnlValue()}"
-								update=":frm:txtCd,:frm:txtDsn" />
-
-							<p:column headerText="Reference" width="10%">
-								<h:outputText value="#{jrn.codeJrnl}" />
-							</p:column>
-
-							<p:column headerText="Libelle">
-								<h:outputText value="#{jrn.libelle}" />
-							</p:column>
-
-							
-
-						</p:dataTable>
 
 
 					</div>
 				</div>
 			</h:form>
-		</p:dialog>
+
+
+			<p:dialog widgetVar="dlgJrnl" header="Liste des journaux"
+				modal="true" dynamic="true" width="600" responsive="true">
+				<h:form id="frmJrnl">
+
+					<div class="ui-g">
+						<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+							<p:panelGrid columns="3"
+								columnClasses="ui-grid-col-2,ui-grid-col-6,ui-grid-col-3"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="background-color:transparent;">
+
+								<p:outputLabel value="Libellé" />
+								<p:inputText value="#{operationComptable.rechLblJrnl}" />
+								<p:commandButton value="Rechercher" style="border-radius:10px"
+									action="#{operationComptable.chargerJournal()}"
+									update="tblJrnl" icon="pi pi-search" />
+
+							</p:panelGrid>
+
+							<p:dataTable value="#{operationComptable.listJrnl}" var="jrn"
+								selectionMode="single" id="tblJrnl"
+								selection="#{operationComptable.selectedJrnl}"
+								rowKey="#{jrn.id}" reflow="true" scrollable="true"
+								scrollHeight="200" emptyMessage=""
+								size="small" showGridlines="true">
+
+								<p:ajax event="rowSelect"
+									listener="#{operationComptable.getSelecedJrnlValue()}"
+									update=":frm:txtCd,:frm:txtDsn" />
+
+								<p:column headerText="Reference" width="15%">
+									<h:outputText value="#{jrn.codeJrnl}" />
+								</p:column>
+
+								<p:column headerText="Libelle">
+									<h:outputText value="#{jrn.libelle}" />
+								</p:column>
+
+
+
+							</p:dataTable>
+
+
+						</div>
+					</div>
+				</h:form>
+			</p:dialog>
 		</body>
 	</ui:define>
 </ui:composition>

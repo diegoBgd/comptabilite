@@ -6,11 +6,12 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
+	<ui:define name="title">Entrée de fonds</ui:define>
+	<ui:define name="head">
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/style.css" />
+	</ui:define>
 	<ui:define name="content">
-		<h:head>
-			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
-			<title>Factures clients</title>
-		</h:head>
 		<body>
 			<h:form id="frmFcl"
 				onkeypress="if (event.keyCode == 13) { return false; }">
@@ -21,15 +22,15 @@
 					
 						<div class="ui-g-12 ui-fluid card">
 							<div class="ui-g-12 ui-md-1"/>
-							<div class="ui-g-12 ui-md-4">
-							<p:commandButton value="Recherche des factures"
-								icon="fa fa-search" style="border-radius:10px"
+							<div class="ui-g-12 ui-md-3">
+							<p:commandButton value="Liste des factures"
+								icon="pi pi-list" style="border-radius:10px"
 								oncomplete="PF('dlgFclt').show();" />
 						</div>
 						</div>
 						<div class="ui-g-12 ui-fluid card">
  
-							<p:panelGrid columns="4"
+							<p:panelGrid columns="4" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-5,ui-grid-col-2,ui-grid-col-2"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
@@ -44,7 +45,7 @@
 									</p:inputMask>
 									
 							</p:panelGrid>
-							<p:panelGrid columns="4"
+							<p:panelGrid columns="4" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-7,ui-grid-col-1"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
@@ -56,7 +57,7 @@
 								</p:inputText>	
 												
 								<p:inputText id="txtLblClt" value="#{encaissementVew.libelleClt}"/>
-								<p:commandButton icon="fa fa-search" style="border-radius:10px"
+								<p:commandButton icon="pi pi-search"  style="border-radius:10px"
 									onclick="PF('dlgClt').show();" />
 									
 								<p:outputLabel value="Type recette " />
@@ -65,13 +66,13 @@
 										update="txtLblRec"/>
 								</p:inputText>
 								<p:inputText id="txtLblRec" value="#{encaissementVew.libelleRec}"/>
-								<p:commandButton icon="fa fa-search" style="border-radius:10px"
+								<p:commandButton icon="pi pi-search" process="@this" style="border-radius:10px"
 									onclick="PF('dlgRec').show();" />
 								
 							</p:panelGrid>
 							
 							
-							<p:panelGrid columns="4"
+							<p:panelGrid columns="4" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-5,ui-grid-col-2,ui-grid-col-2"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
@@ -138,49 +139,58 @@
 
 						<div class="ui-g-12 ui-fluid card">
 							<div class="ui-g-12 ui-md-1" />
-							<div class="ui-g-3">
+							<div class="ui-g-2">
 								<p:commandButton value="Enregistrer"
-									action="#{encaissementVew.save()}" icon="ui-icon-disk" update="frmFcl"
+									action="#{encaissementVew.save()}" icon="pi pi-save" update="frmFcl"
 									style="border-radius:10px" id="btnSave" />
 							</div> 
-							<div class="ui-g-3">
+							<div class="ui-g-2">
 								<p:commandButton value="Supprimer"
-									action="#{encaissementVew.delete()}" icon="ui-icon-trash" id="btnDelete"
-									update="frmFcl" styleClass="orange-btn" style="border-radius:10px">
-									<p:confirm header="Confirmation"
-										disabled="#{encaissementVew.disableMsg}"
-										message="Voulez vous vraiment supprimer ?"
-										icon="ui-icon-alert" />
-								</p:commandButton>
+									onclick="PF('deleteDialog').show()" 
+									icon="pi pi-trash" id="btnDelete"
+									update="frmFcl" styleClass="ui-button-danger" 
+									style="border-radius:10px"/>
+									
 							</div>
-							<div class="ui-g-3">  
+							<div class="ui-g-2">  
 								<p:commandButton value="Initialiser" id="btnClean"
 									action="#{encaissementVew.initializeControl()}"
-									icon="ui-icon ui-icon-refresh" update="frmFcl"
-									style="border-radius:10px" />
+									icon="pi pi-sync" update="frmFcl"
+									style="border-radius:10px" 
+									styleClass="ui-button-secondary"/>
 							</div>
 						</div>
 					</div>
 
 				</div>
 			</h:form>
-			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
-				widgetVar="cd">
-				<p:commandButton value="Oui" type="button"
-					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-				<p:commandButton value="Non" type="button"
-					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-			</p:confirmDialog>
-			
+			<h:form>
+				<p:confirmDialog id="deleteDialogId" widgetVar="deleteDialog" rendered="#{encaissementVew.disableMsg}"
+					header="Confirmation" message="Voulez-vous vraiment supprimer ?"
+					icon="pi pi-question-circle" showEffect="fade" hideEffect="fade">
+
+					<p:commandButton value="Oui" icon="pi pi-check-circle"
+						styleClass="ui-button-outlined ui-button-danger"
+						action="#{encaissementVew.delete()}" update="frmFcl"
+						oncomplete="PF('deleteDialog').hide();" />
+
+					<p:commandButton value="Non" type="button"
+						icon="pi pi-times-circle"
+						styleClass="ui-button-outlined ui-button-info"
+						onclick="PF('deleteDialog').hide();" />
+
+				</p:confirmDialog>
+
+			</h:form>
 			
 		
 		<p:dialog widgetVar="dlgClt" header="Liste des clients"
-			modal="true" appendTo="@(body)" width="700" responsive="true">
+			modal="true" dynamic="true" width="700" responsive="true">
 			<h:form id="frmFclClt">
 
 				<div class="ui-g">
 					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
-						<p:panelGrid columns="3"
+						<p:panelGrid columns="3" contentStyleClass="compact-grid"
 							columnClasses="ui-grid-col-1,ui-grid-col-6,ui-grid-col-3"
 							layout="grid" styleClass="ui-panelgrid-blank"
 							style="background-color:transparent;">
@@ -199,7 +209,7 @@
 							var="clt" selectionMode="single" id="tblClt"
 							selection="#{encaissementVew.selectedClient}" rowKey="#{clt.id}"
 							reflow="true" scrollable="true" scrollHeight="200"
-							emptyMessage="">
+							emptyMessage="" showGridlines="true" size="small">
 
 							<p:ajax event="rowSelect"
 								listener="#{encaissementVew.getSelectedClientValue()}"
@@ -222,12 +232,12 @@
 		</p:dialog>
 		
 		<p:dialog widgetVar="dlgRec" header="Listes des types de recette"
-			modal="true" appendTo="@(body)" width="700" responsive="true">
+			modal="true" dynamic="true" width="700" responsive="true">
 			<h:form id="frmRec"> 
 
 				<div class="ui-g">
 					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
-						<p:panelGrid columns="3"
+						<p:panelGrid columns="3" contentStyleClass="compact-grid"
 							columnClasses="ui-grid-col-2,ui-grid-col-6,ui-grid-col-3"
 							layout="grid" styleClass="ui-panelgrid-blank"
 							style="background-color:transparent;">
@@ -248,7 +258,8 @@
 						
 						<p:dataTable var="rec" value="#{encaissementVew.listeRecette}" id="tblRec" emptyMessage=""
 							selectionMode="single" selection="#{encaissementVew.selectedRecette}"
-							rowKey="#{rec.id}" reflow="true" scrollable="true" scrollHeight="200">
+							rowKey="#{rec.id}" reflow="true"  showGridlines="true" size="small"
+							scrollable="true" scrollHeight="200">
 
 							<p:ajax event="rowSelect" listener="#{encaissementVew.getSelectedRecetteValue()}"
 								update="frmFcl" />
@@ -269,13 +280,13 @@
 			</h:form>
 		</p:dialog>
 		<p:dialog widgetVar="dlgFclt" header="Liste des factures clients"
-			modal="true" appendTo="@(body)" width="1200" responsive="true">
+			modal="true" dynamic="true" width="900" responsive="true">
 			<h:form id="frmClt">
 
 				<div class="ui-g">
 					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
-						<p:panelGrid columns="6"
-							columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,
+						<p:panelGrid columns="6" contentStyleClass="compact-grid"
+							columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,
 										  ui-grid-col-1,ui-grid-col-2"
 							layout="grid" styleClass="ui-panelgrid-blank"
 							style="background-color:transparent;">
@@ -298,7 +309,7 @@
 								update="tblFcl"/>
 						
 						</p:panelGrid>
-						<p:panelGrid columns="1"
+						<p:panelGrid columns="1" contentStyleClass="compact-grid"
 							columnClasses="ui-grid-col-6"
 							layout="grid" styleClass="ui-panelgrid-blank"
 							style="background-color:transparent;">
@@ -308,7 +319,7 @@
 							
 						<p:dataTable var="enc" value="#{encaissementVew.listEncaissement}" id="tblFcl"
 								selectionMode="single" selection="#{encaissementVew.selectedEncaissement}"
-								rowKey="#{enc.id}" reflow="true" 
+								rowKey="#{enc.id}" reflow="true" showGridlines="true" size="small"
 								scrollable="true" scrollHeight="250" emptyMessage="">
  
 								<p:ajax event="rowSelect" listener="#{encaissementVew.getSelectedFactureClient()}"

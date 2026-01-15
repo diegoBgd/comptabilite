@@ -5,6 +5,9 @@ import entite.Ecriture;
 import entite.Encaissement;
 import entite.Exercice;
 import entite.Journal;
+import entite.ParametreFinance;
+import entite.ReglementClient;
+import entite.ReglementFournisseur;
 import entite.TypeCharge;
 import entite.TypeEcriture;
 import entite.User;
@@ -24,6 +27,9 @@ import model.DepenseModel;
 import model.EncaissementModel;
 import model.ExerciceModel;
 import model.JournalModel;
+import model.ParametreFinanceModel;
+import model.ReglementClientModel;
+import model.ReglementModel;
 import model.TypeChargeModel;
 import model.UserModel;
 import org.hibernate.SessionFactory;
@@ -57,7 +63,7 @@ public class AfficherEcritureVew implements Serializable {
 
 	private List<SelectItem> listCharge;
 	private int idTypeChrg;
-	private TypeEcriture typeOperation;
+	private int typeOperation;
 	private List<Journal> listJrnl;
 	private boolean pagination;
 	TypeCharge selectedTypeChrg;
@@ -68,7 +74,11 @@ public class AfficherEcritureVew implements Serializable {
 	User currentUser;
 	List<Depense> listDepense;
 	List<Encaissement> listEncaissement;
-
+	List<ReglementClient> listReglementClt;
+	List<ReglementFournisseur> listReglementFrn;
+	List<Depense> listSortieFnd;
+	ParametreFinance prm;
+	
 	public List<Ecriture> getListeEcriture() {
 		return this.listeEcriture;
 	}
@@ -197,11 +207,11 @@ public class AfficherEcritureVew implements Serializable {
 		this.printSolde = printSolde;
 	}
 
-	public TypeEcriture getTypeOperation() {
+	public int getTypeOperation() {
 		return typeOperation;
 	}
 
-	public void setTypeOperation(TypeEcriture typeOperation) {
+	public void setTypeOperation(int typeOperation) {
 		this.typeOperation = typeOperation;
 	}
 
@@ -217,6 +227,7 @@ public class AfficherEcritureVew implements Serializable {
 	public void initialize() {
 		chargementSession();
 		chargerTypeCharge();
+		prm=new ParametreFinanceModel().getParameter(factory);
 	}
 
 	private void chargementSession() {
@@ -324,68 +335,270 @@ public class AfficherEcritureVew implements Serializable {
 
 	public void chargerEcritures() {
 		switch (this.typeOperation) {
-		case entreeFond:
-			chargerEntrer();
+		case 0:
+			chargerEntree();
 			break;
-
-		case sortieFond:
-			chargerDepense();
+		case 1:
+			chargerFactureClt();
+			break;
+		case 2:
+			chargerReglementClt();
+			break;
+		case 3:
+			chargerFactureFrn();
+			break;
+		case 4:
+			chargerReglementFrn();
+			break;
+		case 5:
+			chargerSortieFond();
+			break;
+		case 6:
+			break;
+		case 7:
+			break;
+		case 8:
+			break;
+		case 9:
+			break;
+		case 10:
+			break;
+		case 11:
+			break;
+		case 12:
+			break;
+		default:
 			break;
 		}
 	}
 
-	private void chargerEntrer() {
+	private void chargerEntree() {
 		this.pagination = false;
 		this.listEncaissement = (new EncaissementModel()).getListEncaissement(this.factory,
 				this.selecetdExercice.getId(), this.dateDebut, this.dateFin, TypeEcriture.entreeFond);
 		this.listeEcriture = new ArrayList<>();
 		Ecriture ecriture = null;
+		String compteDb="",compteCrd="";
 		for (Encaissement enc : this.listEncaissement) {
-			if (enc.getCompteBank() != null) {
+			switch (enc.getModeReglement()) {
+			case 1:
+				compteDb=enc.getBank().getCodeCpbl();
+				compteCrd=enc.getRecette().getCodeCpbl();
+				break;
+			case 2:				
+					compteDb=prm.getCompteChqEnc();
+					compteCrd=enc.getRecette().getCodeCpbl();				
+				break;
+			case 3:
+				if (enc.getCompteBank() != null) {
+					
+					compteDb=enc.getCompteBank().getCodeCpb();
+					compteCrd=enc.getRecette().getCodeCpbl();
+				}
+				break;
 
-				ecriture = createEcriture(enc.getCompteBank().getCodeCpb(), this.codeJrnl, enc.getPiece(),
-						enc.getCommentaire(), enc.getMontantTTC(), enc.getDateOperation(), 0);
-				this.listeEcriture.add(ecriture);
-
-			} else if (enc.getBank() != null) {
-
-				ecriture = createEcriture(enc.getCompteBank().getCodeCpb(), this.codeJrnl, enc.getPiece(),
-						enc.getCommentaire(), enc.getMontantTTC(), enc.getDateOperation(), 0);
-				this.listeEcriture.add(ecriture);
+			default:
+				break;
 			}
-
-			if (enc.getRecette() != null) {
-				ecriture = createEcriture(enc.getRecette().getCodeCpbl(), this.codeJrnl, enc.getPiece(),
-						enc.getCommentaire(), enc.getMontantTTC(), enc.getDateOperation(), 0);
-				this.listeEcriture.add(ecriture);
-			}
+			
+			
+			ecriture = createEcriture(compteDb, this.codeJrnl, enc.getPiece(),
+					enc.getCommentaire(), enc.getMontantTTC().doubleValue(), enc.getDateOperation(), 0,TypeEcriture.entreeFond);
+			this.listeEcriture.add(ecriture);
+			
+			ecriture = createEcriture(compteCrd, this.codeJrnl, enc.getPiece(),
+					enc.getCommentaire(), enc.getMontantTTC().doubleValue(), enc.getDateOperation(), 1,TypeEcriture.entreeFond);
+			this.listeEcriture.add(ecriture);
+			
 		}
+		calculTotaux();
 	}
 
-	private void chargerDepense() {
+	
+	private void chargerFactureClt() {
+		this.pagination = false;
+		this.listEncaissement = (new EncaissementModel()).getListEncaissement(this.factory,
+				this.selecetdExercice.getId(), this.dateDebut, this.dateFin, TypeEcriture.factureClient);
+		this.listeEcriture = new ArrayList<>();
+		Ecriture ecriture = null;
+		String compteDb="",compteCrd="",compteTxe="";
+		for (Encaissement enc : this.listEncaissement) {
+			compteDb=enc.getPartener().getCodeCpbl();
+			compteCrd=enc.getRecette().getCodeCpbl();
+			
+			ecriture = createEcriture(compteDb, this.codeJrnl, enc.getPiece(),
+					enc.getCommentaire(), enc.getMontantTTC().doubleValue(), enc.getDateOperation(), 0,TypeEcriture.factureClient);
+			this.listeEcriture.add(ecriture);
+			
+			ecriture = createEcriture(compteCrd, this.codeJrnl, enc.getPiece(),
+					enc.getCommentaire(), enc.getMontant().doubleValue(), enc.getDateOperation(), 1,TypeEcriture.factureClient);
+			this.listeEcriture.add(ecriture);
+			
+			if(enc.getTaxe()!=null)
+			{
+				compteTxe=enc.getTaxe().getCodeCpbl();
+		
+			ecriture = createEcriture(compteTxe, this.codeJrnl, enc.getPiece(),
+					enc.getCommentaire(), enc.getMontantTVA().doubleValue(), enc.getDateOperation(), 1,TypeEcriture.factureClient);
+			this.listeEcriture.add(ecriture);
+			}
+			
+		}
+		calculTotaux();
+	}
+	private void chargerReglementClt() {
+		this.pagination = false;
+		this.listReglementClt = new ReglementClientModel().getListReglement(this.factory,
+				this.selecetdExercice.getId(), this.dateDebut, this.dateFin, null);
+		this.listeEcriture = new ArrayList<>();
+		Ecriture ecriture = null;
+		String compteDb="",compteCrd="",compteTxe="";
+		for (ReglementClient reg : this.listReglementClt) {
+			reg.calculMontantTTC();
+			switch (reg.getModeReglement()) {
+			case 1:
+				compteDb=reg.getCaisse().getCodeCpbl();
+				compteCrd=reg.getEncaissement().getPartener().getCodeCpbl();
+				break;
+			case 2:				
+					compteDb=prm.getCompteChqEnc();
+					compteCrd=reg.getEncaissement().getPartener().getCodeCpbl();				
+				break;
+			case 3:
+				if (reg.getAccount() != null) {
+					
+					compteDb=reg.getAccount().getCodeCpb();
+					compteCrd=reg.getEncaissement().getPartener().getCodeCpbl();
+				}
+				break;
+
+			default:
+				break;
+			}
+			
+			
+			ecriture = createEcriture(compteDb, this.codeJrnl, reg.getPiece(),
+					reg.getComment(), reg.getMontantTTC().doubleValue(), reg.getDateReglement(), 0,TypeEcriture.reglementClient);
+			this.listeEcriture.add(ecriture);
+			
+			ecriture = createEcriture(compteCrd, this.codeJrnl, reg.getPiece(),
+					reg.getComment(), reg.getMontantTTC().doubleValue(), reg.getDateReglement(), 1,TypeEcriture.reglementClient);
+			this.listeEcriture.add(ecriture);
+			
+		}
+	
+		calculTotaux();
+	}
+	private void chargerFactureFrn() {
 		this.listeEcriture = new ArrayList<>();
 		this.listDepense = (new DepenseModel()).getListDepense(this.factory, this.selecetdExercice.getId(),
-				typeOperation, this.dateDebut, this.dateFin);
+				TypeEcriture.factureFournisseur, this.dateDebut, this.dateFin);
 		Ecriture ecriture = null;
+		String compteDb="",compteCrd="",compteTxe="";
 		for (Depense dep : this.listDepense) {
 
+			
+			compteDb=dep.getCharge().getCodeCpbl();
+			compteCrd=dep.getPartener().getCodeCpbl();
+			
 			dep.calculMontantTTC();
-			ecriture = createEcriture(dep.getCharge().getCodeCpbl(), this.codeJrnl, dep.getPiece(), dep.getLibelle(),
-					dep.getMontant(), dep.getDateOperation(), 0);
+			ecriture = createEcriture(compteDb, this.codeJrnl, dep.getPiece(), dep.getLibelle(),
+					dep.getMontantTTC().doubleValue(), dep.getDateOperation(), 0,TypeEcriture.factureFournisseur);
 			this.listeEcriture.add(ecriture);
-			if (dep.getTaxe() != null) {
-				ecriture = createEcriture(dep.getTaxe().getCodeCpbl(), this.codeJrnl, dep.getPiece(), dep.getLibelle(),
-						dep.getMontantTTC() - dep.getMontant(), dep.getDateOperation(), 0);
-				this.listeEcriture.add(ecriture);
+			
+			ecriture = createEcriture(compteCrd, this.codeJrnl, dep.getPiece(), dep.getLibelle(),
+					dep.getMontant().doubleValue(), dep.getDateOperation(), 1,TypeEcriture.factureFournisseur);
+			this.listeEcriture.add(ecriture);
+			
+			if(dep.getTaxe()!=null)
+			{
+				compteTxe=dep.getTaxe().getCodeCpbl();
+			
+			ecriture = createEcriture(compteTxe, this.codeJrnl, dep.getPiece(), dep.getLibelle(),
+					dep.getMontantTTC().doubleValue()-dep.getMontant().doubleValue(), dep.getDateOperation(), 1,TypeEcriture.factureFournisseur);
+			this.listeEcriture.add(ecriture);
 			}
-			ecriture = createEcriture(dep.getPartener().getCodeCpbl(), this.codeJrnl, dep.getPiece(), dep.getLibelle(),
-					dep.getMontantTTC(), dep.getDateOperation(), 1);
-			this.listeEcriture.add(ecriture);
 		}
 
 		calculTotaux();
 	}
 
+	private void chargerReglementFrn() {
+		this.pagination = false;
+		this.listReglementFrn = new ReglementModel(). getListReglement (this.factory,
+				this.selecetdExercice.getId(), this.dateDebut, this.dateFin, TypeEcriture.reglementFournisseur,null);
+		this.listeEcriture = new ArrayList<>();
+		Ecriture ecriture = null;
+		String compteDb="",compteCrd="",compteTxe="";
+		
+		for (ReglementFournisseur rf : listReglementFrn) {
+			rf.calculMontantTTC();
+			switch (rf.getModeReglement()) {
+			case 1:
+				compteDb=rf.getDepense().getPartener().getCodeCpbl();
+				compteCrd=rf.getCaisse().getCodeCpbl();
+				
+				break;
+			case 2:		
+				compteDb=rf.getDepense().getPartener().getCodeCpbl();
+				compteCrd=prm.getCompteChqEm();
+								
+				break;
+			case 3:
+				if (rf.getAccount() != null) {
+					compteDb=rf.getDepense().getPartener().getCodeCpbl();
+					compteCrd=rf.getAccount().getCodeCpb();
+					
+				}
+				break;
+
+			default:
+				break;
+			}
+			
+			ecriture = createEcriture(compteDb, this.codeJrnl, rf.getPiece(),
+					rf.getComment(), rf.getMontantTTC().doubleValue(), rf.getDateReglement(), 0,TypeEcriture.reglementFournisseur);
+			this.listeEcriture.add(ecriture);
+			
+			ecriture = createEcriture(compteCrd, this.codeJrnl, rf.getPiece(),
+					rf.getComment(), rf.getMontantTTC().doubleValue(), rf.getDateReglement(), 1,TypeEcriture.reglementFournisseur);
+			this.listeEcriture.add(ecriture);
+			
+		}
+		calculTotaux();
+	}
+	private void chargerSortieFond() {
+		this.listeEcriture = new ArrayList<>();
+		this.listDepense = (new DepenseModel()).getListDepense(this.factory, this.selecetdExercice.getId(),
+				TypeEcriture.sortieFond, this.dateDebut, this.dateFin);
+		Ecriture ecriture = null;
+		String compteDb="",compteCrd="",compteTxe="";
+		for (Depense dep : this.listDepense) {
+
+			compteDb=dep.getCharge().getCodeCpbl();
+			compteCrd=dep.getPartener().getCodeCpbl();
+			
+			dep.calculMontantTTC();
+			ecriture = createEcriture(compteDb, this.codeJrnl, dep.getPiece(), dep.getLibelle(),
+					dep.getMontantTTC().doubleValue(), dep.getDateOperation(), 0,TypeEcriture.sortieFond);
+			this.listeEcriture.add(ecriture);
+			
+			ecriture = createEcriture(compteCrd, this.codeJrnl, dep.getPiece(), dep.getLibelle(),
+					dep.getMontant().doubleValue(), dep.getDateOperation(), 1,TypeEcriture.sortieFond);
+			this.listeEcriture.add(ecriture);
+		
+
+			if(dep.getTaxe()!=null) {
+				compteTxe=dep.getTaxe().getCodeCpbl();
+			
+			ecriture = createEcriture(compteTxe, this.codeJrnl, dep.getPiece(), dep.getLibelle(),
+					dep.getMontantTTC().doubleValue()-dep.getMontant().doubleValue(), dep.getDateOperation(), 1,TypeEcriture.sortieFond);
+			this.listeEcriture.add(ecriture);
+			}
+		}
+
+		calculTotaux();
+	}
 	private void calculTotaux() {
 		double totDeb = 0.0D, totCrd = 0.0D, solde = 0.0D;
 		if (this.listeEcriture.size() > 0) {
@@ -402,14 +615,14 @@ public class AfficherEcritureVew implements Serializable {
 	}
 
 	private Ecriture createEcriture(String compte, String journal, String piece, String libelle, double montant,
-			Date dateEcr, int typeEntre) {
+			Date dateEcr, int sensEcriture,TypeEcriture type) {
 		Ecriture ecr = null;
 
 		ecr = new Ecriture();
 		ecr.setCpte(compte);
 		ecr.setJrnl(journal);
 		ecr.setDateOperation(dateEcr);
-		switch (typeEntre) {
+		switch (sensEcriture) {
 
 		case 0:
 			ecr.setDebit(montant);
@@ -426,7 +639,7 @@ public class AfficherEcritureVew implements Serializable {
 		ecr.setLibelle(libelle);
 
 		ecr.setPieceCpb(piece);
-		ecr.setSourceOperation(0);
+		ecr.setTypeOperation(type);
 
 		return ecr;
 	}

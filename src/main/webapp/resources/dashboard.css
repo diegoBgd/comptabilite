@@ -1,0 +1,150 @@
+@charset "ISO-8859-1";
+/* ============================================================
+   DASHBOARD GLOBAL
+   Compatible : PrimeFaces 11+ / Apollo 7
+   ============================================================ */
+
+body .kpi-container,
+body .chart-row,
+body .table-card,
+body .kpi-card {
+    box-sizing: border-box;
+}
+
+/* ============================================================
+   KPI SECTION
+   ============================================================ */
+
+.kpi-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.kpi-card {
+    position: relative;
+    padding: 25px 20px;
+    border-radius: 18px;
+    color: #fff;
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.kpi-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.24);
+}
+
+.kpi-icon {
+    font-size: 42px;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    opacity: 0.9;
+}
+
+.kpi-title {
+    font-size: 17px;
+    opacity: .9;
+}
+
+.kpi-value {
+    font-size: 32px;
+    font-weight: bold;
+    margin-top: 6px;
+}
+
+.kpi-trend {
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+/* ============================================================
+   KPI COLORS (GRADIENTS)
+   ============================================================ */
+
+.bg-gradient-blue {
+    background: linear-gradient(135deg, #3a7bd5 0%, #00d2ff 100%);
+}
+.bg-gradient-purple {
+    background: linear-gradient(135deg, #9d50bb 0%, #6e48aa 100%);
+}
+.bg-gradient-orange {
+    background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+    color: #444;
+}
+.bg-gradient-green {
+    background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+}
+
+/* ============================================================
+   CHARTS
+   ============================================================ */
+
+.chart-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.chart-card {
+    background: var(--surface-card);
+    padding: 18px 22px;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+.chart-card h3 {
+    margin: 0 0 15px 0;
+    font-size: 17px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ============================================================
+   TABLE SECTION
+   ============================================================ */
+
+.table-card {
+    background: var(--surface-card);
+    padding: 22px;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    margin-bottom: 25px;
+}
+
+.table-card h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+/* ============================================================
+   RESPONSIVE DESIGN
+   ============================================================ */
+
+@media (max-width: 1200px) {
+    .kpi-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .chart-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .kpi-container {
+        grid-template-columns: 1fr;
+    }
+    .kpi-card {
+        min-height: 120px;
+    }
+}

@@ -24,9 +24,6 @@
  
  
  
- 
- 
- 
  @ManagedBean
  @ViewScoped
  public class FonctionRoleVew
@@ -139,6 +136,7 @@
            e.printStackTrace();
          } 
        }
+      
      } 
    }
  

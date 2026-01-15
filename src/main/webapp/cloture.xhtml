@@ -6,15 +6,27 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
+	<ui:define name="title">Clôture</ui:define>
+	<ui:define name="head">
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/style.css" />
+	</ui:define>
 	<ui:define name="content">
-		<h:head>
-			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
-			<title>Cloture</title>
-		</h:head>
 		<body>
+			
+			<p:blockUI widgetVar="globalBlock" block="frmClo" trigger=":frmClo:btnCalculate">
+				<div style="text-align: center;">
+					<div>
+					<p:graphicImage name="Images/loading.gif" />
+					</div>
+					
+				</div>
+			</p:blockUI>
+
+
 			<h:form id="frmClo"
 				onkeypress="if (event.keyCode == 13) { return false; }">
-				<p:blockUI block="frmClo" trigger="btnCalculate" />
+				
 				<p:growl id="frmCloClo" life="21600" showDetail="true"
 					sticky="false" />
 				<div class="ui-g">
@@ -23,7 +35,7 @@
 						<div class="ui-g-12 ui-fluid card">
 
 
-							<p:panelGrid columns="2"
+							<p:panelGrid columns="2" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-6,ui-grid-col-3"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
@@ -44,15 +56,18 @@
 							</p:panelGrid>
 							<p:panelGrid columns="1" columnClasses="ui-grid-col-6"
 								layout="grid" styleClass="ui-panelgrid-blank"
-								style="background-color:transparent;">
+								style="background-color:transparent;" 
+								contentStyleClass="compact-grid">
 								<p:outputLabel value="#{clotureOuvertureVew.message}"
 									id="txtMsg" style="color:red" />
 							</p:panelGrid>
-							<p:panelGrid rendered="#{clotureOuvertureVew.disableBtn}">
-								<p:messages id="messages" showDetail="true" closable="false">
-									<p:autoUpdate />
-								</p:messages>
-							</p:panelGrid>
+							<p:panelGrid columns="1"  rendered="#{clotureOuvertureVew.disableBtn}"  contentStyleClass="compact-grid"
+							columnClasses="ui-grid-col-8" layout="grid" styleClass="ui-panelgrid-blank"  
+								style="background-color:transparent;"> 
+									<p:messages id="messages" showDetail="true" closable="false">
+										<p:autoUpdate />
+									</p:messages>
+								</p:panelGrid>
 						</div>
 
 
@@ -62,28 +77,23 @@
 								<p:commandButton value="Calculer le Résultat"
 									disabled="#{clotureOuvertureVew.disableBtn}"
 									action="#{clotureOuvertureVew.calculResultat()}"
-									icon="fa fa-calculator" update="frmJrnl,txtRes,txtTypeRes"
+									icon="pi pi-plus-circle" update="frmJrnl,txtRes,txtTypeRes"
 									style="border-radius:10px" id="btnCalculate" />
 							</div>
 							<div class="ui-g-2">
 								<p:commandButton value="Ecritures comptables" id="btnEcrt"
 									action="A" disabled="#{clotureOuvertureVew.disableBtn}"
-									icon="fa fa-edit" update="frmClo" style="border-radius:10px"
+									icon="pi pi-pencil" update="frmClo" style="border-radius:10px"
 									onclick="PF('dlgJrnl').show();" />
 							</div>
 							<div class="ui-g-2">
 								<p:commandButton value="Clôturer"
 									disabled="#{clotureOuvertureVew.disableBtn}"
-									action="#{clotureOuvertureVew.saveCloture()}" icon="fa fa-lock"
+									icon="pi pi-lock"
 									id="btnCancel" update="frmClo" styleClass="orange-btn"
-									style="border-radius:10px">
-									<p:confirm header="Confirmation"
-										disabled="#{clotureOuvertureVew.disableMsg}"
-										message="Cette opération est irréversible. Voulez-vous vraiment clôturer l'exercice ?"
-										icon="ui-icon-alert" />
-								</p:commandButton>
-
-
+									style="border-radius:10px"
+									action="#{clotureOuvertureVew.saveCloture()}"/>
+									
 							</div>
 
 						</div>
@@ -93,18 +103,30 @@
 
 				</div>
 			</h:form>
-			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
-				widgetVar="cd" style="color:red">
-				<p:commandButton value="Oui" type="button"
-					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-				<p:commandButton value="Non" type="button" 
-					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-			</p:confirmDialog>
+			
 
+			<h:form>
+				<p:confirmDialog id="deleteDialogId" widgetVar="deleteDialog"
+					header="Confirmation" message="Cette opération est irréversible. Voulez-vous vraiment clôturer l'exercice ?"
+					icon="pi pi-question-circle" showEffect="fade" hideEffect="fade">
+
+					<p:commandButton value="Oui" icon="pi pi-check-circle"
+						styleClass="ui-button-outlined ui-button-danger"
+						action="#{clotureOuvertureVew.saveCloture()}" update=":frmClo"
+						oncomplete="PF('deleteDialog').hide();" />
+
+					<p:commandButton value="Non" type="button"
+						icon="pi pi-times-circle"
+						styleClass="ui-button-outlined ui-button-info"
+						onclick="PF('deleteDialog').hide();" />
+
+				</p:confirmDialog>
+
+			</h:form>
 
 
 			<p:dialog widgetVar="dlgJrnl" header="Ecritures comptable"
-				modal="true" appendTo="@(body)" width="1000" responsive="true">
+				modal="true"  width="1000" responsive="true">
 				<h:form id="frmJrnl">
 
 					<div class="ui-g">
@@ -112,7 +134,7 @@
 
 
 							<p:dataTable value="#{clotureOuvertureVew.listEcriture}"
-								var="ecr" reflow="true" rows="10"
+								var="ecr" reflow="true" rows="10" size="small" 
 								paginatorAlwaysVisible="#{clotureOuvertureVew.pagination}"
 								paginator="true" paginatorPosition="bottom" emptyMessage="">
 

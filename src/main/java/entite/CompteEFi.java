@@ -41,10 +41,20 @@
    private Long valeurPrecedent;
    @Transient
    private boolean calucule;
+   @Transient
+   private int ligne;
    
-   public int getId() {
+	public int getLigne() {
+		return ligne;
+	}
+
+	public void setLigne(int ligne) {
+		this.ligne = ligne;
+	}
+
+	public int getId() {
      return this.id;
-   }
+    }
    
    public void setId(int id) {
      this.id = id;

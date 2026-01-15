@@ -16,6 +16,8 @@ import entite.TypePartener;
 import entite.User;
 import java.io.IOException;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -86,10 +88,10 @@ public class DepenseVew implements Serializable {
 	private Date dateDebut;
 	private Date dateFin;
 	private Date dateOp;
-	private double tauxDevise;
-	private double tauxTva;
-	private double montantHt;
-	private double montantTvac;
+	private BigDecimal tauxDevise;
+	private BigDecimal tauxTva;
+	private BigDecimal montantHt;
+	private BigDecimal montantTvac;
 	DepenseModel model;
 	Compte compteDb;
 	Compte compteFn;
@@ -339,35 +341,35 @@ public class DepenseVew implements Serializable {
 		this.dateOp = dateOp;
 	}
 
-	public double getTauxDevise() {
+	public BigDecimal getTauxDevise() {
 		return this.tauxDevise;
 	}
 
-	public void setTauxDevise(double tauxDevise) {
+	public void setTauxDevise(BigDecimal tauxDevise) {
 		this.tauxDevise = tauxDevise;
 	}
 
-	public double getTauxTva() {
+	public BigDecimal getTauxTva() {
 		return this.tauxTva;
 	}
 
-	public void setTauxTva(double tauxTva) {
+	public void setTauxTva(BigDecimal tauxTva) {
 		this.tauxTva = tauxTva;
 	}
 
-	public double getMontantHt() {
+	public BigDecimal getMontantHt() {
 		return this.montantHt;
 	}
 
-	public void setMontantHt(double montantHt) {
+	public void setMontantHt(BigDecimal montantHt) {
 		this.montantHt = montantHt;
 	}
 
-	public double getMontantTvac() {
+	public BigDecimal getMontantTvac() {
 		return this.montantTvac;
 	}
 
-	public void setMontantTvac(double montantTvac) {
+	public void setMontantTvac(BigDecimal montantTvac) {
 		this.montantTvac = montantTvac;
 	}
 
@@ -439,7 +441,7 @@ public class DepenseVew implements Serializable {
 	public void initialize() {
 		this.disableMsg = true;
 		this.model = new DepenseModel();
-		tauxDevise=1;
+		tauxDevise=BigDecimal.ONE;
 		chargementSession();
 		chargerBanque();
 		chargerTaxe();
@@ -643,7 +645,7 @@ public class DepenseVew implements Serializable {
 				calculerMontantTTC();
 			} else {
 
-				this.tauxTva = 0.0D;
+				this.tauxTva = BigDecimal.ZERO;
 			}
 		}
 	}
@@ -726,25 +728,31 @@ public class DepenseVew implements Serializable {
 	}
 
 	public void calculerMontantTTC() {
-		this.montantTvac = 0.0D;
-		if (this.tauxTva > 0.0D) {
+	    if (montantHt == null) montantHt = BigDecimal.ZERO;
+	    if (tauxTva == null) tauxTva = BigDecimal.ZERO;
 
-			this.montantTvac = this.montantHt * (1.0D + this.tauxTva / 100.0D);
-		} else {
-
-			this.montantTvac = this.montantHt;
-		}
+	    if (tauxTva.compareTo(BigDecimal.ZERO) > 0) {
+	        BigDecimal facteur = tauxTva
+	                .divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP)
+	                .add(BigDecimal.ONE);
+	        montantTvac = montantHt.multiply(facteur).setScale(2, RoundingMode.HALF_UP);
+	    } else {
+	        montantTvac = montantHt.setScale(2, RoundingMode.HALF_UP);
+	    }
 	}
 
 	public void calculerMontantHT() {
-		this.montantHt = 0.0D;
-		if (this.tauxTva > 0.0D) {
+	    if (montantTvac == null) montantTvac = BigDecimal.ZERO;
+	    if (tauxTva == null) tauxTva = BigDecimal.ZERO;
 
-			this.montantHt = this.montantTvac / (1.0D + this.tauxTva / 100.0D);
-		} else {
-
-			this.montantHt = this.montantTvac;
-		}
+	    if (tauxTva.compareTo(BigDecimal.ZERO) > 0) {
+	        BigDecimal diviseur = tauxTva
+	                .divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP)
+	                .add(BigDecimal.ONE);
+	        montantHt = montantTvac.divide(diviseur, 2, RoundingMode.HALF_UP);
+	    } else {
+	        montantHt = montantTvac.setScale(2, RoundingMode.HALF_UP);
+	    }
 	}
 
 	private void getDepenseValue() {
@@ -759,7 +767,7 @@ public class DepenseVew implements Serializable {
 		this.comment = this.selectedDepense.getLibelle();
 		this.montantHt = this.selectedDepense.getMontant();
 		this.tauxTva = this.selectedDepense.getTauxTaxe();
-		this.pieceCmpt = this.selectedDepense.getPiece();
+		this.numeroBon = this.selectedDepense.getPiece();
 		this.printDate = HelperC.changeDateFormate(this.dateOp);
 		if (this.selectedCentre != null) {
 
@@ -783,6 +791,7 @@ public class DepenseVew implements Serializable {
 			getChargeValue();
 		}
 		this.disableMsg = false;
+		calculerMontantTTC();
 	}
 
 	public void save() {
@@ -800,7 +809,7 @@ public class DepenseVew implements Serializable {
 			this.selectedDepense.setIdExercise(this.selecetdExercice.getId());
 			this.selectedDepense.setLibelle(this.comment);
 			this.selectedDepense.setMontant(this.montantHt);
-			this.selectedDepense.setPiece(this.pieceCmpt);
+			this.selectedDepense.setPiece(this.numeroBon);
 			this.selectedDepense.setTauxTaxe(this.tauxTva);
 			this.selectedDepense.setTaxe(this.selectedTaxe);
 			this.selectedDepense.setTypeOperation(this.typeOper);
@@ -832,12 +841,12 @@ public class DepenseVew implements Serializable {
 		this.selectedDev = null;
 		this.selectedFourn = null;
 		this.selectedTaxe = null;
-		this.tauxTva = 0.0D;
+		this.tauxTva = BigDecimal.ZERO;
 		this.dateOp = null;
 		this.comment = "";
-		this.montantTvac = 0.0D;
-		this.tauxDevise = 0.0D;
-		this.montantHt = 0.0D;
+		this.montantTvac = BigDecimal.ZERO;
+		this.tauxDevise = BigDecimal.ZERO;
+		this.montantHt = BigDecimal.ZERO;
 		this.pieceCmpt = "";
 		this.codeChrg = "";
 		this.codeFrn = "";

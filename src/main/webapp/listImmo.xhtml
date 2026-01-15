@@ -6,12 +6,13 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
+	<ui:define name="title">Liste des immo</ui:define>
+	<ui:define name="head">
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/style.css" />
+	</ui:define>
 	<ui:define name="content">
-		<h:head>
-			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
-			<title>journal</title>
-		</h:head>
-		<body>
+	<body>
 			<h:form id="frm"
 				onkeypress="if (event.keyCode == 13) { return false; }">
 				<p:blockUI block="frm" />
@@ -23,31 +24,33 @@
 							
 							<div class="ui-g-12 ui-md-3">
 								<p:commandButton value="Afficher "
-									icon="fa fa-search" style="border-radius:10px"
+									icon="pi pi-file" style="border-radius:10px"
 									onclick="PF('pbAjax').start();PF('poll').start();"
 									onstart="PF('dlg').show();"
 									oncomplete="PF('dlg').hide();PF('poll').stop();PF('pbAjax').cancel();"
 									action="#{listeImmo.calculAmortissement()}" update=":frm" />
 
 							</div>
-							<div class="ui-g-12 ui-md-3">
-							<p:commandButton value="Exporter en pdf" icon="fa fa-file-pdf-o"
-									style="border-radius:10px" ajax="false"
-									action="#{listeImmo.printPdf()}" /> 
-								
-							</div>
-							<div class="ui-g-12 ui-md-3">
-							<p:commandButton value="Exporter en excel"
-									icon="fa fa-file-excel-o" style="border-radius:10px"
-									action="#{listeImmo.printExcel()}" ajax="false" />
-							</div>
+							
 						</div>
 
 						<div class="ui-g-12 ui-fluid card">
+						
+							<div style="display: flex; justify-content: flex-end; gap: 15px;">
+								<p:commandButton ajax="false" icon="pi pi-file-pdf"
+									action="#{listeImmo.printPdf()}"
+									update="txtMsg" styleClass="ui-button-outlined ui-button-danger" />
+
+								<p:commandButton ajax="false" icon="pi pi-file-excel"
+									styleClass="ui-button-outlined ui-button-success"
+									action="#{listeImmo.printExcel()}"
+									update="txtMsg" />
+							</div>
+							
 							<p:dataTable var="amrt" value="#{listeImmo.listAmrt}"
 								id="tbl" emptyMessage="" selectionMode="single"
 								rowKey="#{amrt.numero}" reflow="true" scrollable="true"
-								scrollHeight="400">
+								scrollHeight="400" size="small" showGridlines="true">
 
 								<p:column headerText="" width="5%">
 									<h:outputText value="#{amrt.numero}" />

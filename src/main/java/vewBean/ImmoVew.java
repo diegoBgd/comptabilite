@@ -539,9 +539,7 @@
      this.taux = this.selectedImmo.getTauxAmort();
      this.type = this.selectedImmo.getTypeAmort();
      this.montantVnc = this.selectedImmo.getVnc();
-     this.cptAmrt = this.selectedImmo.getCompteAmrt();
-     this.cptDot = this.selectedImmo.getCompteDotAmrt();
-     this.cptImmo = this.selectedImmo.getCompteImmo();
+    
      this.printDateAq = HelperC.changeDateFormate(this.dateAcq);
      searchCompteAmrt();
      searchCompteDot();
@@ -604,7 +602,7 @@
        this.selectedImmo.setAmortissable(this.amortizable);
        this.selectedImmo.setCompteAmrt(this.cptAmrt);
        this.selectedImmo.setCompteDotAmrt(this.cptDot);
-       this.selectedImmo.setCompteImmo(this.cptDot);
+       this.selectedImmo.setCompteImmo(this.cptImmo);
        this.selectedImmo.setDateAcquisition(this.dateAcq);
        this.selectedImmo.setLibelle(this.designation);
        this.selectedImmo.setMontantAcq(this.montantAcq);
@@ -643,8 +641,7 @@
      this.montantAnterieur = 0.0D;
      this.montantExercice = 0.0D;
      this.amortizable = 0;
-     this.cptAmrt = "";
-     this.cptAmrt = "";
+ 
      this.cptImmo = "";
      this.dateAcq = null;
      this.idImmo = 0;
@@ -659,11 +656,10 @@
      this.printDateAq = "";
      this.cptAmrt = "";
      this.cptDot = "";
-     this.cptImmo = "";
      this.lblCptAmrt = "";
      this.lblCptDotAmrt = "";
      this.lblCptImmo = "";
-     this.lblCptAmrt = null;
+ 
      this.disableMsg = true;
      this.listAmrt = null;
    }

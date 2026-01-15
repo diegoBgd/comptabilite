@@ -6,23 +6,24 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
+	<ui:define name="title">Solde du journal</ui:define>
+	<ui:define name="head">
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/style.css" />
+	</ui:define>
 	<ui:define name="content">
-		<h:head>
-			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
-			<title>journal</title>
-		</h:head>
 		<body>
 			<h:form id="frm"
 				onkeypress="if (event.keyCode == 13) { return false; }">
 				<p:blockUI block="frm" trigger="" />
 				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
-				<div class="ui-g">
+				
 					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
 						<div class="ui-g-12 ui-fluid card no-margin">
 
 							<p:panelGrid columns="4"
 								columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-8,ui-grid-col-1"
-								layout="grid" styleClass="ui-panelgrid-blank"
+								layout="grid" styleClass="ui-panelgrid-blank" contentStyleClass="compact-grid"
 								style="border:0px none; background-color:transparent;">
 								<h:outputText value="Journal" />
 								<p:inputText id="txtCd" value="#{operationComptable.codeJrnl}">
@@ -32,14 +33,14 @@
 								<p:inputText id="txtDsn"
 									value="#{operationComptable.libelleJrnl}" readonly="true" />
 
-								<p:commandButton icon="fa fa-search" style="border-radius:10px"
-									onclick="PF('dlgJrnl').show();" />
+								<p:commandButton icon="pi pi-search" style="border-radius:10px"
+									onclick="PF('dlgJrnl').show();" process="@this"/>
 							</p:panelGrid>
 
 
 							<p:panelGrid columns="6"
-								columnClasses="ui-grid-col-1,ui-grid-col-1,ui-grid-col-1,ui-grid-col-1,ui-grid-col-2,ui-grid-col-5"
-								layout="grid" styleClass="ui-panelgrid-blank"
+								columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,ui-grid-col-2,ui-grid-col-5"
+								layout="grid" styleClass="ui-panelgrid-blank" contentStyleClass="compact-grid"
 								style="border:0px none; background-color:transparent;">
 								<p:outputLabel value="Date début" />
 								<p:inputMask id="txtDateDebut"
@@ -55,31 +56,19 @@
 									<p:ajax event="blur"
 										listener="#{operationComptable.changeDateFin()}"
 										update="txtMsg,txtDateFin" />
+										
 								</p:inputMask>
-
-							
-
-							</p:panelGrid>
-							
-							<p:panelGrid columns="4" columnClasses="ui-grid-col-3,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
-								layout="grid" styleClass="ui-panelgrid-blank"
-								style="background-color:transparent;">
-								
-								<p:spacer/>
-								<p:commandButton value="Afficher" icon="fa fa-newspaper-o"
+								<p:commandButton value="Afficher" icon="pi pi-file"
 									style="border-radius:10px"
 									action="#{operationComptable.chargerSoldeJournaux()}" update="tbl" />
-								<p:commandButton value="Editer en pdf" icon="fa fa-file-pdf-o"
-									style="border-radius:10px" ajax="false"
-									action="#{operationComptable.printSoldeJournalPdf()}" />
-								<p:commandButton value="Editer en excel"
-									icon="fa fa-file-excel-o" style="border-radius:10px"
-									action="#{operationComptable.printSoldeJournalExcel()}" ajax="false" />
 							
+
 							</p:panelGrid>
+							
+						
 							<p:panelGrid columns="1" columnClasses="ui-grid-col-6"
-								layout="grid" styleClass="ui-panelgrid-blank"
-								style="background-color:transparent;">
+								layout="grid" styleClass="ui-panelgrid-blank" 
+								style="background-color:transparent;" contentStyleClass="compact-grid">
 								<p:outputLabel value="#{operationComptable.infoMsg}" id="txtMsg"
 									style="color:red" />
 
@@ -87,7 +76,20 @@
 						</div>
 
 						<div class="ui-g-12 ui-fluid card">
-							<p:dataTable var="solde"
+						
+						<div class="ui-g-12 ui-fluid card">
+							<div style="display: flex; justify-content: flex-end; gap: 15px;">
+								<p:commandButton ajax="false" icon="pi pi-file-pdf"
+									action="#{operationComptable.printSoldeJournalPdf()}"
+									update="txtMsg" styleClass="ui-button-outlined ui-button-danger" />
+
+								<p:commandButton ajax="false" icon="pi pi-file-excel"
+									styleClass="ui-button-outlined ui-button-succes"
+									action="#{operationComptable.printSoldeJournalExcel()}"
+									update="txtMsg" />
+							</div>
+						
+							<p:dataTable var="solde" size="small" 
 								value="#{operationComptable.listSolde}" id="tbl"
 								reflow="true" emptyMessage=""
 								paginatorAlwaysVisible="#{operationComptable.pagination}"
@@ -131,7 +133,7 @@
 
 				<div class="ui-g">
 					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
-						<p:panelGrid columns="3"
+						<p:panelGrid columns="3" contentStyleClass="compact-grid"
 							columnClasses="ui-grid-col-2,ui-grid-col-6,ui-grid-col-3"
 							layout="grid" styleClass="ui-panelgrid-blank"
 							style="background-color:transparent;">
@@ -149,7 +151,7 @@
 							var="jrn" selectionMode="single" id="tblJrnl"
 							selection="#{operationComptable.selectedJrnl}" rowKey="#{jrn.id}"
 							reflow="true" scrollable="true" scrollHeight="200"
-							emptyMessage="">
+							emptyMessage="" size="small" >
 
 							<p:ajax event="rowSelect"
 								listener="#{operationComptable.getSelecedJrnlValue()}"

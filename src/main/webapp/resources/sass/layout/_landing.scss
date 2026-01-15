@@ -94,7 +94,6 @@
             .subtitle {
                 font-size: 24px;
                 margin-bottom: 30px;
-                font-weight: lighter;
             }
             
             img {
@@ -133,7 +132,7 @@
             color: #ffffff;
         }
         
-        .fa-feature {
+        .pi-feature {
             font-size: 80px;
             margin-bottom: 20px;
             color: $primaryColor;
@@ -167,7 +166,6 @@
                 position: absolute;
                 top: 250px;
                 color: #fff;
-                font-weight: lighter;
             }
             
             img {
@@ -208,7 +206,6 @@
             p {
                 font-size: 18px;
                 padding-bottom: 32px;
-                font-weight: lighter;
             }
             
             #testimonials-text {
@@ -235,7 +232,7 @@
             margin: 0 auto;
             text-align: center;
                         
-            .ui-g {
+            .grid {
                 margin-top: 50px;
             }
                         
@@ -301,7 +298,6 @@
             
             > p {
                 font-size: 20px;
-                font-weight: lighter;
             }
 
             .video-title {
@@ -344,7 +340,7 @@
     }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: $tabletBreakpoint) {
     .landing-wrapper {
         #menu-button {
             display: block;
@@ -362,8 +358,7 @@
                     float: none;
                     position: fixed;
                     top: 80px;
-                    right: 0px;
-                    width: 200px;
+                    right: 0;
                     height: 100%;
                     background-color: #243447;
                     padding-top: 15px;
@@ -394,7 +389,7 @@
                                 width: 15px;
                             }
                             
-                            .fa {
+                            .pi {
                                 display: inline-block;
                             }
                         }
@@ -534,7 +529,7 @@
     .landing-wrapper {
         #landing-feature {
             text-align: center;
-            padding: 50px 0;
+            padding: 150px 0;
             .landing-container {
                 padding: 0;
             }

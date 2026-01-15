@@ -94,6 +94,7 @@
      catch (Exception e) {
        b = false;
        e.getMessage();
+       ss.close();
      } 
      return b;
    }
@@ -102,9 +103,9 @@
    @SuppressWarnings("rawtypes")
 			public User getUserByCode(SessionFactory factory, String code) {
      User u = null;
-     
+     Session session=null;
      try {
-       Session session = factory.openSession();
+        session = factory.openSession();
        session.beginTransaction();
        
        Query query = session.createQuery("SELECT p from User p WHERE p.userCod=:a");
@@ -116,6 +117,7 @@
      catch (Exception e) {
        
        e.getMessage();
+       session.close();
      } 
      return u;
    }
@@ -124,10 +126,10 @@
    @SuppressWarnings("rawtypes")
 			public User getUSerByLogin(SessionFactory factory, String code, String pwd) {
      User u = null;
- 
+     Session session =null;
      
      try {
-       Session session = factory.openSession();
+        session = factory.openSession();
        session.beginTransaction();
        
        Query  query = session.createQuery("SELECT p from User p WHERE p.userCod=:a AND p.userPwd=:b");
@@ -149,8 +151,9 @@
    @SuppressWarnings("unchecked")
 			public List<User> getListActiveUser(SessionFactory factory) {
      List<User> list = null;
+     Session session =null;
      try {
-       Session session = factory.openSession();
+        session = factory.openSession();
        session.beginTransaction();
        Query<User> query = session.createQuery("SELECT p from User p WHERE p.actif=1");
        
@@ -161,6 +164,7 @@
        session.close();
      } catch (Exception e) {
        System.out.println(e.toString());
+       session.close();
      } 
      return list;
    }
@@ -168,8 +172,9 @@
    
    public List<User> getListUser(SessionFactory factory, String mot) {
      List<User> list = null;
+     Session session =null;
      try {
-       Session session = factory.openSession();
+        session = factory.openSession();
        session.beginTransaction();
        @SuppressWarnings("unchecked")
 				Query<User> query = session.createQuery("SELECT p from User p order by p.userCod");
@@ -180,6 +185,7 @@
        session.close();
      } catch (Exception e) {
        System.out.println(e.toString());
+       session.close();
      } 
      return list;
    }

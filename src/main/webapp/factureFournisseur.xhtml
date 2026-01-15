@@ -6,11 +6,12 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
+	<ui:define name="title">Saisie des immo</ui:define>
+	<ui:define name="head">
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/style.css" />
+	</ui:define>
 	<ui:define name="content">
-		<h:head>
-			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
-			<title>Factures fournisseurs</title>
-		</h:head>
 		<body>
 			<h:form id="frmFF"
 				onkeypress="if (event.keyCode == 13) { return false; }">
@@ -21,21 +22,21 @@
 					
 						<div class="ui-g-12 ui-fluid card">
 							<div class="ui-g-12 ui-md-1"/>
-							<div class="ui-g-12 ui-md-4">
-							<p:commandButton value="Recherche des factures"
-								icon="fa fa-search" style="border-radius:10px"
+							<div class="ui-g-12 ui-md-3">
+							<p:commandButton value="Liste des factures"
+								icon="pi pi-list" style="border-radius:10px"
 								oncomplete="PF('dlgDep').show();" />
 						</div>
 						</div>
 						<div class="ui-g-12 ui-fluid card">
  
-							<p:panelGrid columns="4"
+							<p:panelGrid columns="4" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-5,ui-grid-col-2,ui-grid-col-2"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
 								
 								<h:outputText value="N° facture"/>								
-								<p:inputText value="#{depenseVew.pieceCmpt}"/>
+								<p:inputText value="#{depenseVew.numeroBon}"/>
 								
 								<p:outputLabel value="Date"/>
 									<p:inputMask id="txtDate" value="#{depenseVew.printDate}" mask="99/99/9999">
@@ -44,7 +45,7 @@
 									</p:inputMask>
 									
 							</p:panelGrid>
-							<p:panelGrid columns="4"
+							<p:panelGrid columns="4" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-7,ui-grid-col-1"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
@@ -56,8 +57,8 @@
 								</p:inputText>	
 												
 								<p:inputText id="txtLblFrn" value="#{depenseVew.libelleFrn}"/>
-								<p:commandButton icon="fa fa-search" style="border-radius:10px"
-									onclick="PF('dlgFrn').show();" />
+								<p:commandButton  icon="pi pi-search" style="border-radius:10px"
+									onclick="PF('dlgFrn').show();" process="@this"/>
 									
 								<p:outputLabel value="Type dépense" />
 								<p:inputText id="txtCdCh" value="#{depenseVew.codeChrg}">
@@ -65,13 +66,14 @@
 										update="txtLblChg"/>
 								</p:inputText>
 								<p:inputText id="txtLblChg" value="#{depenseVew.libelleChrg}"/>
-								<p:commandButton icon="fa fa-search" style="border-radius:10px"
+								<p:commandButton  icon="pi pi-search" process="@this" 
+								style="border-radius:10px"
 									onclick="PF('dlgChg').show();" />
 								
 							</p:panelGrid>
 							
 							
-							<p:panelGrid columns="4"
+							<p:panelGrid columns="4" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-5,ui-grid-col-2,ui-grid-col-2"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
@@ -138,39 +140,49 @@
 
 						<div class="ui-g-12 ui-fluid card">
 							<div class="ui-g-12 ui-md-1" />
-							<div class="ui-g-3">
+							<div class="ui-g-2">
 								<p:commandButton value="Enregistrer"
-									action="#{depenseVew.save()}" icon="ui-icon-disk" update="frmFF"
+									action="#{depenseVew.save()}" icon="pi pi-save" update="frmFF"
 									style="border-radius:10px" id="btnSave" />
 							</div> 
-							<div class="ui-g-3">
+							<div class="ui-g-2">
 								<p:commandButton value="Supprimer"
-									action="#{depenseVew.delete()}" icon="ui-icon-trash" id="btnDelete"
-									update="frmFF" styleClass="orange-btn" style="border-radius:10px">
-									<p:confirm header="Confirmation"
-										disabled="#{depenseVew.disableMsg}"
-										message="Voulez vous vraiment supprimer ?"
-										icon="ui-icon-alert" />
-								</p:commandButton>
+									onclick="PF('deleteDialog').show()" 
+									icon="pi pi-trash" id="btnDelete"
+									update="frmFF" styleClass="ui-button-danger" 
+									style="border-radius:10px"/>
+									
 							</div>
-							<div class="ui-g-3">  
+							<div class="ui-g-2">  
 								<p:commandButton value="Initialiser" id="btnClean"
 									action="#{depenseVew.initializeControl()}"
-									icon="ui-icon ui-icon-refresh" update="frmFF"
-									style="border-radius:10px" />
+									icon="pi pi-sync" update="frmFF"
+									style="border-radius:10px" 
+									styleClass="ui-button-secondary"/>
 							</div>
 						</div>
 					</div>
 
 				</div>
 			</h:form>
-			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
-				widgetVar="cd">
-				<p:commandButton value="Oui" type="button"
-					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-				<p:commandButton value="Non" type="button"
-					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-			</p:confirmDialog>
+			<h:form>
+				<p:confirmDialog id="deleteDialogId" widgetVar="deleteDialog" rendered="#{depenseVew.disableMsg}"
+					header="Confirmation" message="Voulez-vous vraiment supprimer ?"
+					icon="pi pi-question-circle" showEffect="fade" hideEffect="fade">
+
+					<p:commandButton value="Oui" icon="pi pi-check-circle"
+						styleClass="ui-button-outlined ui-button-danger"
+						action="#{depenseVew.delete()}" update="frmFF"
+						oncomplete="PF('deleteDialog').hide();" />
+
+					<p:commandButton value="Non" type="button"
+						icon="pi pi-times-circle"
+						styleClass="ui-button-outlined ui-button-info"
+						onclick="PF('deleteDialog').hide();" />
+
+				</p:confirmDialog>
+
+			</h:form>
 			
 			
 		
@@ -180,7 +192,7 @@
 
 				<div class="ui-g">
 					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
-						<p:panelGrid columns="3"
+						<p:panelGrid columns="3" contentStyleClass="compact-grid"
 							columnClasses="ui-grid-col-1,ui-grid-col-6,ui-grid-col-3"
 							layout="grid" styleClass="ui-panelgrid-blank"
 							style="background-color:transparent;">
@@ -199,7 +211,7 @@
 							var="frn" selectionMode="single" id="tblFrn"
 							selection="#{depenseVew.selectedFourn}" rowKey="#{frn.id}"
 							reflow="true" scrollable="true" scrollHeight="200"
-							emptyMessage=""> 
+							emptyMessage="" size="small" showGridlines="true"> 
 
 							<p:ajax event="rowSelect"
 								listener="#{depenseVew.getSelectedFrnValue()}"
@@ -227,7 +239,7 @@
 
 				<div class="ui-g">
 					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
-						<p:panelGrid columns="3"
+						<p:panelGrid columns="3" contentStyleClass="compact-grid"
 							columnClasses="ui-grid-col-2,ui-grid-col-6,ui-grid-col-3"
 							layout="grid" styleClass="ui-panelgrid-blank"
 							style="background-color:transparent;">
@@ -246,7 +258,8 @@
 						
 						</p:panelGrid>
 						
-						<p:dataTable var="chg" value="#{depenseVew.listCharge}" id="tblCgh" emptyMessage=""
+						<p:dataTable var="chg" value="#{depenseVew.listCharge}" 
+							id="tblCgh" emptyMessage="" size="small" showGridlines="true"
 							selectionMode="single" selection="#{depenseVew.selectedCharg}"
 							rowKey="#{chg.id}" reflow="true" scrollable="true" scrollHeight="200">
 
@@ -269,12 +282,12 @@
 			</h:form>
 		</p:dialog>
 		<p:dialog widgetVar="dlgDep" header="Liste des dépenses"
-			modal="true" appendTo="@(body)" width="1200" responsive="true">
+			modal="true" appendTo="@(body)" width="900" responsive="true">
 			<h:form id="frmDep">
 
 				<div class="ui-g">
 					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
-						<p:panelGrid columns="6"
+						<p:panelGrid columns="6" contentStyleClass="compact-grid"
 							columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,
 										  ui-grid-col-1,ui-grid-col-2"
 							layout="grid" styleClass="ui-panelgrid-blank"
@@ -298,7 +311,7 @@
 								update="tbl"/>
 						
 						</p:panelGrid>
-						<p:panelGrid columns="1"
+						<p:panelGrid columns="1" contentStyleClass="compact-grid"
 							columnClasses="ui-grid-col-6"
 							layout="grid" styleClass="ui-panelgrid-blank"
 							style="background-color:transparent;">
@@ -308,7 +321,7 @@
 							
 						<p:dataTable var="dep" value="#{depenseVew.listDepense}" id="tbl"
 								selectionMode="single" selection="#{depenseVew.selectedDepense}"
-								rowKey="#{dep.id}" reflow="true" 
+								rowKey="#{dep.id}" reflow="true"  size="small" showGridlines="true"
 								scrollable="true" scrollHeight="250" emptyMessage="">
 
 								<p:ajax event="rowSelect" listener="#{depenseVew.getSelectedDepenseValue()}"

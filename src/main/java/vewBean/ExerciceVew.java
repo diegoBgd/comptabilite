@@ -46,7 +46,14 @@
    private boolean disableSave;
    private String code;
    private String designation;
-   int idEx = 0; private String codePrcd; private Date dateDb; private Date dateFn; ExerciceModel model; Exercice exercicePrcd; Exercice selecetdExercice; HttpSession session;
+   int idEx = 0; 
+   private String codePrcd; 
+   private Date dateDb; 
+   private Date dateFn; 
+   ExerciceModel model; 
+   Exercice exercicePrcd; 
+   Exercice selecetdExercice; 
+   HttpSession session;
    String exerCode;
    String currUserCode;
    User currentUser;
@@ -272,12 +279,12 @@
          } 
        } else {
          
-         HelperC.afficherAttention("Attention", "L'exercice encours doit Ãªtre diffÃ©rent de l'exercice prÃ©cÃ©dent");
+         HelperC.afficherAttention("Attention", "L'exercice encours doit être différent de l'exercice précédent");
          this.disableSave = true;
        } 
      } else {
        
-       HelperC.afficherAttention("Attention", "Il faut prÃ©ciser la rÃ©fÃ©rence !");
+       HelperC.afficherAttention("Attention", "Il faut préciser la référence !");
      } 
    } public void changeDateDebut() {
      if (this.printDateDebut.replace("/", "").replace("_", "").trim().equals("")) {

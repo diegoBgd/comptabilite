@@ -60,10 +60,15 @@
    @Transient
    private String montantCumul;
    
-   public int getId() { return this.id; } @Transient
-   private String montantVnc; @Transient
-   private String montantAnterieur; @Transient
-   private String dateAcq; public void setId(int id) {
+   public int getId() { return this.id; } 
+   @Transient
+   private String montantVnc; 
+   @Transient
+   private String montantAnterieur; 
+   @Transient
+   private String dateAcq; 
+   
+   public void setId(int id) {
      this.id = id;
    }
    

@@ -6,11 +6,12 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
+	<ui:define name="title">Fournisseur/Beneficiaire</ui:define>
+	<ui:define name="head">
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/style.css" />
+	</ui:define>
 	<ui:define name="content">
-		<h:head>
-			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
-			<title>Clients</title>
-		</h:head>
 		<body>
 			<h:form id="frmFrn"
 				onkeypress="if (event.keyCode == 13) { return false; }">
@@ -22,7 +23,7 @@
 						
 						<div class="ui-g-12 ui-fluid card">
  
-							<p:panelGrid columns="4"
+							<p:panelGrid columns="4" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-7"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
@@ -35,7 +36,7 @@
 								<h:outputText value="Libellé"/>					
 								<p:inputText id="txtLbl" value="#{partenaireVew.nomPartenaire}"/>
 							</p:panelGrid>
-							<p:panelGrid columns="4"
+							<p:panelGrid columns="4" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-8,ui-grid-col-1"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
@@ -46,8 +47,9 @@
 										update="txtLblCpt"/>
 								</p:inputText>
 								<p:inputText id="txtLblCpt" value="#{partenaireVew.libelleCpt}"/>
-								<p:commandButton icon="fa fa-search" style="border-radius:10px"
-									onclick="PF('dlgCpt').show();" action="#{partenaireVew.chargerCompte()}" update="frmCpt"/>
+								<p:commandButton icon="pi pi-search" style="border-radius:10px"
+									onclick="PF('dlgCpt').show();" process="@this" 
+									action="#{partenaireVew.chargerCompte()}" update="frmCpt"/>
 								
 								
 							</p:panelGrid>
@@ -60,7 +62,8 @@
 					<div class="ui-g-12 ui-fluid card">
 						<p:dataTable var="frn" value="#{partenaireVew.listPartenaire}" id="tbl" emptyMessage=""
 							selectionMode="single" selection="#{partenaireVew.selectedPertener}"
-							rowKey="#{frn.id}" reflow="true" scrollable="true" scrollHeight="200">
+							rowKey="#{frn.id}" reflow="true" scrollable="true" scrollHeight="200"
+							showGridlines="true" size="small">
 
 							<p:ajax event="rowSelect" listener="#{partenaireVew.takeSelectedPartener()}"
 								update="frmFrn" />
@@ -78,44 +81,53 @@
 
 						<div class="ui-g-12 ui-fluid card">
 							<div class="ui-g-12 ui-md-1" />
-							<div class="ui-g-3">
+							<div class="ui-g-2">
 								<p:commandButton value="Enregistrer"
-									action="#{partenaireVew.save()}" icon="ui-icon-disk" update="frmFrn"
+									action="#{partenaireVew.save()}" icon="pi pi-save" update="frmFrn"
 									style="border-radius:10px" id="btnSave" />
 							</div> 
-							<div class="ui-g-3">
+							<div class="ui-g-2">
 								<p:commandButton value="Supprimer"
-									action="#{partenaireVew.delete()}" icon="ui-icon-trash" id="btnDelete"
-									update="frmFrn" styleClass="orange-btn" style="border-radius:10px">
-									<p:confirm header="Confirmation"
-										disabled="#{partenaireVew.disableMsg}"
-										message="Voulez vous vraiment supprimer ?"
-										icon="ui-icon-alert" />
-								</p:commandButton>
+									onclick="PF('deleteDialog').show(); return false;" id="btnDelete"
+									update="frmFrn" styleClass="ui-button-danger" 
+									style="border-radius:10px" icon="pi pi-trash"/>
+									
 							</div>
-							<div class="ui-g-3"> 
+							<div class="ui-g-2"> 
 								<p:commandButton value="Initialiser" id="btnClean"
 									action="#{partenaireVew.initializeControl()}"
-									icon="ui-icon ui-icon-refresh" update="frmFrn"
-									style="border-radius:10px" />
+									icon="pi pi-sync" update="frmFrn"
+									style="border-radius:10px"
+									styleClass="ui-button-secondary" />
 							</div>
 						</div>
 					</div> 
 
 				</div>
 			</h:form>
-			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
-				widgetVar="cd">
-				<p:commandButton value="Oui" type="button"
-					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-				<p:commandButton value="Non" type="button"
-					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-			</p:confirmDialog>
+			<h:form>
+				<p:confirmDialog id="deleteDialogId" widgetVar="deleteDialog" rendered="#{partenaireVew.disableMsg}"
+					header="Confirmation" message="Voulez-vous vraiment supprimer ?"
+					icon="pi pi-question-circle" showEffect="fade" hideEffect="fade">
+
+					<p:commandButton value="Oui" icon="pi pi-check-circle"
+						styleClass="ui-button-outlined ui-button-danger"
+						action="#{clientVew.delete()}" update=":frmFrn"
+						oncomplete="PF('deleteDialog').hide();" />
+
+					<p:commandButton value="Non" type="button"
+						icon="pi pi-times-circle"
+						styleClass="ui-button-outlined ui-button-info"
+						onclick="PF('deleteDialog').hide();" />
+
+				</p:confirmDialog>
+
+			</h:form>
 			
 			
 		
 		<p:dialog widgetVar="dlgCpt" header="Plan comptable"
-			modal="true" appendTo="@(body)" width="700" responsive="true">
+			modal="true" dynamic="true"  width="700" responsive="true">
 			<h:form id="frmCpt">
 
 				<div class="ui-g">
@@ -126,7 +138,7 @@
 							var="cpt" selectionMode="single" id="tblCpt"
 							selection="#{partenaireVew.selectedCpt}" rowKey="#{cpt.id}"
 							reflow="true" scrollable="true" scrollHeight="200"
-							emptyMessage="">
+							emptyMessage="" showGridlines="true" size="small">
 
 							<p:ajax event="rowSelect"
 								listener="#{partenaireVew.getSelecedCptValue()}"

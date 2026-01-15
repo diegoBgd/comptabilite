@@ -2,7 +2,7 @@
     
     .topbar {
         background-color: $primaryColor;
-        padding: 10px 30px;
+        padding: 10px 16px;
         height: 50px;
         box-sizing: border-box;
         position: fixed;
@@ -20,7 +20,7 @@
             text-align: center;
             margin-top: -10px;
             margin-left: 30px;
-            color: #ffffff;
+            color: $primaryTextColor;
             @include transition(background-color $transitionDuration);
             
             i {
@@ -63,9 +63,8 @@
             padding: 0;
             position: relative;
             float: right;
-            margin: 0 10px 0 0;
+            margin: 0 16px 0 0;
             display: inline-block;
-            top: 3px;
             
             input {
                 display: inline-block;
@@ -75,10 +74,10 @@
                 border: 0 none;
                 outline: 0 none;
                 color: $primaryTextColor;
-                width: 150px;
-                padding: 4px 20px 4px 8px;
+                width: 175px;
+                padding: 6px 20px 6px 8px;
                 margin: 0px;
-                @include border-radius(2px);
+                @include border-radius(3px);
 
                 &::-webkit-input-placeholder { color:$primaryTextColor;; opacity: .7; @include transition(opacity .3s);}
                 &:-moz-placeholder { color:$primaryTextColor;; opacity: .7; @include transition(opacity .3s);}
@@ -86,30 +85,33 @@
                 &:-ms-input-placeholder { color:$primaryTextColor;; opacity: .7; @include transition(opacity .3s);}
             }
             
-            .fa {
-                font-size: 18px;
+            .pi {
+                font-size: 16px;
                 position: absolute;
-                top: 4px;
+                top: 6px;
                 right: 5px;
                 color: $primaryTextColor;
             }
         }
-        
-        .logo {
-            height: 30px;
-            margin-left: 17px;
+
+        .topbar-logo {
+            height: 100%;
+            width: 185px;
+            display: inline-block;
+            .logo {
+                height: 30px;
+            }
         }
-        
+       
         .profile {
             float: right;
             text-align: right;
-            margin-top: -5px;
-            font-weight: 700;
+            font-weight: 600;
+            @include transition (all $transitionDuration);
 
             img {
                 vertical-align: middle;
-                width: 40px;
-                margin-right: 8px;
+                width: 30px;
             }
             
             .username {
@@ -117,11 +119,9 @@
                 margin-right: 8px;
                 color: $primaryTextColor;
             }
-            
-            .fa {
-                font-size: 16px;
-                vertical-align: middle;
-                color: $primaryTextColor;
+
+            &:hover {
+                opacity: .8;
             }
         }
         
@@ -135,7 +135,7 @@
             padding: 0;
             margin: 0;
             background-color: $primaryColor;
-            border-top: 1px solid darken($primaryColor, 10%);
+            box-shadow: 0 0px 6px 0px rgba(0, 0, 0, 0.12);
             @include animation-duration($transitionDuration);
             
             &.topbar-menu-visible {
@@ -166,10 +166,10 @@
                     
                     .topbar-badge {
                         float: right;
-                        background-color: #ffffff;
+                        background-color: darken($primaryColor,15%);
                         display: block;
                         margin-top: -2px;
-                        color: $primaryTextColor;
+                        color: #ffffff;
                         width: 18px;
                         height: 18px;
                         line-height: 18px;
@@ -217,7 +217,7 @@
         
     &.layout-overlay, &.layout-static {
         .topbar {
-            @include overlay-shadow;
+            box-shadow: 0 0px 6px 0px rgba(0, 0, 0, 0.24);
             
             #menu-button {
                 display: inline-block;
@@ -227,31 +227,32 @@
     
     &.layout-slim {
         .topbar {
-            @include overlay-shadow;
-            
-            .logo {
-                margin-left: -15px;
-            }
+            box-shadow: 0 0px 6px 0px rgba(0, 0, 0, 0.24);
         }
     }    
 }
 
-@media (max-width: 1024px) {
+@media (max-width: $tabletBreakpoint) {
     .layout-wrapper {
         .topbar {
-            @include overlay-shadow;
+            box-shadow: 0 0px 6px 0px rgba(0, 0, 0, 0.24);
+            padding: 8px;
             
             .profile {
                 .username {
                     display: none;
                 }
             }
+
+            .topbar-logo {
+                width: auto;
+            }
             
             #menu-button {
                 display: inline-block;
-                margin-left: 10px;
+                margin-left: 20px;
             }
-            
+
             .topbar-search {
                 display: none;
             }

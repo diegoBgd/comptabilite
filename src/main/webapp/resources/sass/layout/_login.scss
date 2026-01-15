@@ -23,7 +23,7 @@
         img {
             padding: 100px 0 100px 0;
             width: 60px;
-            height: 60px;
+            height: auto;
         }
 
         h1 {
@@ -83,7 +83,7 @@
             font-size: 1em;
         }
 
-        .ui-g-12, .ui-g-6 {
+        .col-12, .col-6 {
             padding: .8em;
         }
 
@@ -94,42 +94,12 @@
     }
 }
 
-@media (max-width: 64em) {
+@media (max-width: $tabletBreakpoint) {
     .login-body {
         text-align: center;
         background-size: cover;
-
         .left-side {
             height: 300px;
-            padding-left: 25px;
-
-            img {
-                padding: 20px 0 20px 0;
-            }
-
-            p {
-                display: none;
-            }
-        }
-
-        .right-side {
-            height: 100%;
-        }
-    }
-
-    .login-wrapper {
-        width: 320px;
-
-        .login-container {
-            padding-top: 25%;
-        }
-    }
-}
-
-@media (max-width: 40em) {
-    .login-body {
-        .left-side {
-            height: 200px;
             padding-left: 25px;
             text-align: center;
 

@@ -6,16 +6,19 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
+	<ui:define name="title">Plan comptable</ui:define>
+	<ui:define name="head">
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/style.css" />
+	</ui:define>
 	<ui:define name="content">
-		<h:head>
-			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
-			<title>Plan comptable</title>
-		</h:head>
+
 		<body>
 			<h:form id="frm"
 				onkeypress="if (event.keyCode == 13) { return false; }">
 				<p:blockUI block="frm" trigger="btnSave" />
 				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
+
 				<div class="ui-g">
 					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
 						<div class="ui-g-12 ui-fluid card no-margin">
@@ -23,108 +26,125 @@
 							<p:panelGrid columns="2"
 								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-1,ui-grid-col-6"
 								layout="grid" styleClass="ui-panelgrid-blank"
+								contentStyleClass="compact-grid"
 								style="border:0px none; background-color:transparent;">
 								<h:outputText value="Compte" />
 								<p:inputText id="txtCd" value="#{compteVew.code}">
 									<p:ajax event="blur" listener="#{compteVew.searchCompte()}"
 										update=":frm" />
 								</p:inputText>
-								
-								
+
+
 							</p:panelGrid>
 
 							<p:panelGrid columns="4"
 								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
 								layout="grid" styleClass="ui-panelgrid-blank"
+								contentStyleClass="compact-grid"
 								style="border:0px none; background-color:transparent;">
-								
+
 								<p:outputLabel value="Nature de solde" />
 								<p:selectOneMenu value="#{compteVew.typeCpte}" autoWidth="false">
 									<f:selectItem itemLabel="Nulle" itemValue="N" />
 									<f:selectItem itemLabel="Débiteur" itemValue="D" />
 									<f:selectItem itemLabel="Créditeur" itemValue="C" />
- 
+
 								</p:selectOneMenu>
-								
-								<p:outputLabel value="Compte de détail"/>
-								<p:selectBooleanCheckbox value="#{compteVew.detail}"/>
-								
+
+								<p:outputLabel value="Compte de détail" />
+								<p:selectBooleanCheckbox value="#{compteVew.detail}" />
+
 							</p:panelGrid>
 							<p:panelGrid columns="3"
 								columnClasses="ui-grid-col-2,ui-grid-col-6,ui-grid-col-2"
 								layout="grid" styleClass="ui-panelgrid-blank"
+								contentStyleClass="compact-grid"
 								style="border:0px none; background-color:transparent;">
-								
+
 								<h:outputText value="Libellé" />
 								<p:inputTextarea id="txtDsn" value="#{compteVew.designation}"
 									maxlength="200" rows="1" />
-								<p:spacer/>
-								
-								<h:outputText value="Charge du fichier excel" />
+								<p:spacer />
+
+								<h:outputText value="Charger à partir d'excel" />
 								<p:inputText id="txtUrl" value="#{compteVew.urlFile}"
 									maxlength="200" rows="1" />
-									
+
 								<p:commandButton value="Charger" id="btnChg"
-									action="#{compteVew.getAccountPlan()}" icon="fa fa-download" update="frm"
-									style="border-radius:10px" />
+									action="#{compteVew.getAccountPlan()}" icon="pi pi-arrow-circle-down"
+									update="frm" style="border-radius:10px" />
 							</p:panelGrid>
 						</div>
 
 						<div class="ui-g-12 ui-fluid card">
-							<p:dataTable var="cpt" value="#{compteVew.listCpt}"  widgetVar="tbl"
-								selectionMode="single" selection="#{compteVew.selectedCompte}"
-								rowKey="#{cpt.id}" reflow="true" 
+							<p:dataTable var="cpt" value="#{compteVew.listCpt}"
+								widgetVar="tbl" selectionMode="single"
+								selection="#{compteVew.selectedCompte}" rowKey="#{cpt.id}"
+								reflow="true" size="small" showGridlines="true"
 								scrollable="true" scrollHeight="300" emptyMessage="">
 
-								<p:ajax event="rowSelect" listener="#{compteVew.getSelectedValues()}"
-									update=":frm" />
+								<p:ajax event="rowSelect"
+									listener="#{compteVew.getSelectedValues()}" update=":frm" />
 
-								<p:column headerText="Compte" width="10%" filterBy="#{cpt.compteCod}">
+								<p:column headerText="Compte" width="10%"
+									filterBy="#{cpt.compteCod}">
 									<h:outputText value="#{cpt.compteCod}" />
 								</p:column>
 
 								<p:column headerText="Libellé" filterBy="#{cpt.libelle}">
-									<h:outputText value="#{cpt.libelle}"/>
+									<h:outputText value="#{cpt.libelle}" />
 								</p:column>
 
 							</p:dataTable>
 						</div>
 
 						<div class="ui-g-12 ui-fluid card">
-							<div class="ui-g-12 ui-md-1" />
-							<div class="ui-g-3">
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+								layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+								style="border:0px none; background-color:transparent;"
+								contentStyleClass="compact-grid">
+								<p:spacer />
 								<p:commandButton value="Enregistrer" id="btnSave"
-									action="#{compteVew.save()}" icon="ui-icon-disk" update="frm"
+									action="#{compteVew.save()}" icon="pi pi-save" update="frm"
 									style="border-radius:10px" />
-							</div>
-							<div class="ui-g-3">
+
 								<p:commandButton value="Supprimer" id="btnDelete"
-									action="#{compteVew.delete()}" icon="ui-icon-trash"
-									update="frm" styleClass="orange-btn" style="border-radius:10px">
-									<p:confirm header="Confirmation"
-										disabled="#{compteVew.disableMsg}"
-										message="Voulez vous vraiment supprimer ?"
-										icon="ui-icon-alert" />
-								</p:commandButton>
-							</div>
-							<div class="ui-g-3">
+									update="frm"  icon="pi pi-trash" 
+									styleClass="ui-button-danger" 
+									 style="border-radius:10px"
+									 onclick="PF('deleteDialog').show(); return false;" />
+									
+
 								<p:commandButton value="Initialiser" id="btnClean"
 									action="#{compteVew.initializeControl()}"
-									icon="ui-icon ui-icon-refresh" update="frm"
+										icon="pi pi-sync" styleClass="ui-button-secondary" 
+										 update="frm"
 									style="border-radius:10px" />
-							</div>
+							</p:panelGrid>
 						</div>
 					</div>
 
 				</div>
 			</h:form>
-			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
-				widgetVar="cd">
-				<p:commandButton value="Oui" type="button"
-					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-				<p:commandButton value="Non" type="button"
-					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-			</p:confirmDialog>
+			<h:form>
+				<p:confirmDialog id="deleteDialogId" widgetVar="deleteDialog" rendered="#{compteVew.disableMsg}"
+					header="Confirmation" message="Voulez-vous vraiment supprimer ?"
+					icon="pi pi-question-circle" showEffect="fade" hideEffect="fade">
+
+					<p:commandButton value="Oui" icon="pi pi-check-circle"
+						styleClass="ui-button-outlined ui-button-danger"
+						action="#{compteVew.delete()}" update=":frm"
+						oncomplete="PF('deleteDialog').hide();" />
+
+					<p:commandButton value="Non" type="button"
+						icon="pi pi-times-circle"
+						styleClass="ui-button-outlined ui-button-info"
+						onclick="PF('deleteDialog').hide();" />
+
+				</p:confirmDialog>
+
+			</h:form>
 		</body>
 	</ui:define>
 </ui:composition>

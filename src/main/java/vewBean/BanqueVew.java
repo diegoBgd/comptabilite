@@ -22,10 +22,6 @@
  import utils.HelperC;
  
  
- 
- 
- 
- 
  @ManagedBean
  @ViewScoped
  public class BanqueVew
@@ -42,7 +38,11 @@
    private boolean disableMsg;
    private boolean cash;
    private String libelleCpt;
-   int idBk = 0; private String rechLblCpt; private String rechCodCpt; private String codeBanque; private String compteCptbl;
+   int idBk = 0; 
+   private String rechLblCpt; 
+   private String rechCodCpt; 
+   private String codeBanque; 
+   private String compteCptbl;
    private String designation;
    private Compte selectedCpt;
    BanqueModel model;

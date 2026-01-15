@@ -6,33 +6,45 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
+	<ui:define name="title">Ecritures comptables</ui:define>
+	<ui:define name="head">
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/style.css" />
+	</ui:define>
 	<ui:define name="content">
-		<h:head>
-			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
-			<title>Ecritures comptables</title>
 
-
-		</h:head>
 		<body>
+			
+
+			<p:blockUI widgetVar="globalBlock" block="frm" trigger=":frm:btnSave :frm:btnDelete">
+				<div style="text-align: center;">
+					<div>
+						<p:graphicImage name="Images/loading.gif" />
+					</div>
+
+				</div>
+			</p:blockUI>
 			<h:form id="frm"
 				onkeypress="if (event.keyCode == 13) { return false; }">
-				<p:blockUI block="frm" trigger="btnSave" />
+
 				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
 
-				<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
 
 
-					<div class="card">
-						<div class="ui-g">
+						<div class="ui-g-12 ui-fluid card">
+
 							<div class="ui-g-12 ui-md-9">
-								<p:panelGrid rendered="#{ecritureVew.checkClose}">
-									<p:messages id="messages" showDetail="true" closable="false">
+								
+									<p:messages id="messages" showDetail="true" closable="false" rendered="#{ecritureVew.checkClose}">
 										<p:autoUpdate />
 									</p:messages>
-								</p:panelGrid>
+								
 								<p:panelGrid columns="4"
 									columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-8,ui-grid-col-1"
 									layout="grid" styleClass="ui-panelgrid-blank"
+									contentStyleClass="compact-grid"
 									style="border:0px none; background-color:transparent;">
 									<h:outputText value="Journal" />
 									<p:inputText id="txtJrnl" value="#{ecritureVew.codeJrnl}">
@@ -41,8 +53,8 @@
 									</p:inputText>
 									<p:inputText id="txtLblJrnl" value="#{ecritureVew.libelleJrnl}"
 										readonly="true" />
-									<p:commandButton icon="fa fa-search" style="border-radius:10px"
-										onclick="PF('dlgJrnl').show();" />
+									<p:commandButton icon="pi pi-search" style="border-radius:10px"
+										onclick="PF('dlgJrnl').show();" process="@this" />
 
 									<p:outputLabel value="Compte" />
 									<p:inputText id="txtCpt" value="#{ecritureVew.codeCpt}">
@@ -51,14 +63,15 @@
 									</p:inputText>
 									<p:inputText id="txtLblCpt" value="#{ecritureVew.libelleCpt}"
 										readonly="true" />
-									<p:commandButton icon="fa fa-search" style="border-radius:10px"
-										onclick="PF('dlgCpt').show();" />
+									<p:commandButton icon="pi pi-search" style="border-radius:10px"
+										onclick="PF('dlgCpt').show();" process="@this" />
 
 
 								</p:panelGrid>
 								<p:panelGrid columns="4"
 									columnClasses="ui-grid-col-1,ui-grid-col-6,ui-grid-col-2,ui-grid-col-2"
 									layout="grid" styleClass="ui-panelgrid-blank"
+									contentStyleClass="compact-grid"
 									style="border:0px none; background-color:transparent;">
 
 									<p:outputLabel value="Pièce" />
@@ -77,6 +90,7 @@
 								<p:panelGrid columns="2"
 									columnClasses="ui-grid-col-1,ui-grid-col-10" layout="grid"
 									styleClass="ui-panelgrid-blank"
+									contentStyleClass="compact-grid"
 									style="border:0px none; background-color:transparent;">
 
 									<p:outputLabel value="Libellé" />
@@ -88,6 +102,7 @@
 								<p:panelGrid columns="4"
 									columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-3"
 									layout="grid" styleClass="ui-panelgrid-blank"
+									contentStyleClass="compact-grid"
 									style="border:0px none; background-color:transparent;">
 
 									<p:outputLabel value="Débit" />
@@ -111,6 +126,7 @@
 								<p:panelGrid columns="5"
 									columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-3,ui-grid-col-1"
 									layout="grid" styleClass="ui-panelgrid-blank"
+									contentStyleClass="compact-grid"
 									style="border:0px none; background-color:transparent;">
 
 									<p:spacer />
@@ -119,8 +135,8 @@
 
 									<p:outputLabel value="Garder le libellé" />
 									<p:selectBooleanCheckbox value="#{ecritureVew.keepLibelle}" />
-									
-									
+
+
 									<p:spacer />
 									<p:outputLabel value="Garder le journal" />
 									<p:selectBooleanCheckbox value="#{ecritureVew.keepJrnal}" />
@@ -130,186 +146,204 @@
 								</p:panelGrid>
 							</div>
 
-							<div class="ui-g-12 ui-md-3" style="border-left:thin solid">
+							<div class="ui-g-12 ui-md-3" style="border-left: thin solid">
 
-							<p:panelGrid columns="1"
-									columnClasses="ui-grid-col-12"
-									layout="grid" styleClass="ui-panelgrid-blank"
+								<p:panelGrid columns="1" columnClasses="ui-grid-col-12"
+									contentStyleClass="compact-grid" layout="grid"
+									styleClass="ui-panelgrid-blank"
 									style="border:0px none ; background-color:transparent;">
-							
-								<p:commandButton value="Recherche écritures"
-									icon="fa fa-search" style="border-radius:10px;background: #fff;border:solid 1px #1989AC;color:#008B8F" 
-									oncomplete="PF('dlgEcr').show();" />
-									
-								<p:spacer/>
-								<p:panel style="background:#1989AC;font-weight:bold;color: #fff;text-align:center">
-								<p:outputLabel value="Soldes " />
-								</p:panel>
+
+									<p:commandButton value="liste des écritures" icon="pi pi-list"
+										style="border-radius:10px;background: #fff;border:solid 1px #1989AC;color:#008B8F"
+										oncomplete="PF('dlgEcr').show();" process="@this" />
+
+
+
+
 								</p:panelGrid>
-								
+
 								<p:panelGrid columns="2"
-									columnClasses="ui-grid-col-4,ui-grid-col-8"
-									layout="grid" styleClass="ui-panelgrid-blank" 
-									style="border:0px none; background-color:transparent;" id="pnlSold">
-										
-										
-								<p:outputLabel value="Journal " style="font-weight:bold"/>
-									<p:outputLabel value="#{ecritureVew.soldeJrnl}" style="float:right;font-weight:bold;color:orange"/>
-								<p:outputLabel value="Compte " style="font-weight:bold"/>
-									<p:outputLabel value="#{ecritureVew.soldeCpte}" style="float:right;font-weight:bold;color:blue"/>
-									
-								</p:panelGrid>
-								
-								<p:panelGrid columns="1"
-									columnClasses="ui-grid-col-12"
-									layout="grid" styleClass="ui-panelgrid-blank" 
-									style="border:0px none; background-color:transparent;" rendered="false">
-									
-									<p:commandButton value="Récupérer"
-									icon="fa fa-search" style="border-radius:10px;background: #fff;border:solid 1px #1989AC;color:orange" 
-									action="#{ecritureVew.recupererEcriture()}"/> 
-									
-								</p:panelGrid>
-							</div>
+									columnClasses="ui-grid-col-4,ui-grid-col-8" layout="grid"
+									styleClass="ui-panelgrid-blank"
+									style="border:0px none; background-color:transparent;"
+									id="pnlSold" contentStyleClass="compact-grid">
 
-						</div>
-					</div>
-					<div class=" card">
-						<div class="ui-g">
-							<div class="ui-g-12 ui-md-10">
-								<p:dataTable var="ecr" value="#{ecritureVew.listeSaisie}"
-									id="tblSaisie" selectionMode="single"
-									selection="#{ecritureVew.selectedEcriture}"
-									rowKey="#{ecr.orderIndex}" reflow="true" scrollable="true"
-									emptyMessage="" scrollHeight="150"
-									style="border: 1px solid gray">
-
-									<p:ajax event="rowSelect"
-										listener="#{ecritureVew.getSelectedEcrValue()}" update=":frm" />
-
-									<p:column headerText="Date" width="7%">
-										<h:outputText value="#{ecr.printDate}" />
-									</p:column>
-
-									<p:column headerText="Cpte" width="5%">
-										<h:outputText value="#{ecr.cpte}" />
-									</p:column>
-
-									<p:column headerText="Journal" width="8%">
-										<h:outputText value="#{ecr.jrnl}" />
-									</p:column>
-									<p:column headerText="Piece" width="10%">
-										<h:outputText value="#{ecr.pieceCpb}" />
-									</p:column>
-									<p:column headerText="Libellé">
-										<h:outputText value="#{ecr.libelle}" />
-									</p:column>
-
-									<p:column headerText="Débit" width="10%">
-										<h:outputText value="#{ecr.printDebit}" style="float:right" />
-									</p:column>
-
-									<p:column headerText="Crédit" width="10%">
-										<h:outputText value="#{ecr.printCredit}" style="float:right" />
-									</p:column>
-
-
-
-								</p:dataTable>
-
-								<p:panelGrid columns="3"
-									columnClasses="ui-grid-col-8,ui-grid-col-2,ui-grid-col-2"
-									layout="grid" styleClass="ui-panelgrid-blank"
-									style="background-color:transparent;" id="pnlTotaux">
-
-									<p:outputLabel value="Totaux "
+									<f:facet name="header">
+										<h5 style="padding: 10px; color: green">Soldes</h5>
+									</f:facet>
+									<p:outputLabel value="Journal " style="font-weight:bold" />
+									<p:outputLabel value="#{ecritureVew.soldeJrnl}"
 										style="float:right;font-weight:bold;color:orange" />
-									
-									<p:outputLabel value="#{ecritureVew.printTotDeb}"
+									<p:outputLabel value="Compte " style="font-weight:bold" />
+									<p:outputLabel value="#{ecritureVew.soldeCpte}"
 										style="float:right;font-weight:bold;color:blue" />
-									
-								
-									<p:outputLabel value="#{ecritureVew.printTotCrd}"
-										style="float:right;font-weight:bold;color:blue" />
-									
-									<p:outputLabel value="Solde"
-										style="float:right;font-weight:bold;color:green" />
-									<p:outputLabel value="#{ecritureVew.printSoldeCd}"
-										style="float:right;font-weight:bold;color:red" />
-									<p:outputLabel value="#{ecritureVew.printSoldeDb}"
-										style="float:right;font-weight:bold;color:red" />
+
 
 								</p:panelGrid>
 
-							</div>
-							<div class="ui-g-12 ui-md-2">
-								<div class="ui-g-8">
-									<p:commandButton value="Ajouter"
-										action="#{ecritureVew.addEcriture()}" icon="fa fa-plus"
-										id="btnAdd" update="frm" disabled="#{ecritureVew.disableSave}"
-										style="border-radius:10px;background: #fff;border:solid 1px #008B8F;color:#008B8F" />
-								</div>
-								<div class="ui-g-8">
-									<p:commandButton value="Enlever"
-										action="#{ecritureVew.remove()}" icon="fa fa-minus"
-										id="btnRemove" update="frm"
-										style="border-radius:10px;background: #fff;border:solid 1px red;color:red" />
-								</div>
+								<p:panelGrid columns="1" columnClasses="ui-grid-col-12"
+									contentStyleClass="compact-grid" layout="grid"
+									styleClass="ui-panelgrid-blank"
+									style="border:0px none; background-color:transparent;"
+									rendered="false">
 
+									<p:commandButton value="Récupérer" icon="fa fa-search"
+										style="border-radius:10px;background: #fff;border:solid 1px #1989AC;color:orange"
+										action="#{ecritureVew.recupererEcriture()}" />
+
+								</p:panelGrid>
 							</div>
+
 
 						</div>
-					</div>
-				</div>
-				<div class="ui-g-12 ui-fluid card">
-					<div class="ui-g-12 ui-md-1" />
-					<div class="ui-g-3">
-						<p:commandButton value="Enregistrer"
-							action="#{ecritureVew.saveSaisie()}" icon="ui-icon-disk"
-							update="frm" style="border-radius:10px" id="btnSave"
-							disabled="#{ecritureVew.disableSave}" />
-					</div>
-					
-					<div class="ui-g-3">
-						<p:commandButton value="Supprimer" 
-							action="#{ecritureVew.delete()}" icon="ui-icon-trash"
-							id="btnDelete" update="frm" styleClass="orange-btn"
-							style="border-radius:10px">
-							<p:confirm header="Confirmation"
-								disabled="#{ecritureVew.disableMsg}"
-								message="#{ecritureVew.deleteMsg}" icon="ui-icon-alert" />
-						</p:commandButton>
-					</div>
-					
-					<div class="ui-g-3">
-						<p:commandButton value="Initialiser" id="btnClean"
-							action="#{ecritureVew.initializeAll()}"
-							icon="ui-icon ui-icon-refresh" update="frm"
-							style="border-radius:10px" />
-					</div>
-					
-					
-					
-				</div>
+						<div class="ui-g-12 ui-fluid card">
+							<div class="ui-g">
+								<div class="ui-g-12 ui-md-10">
+									<p:dataTable var="ecr" value="#{ecritureVew.listeSaisie}"
+										id="tblSaisie" selectionMode="single"
+										selection="#{ecritureVew.selectedEcriture}"
+										rowKey="#{ecr.orderIndex}" reflow="true" scrollable="true"
+										emptyMessage="" scrollHeight="150"
+										style="border: 1px solid gray" size="small"
+										showGridlines="true">
+
+										<p:ajax event="rowSelect"
+											listener="#{ecritureVew.getSelectedEcrValue()}" update=":frm" />
+
+										<p:column headerText="Date" width="7%">
+											<h:outputText value="#{ecr.printDate}" />
+										</p:column>
+
+										<p:column headerText="Cpte" width="5%">
+											<h:outputText value="#{ecr.cpte}" />
+										</p:column>
+
+										<p:column headerText="Journal" width="8%">
+											<h:outputText value="#{ecr.jrnl}" />
+										</p:column>
+										<p:column headerText="Piece" width="10%">
+											<h:outputText value="#{ecr.pieceCpb}" />
+										</p:column>
+										<p:column headerText="Libellé">
+											<h:outputText value="#{ecr.libelle}" />
+										</p:column>
+
+										<p:column headerText="Débit" width="10%">
+											<h:outputText value="#{ecr.printDebit}" style="float:right" />
+										</p:column>
+
+										<p:column headerText="Crédit" width="10%">
+											<h:outputText value="#{ecr.printCredit}" style="float:right" />
+										</p:column>
 
 
+
+									</p:dataTable>
+
+									<p:panelGrid columns="3"
+										columnClasses="ui-grid-col-8,ui-grid-col-2,ui-grid-col-2"
+										layout="grid" styleClass="ui-panelgrid-blank"
+										style="background-color:transparent;" id="pnlTotaux"
+										contentStyleClass="compact-grid">
+
+										<p:outputLabel value="Totaux "
+											style="float:right;font-weight:bold;color:orange" />
+
+										<p:outputLabel value="#{ecritureVew.printTotDeb}"
+											style="float:right;font-weight:bold;color:blue" />
+
+
+										<p:outputLabel value="#{ecritureVew.printTotCrd}"
+											style="float:right;font-weight:bold;color:blue" />
+
+										<p:outputLabel value="Solde"
+											style="float:right;font-weight:bold;color:green" />
+										<p:outputLabel value="#{ecritureVew.printSoldeCd}"
+											style="float:right;font-weight:bold;color:red" />
+										<p:outputLabel value="#{ecritureVew.printSoldeDb}"
+											style="float:right;font-weight:bold;color:red" />
+
+									</p:panelGrid>
+
+								</div>
+								<div class="ui-g-12 ui-md-2">
+									<div class="ui-g-8">
+										<p:commandButton value="Ajouter"
+											action="#{ecritureVew.addEcriture()}"
+											icon="pi pi-plus-circle" id="btnAdd" update="frm"
+											disabled="#{ecritureVew.disableSave}"
+											style="border-radius:10px;background: #fff;border:solid 1px #008B8F;color:#008B8F" />
+									</div>
+									<div class="ui-g-8">
+										<p:commandButton value="Enlever"
+											action="#{ecritureVew.remove()}" icon="pi pi-minus-circle"
+											id="btnRemove" update="frm"
+											style="border-radius:10px;background: #fff;border:solid 1px red;color:red" />
+									</div>
+
+								</div>
+
+							</div>
+						</div>
+
+
+						<div class="ui-g-12 ui-fluid card">
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+								layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+								style="border:0px none; background-color:transparent;"
+								contentStyleClass="compact-grid">
+								<p:spacer />
+								<p:commandButton value="Enregistrer"
+									action="#{ecritureVew.saveSaisie()}" icon="pi pi-save"
+									update="frm" style="border-radius:10px" id="btnSave"
+									disabled="#{ecritureVew.disableSave}" />
+
+								<p:commandButton value="Supprimer" icon="pi pi-trash"
+									styleClass="ui-button-danger" id="btnDelete" update="frm"
+									style="border-radius:10px"
+									onclick="PF('deleteDialog').show(); return false;" />
+
+
+								<p:commandButton value="Initialiser" id="btnClean"
+									action="#{ecritureVew.initializeAll()}" icon="pi pi-sync"
+									styleClass="ui-button-secondary" update="frm"
+									style="border-radius:10px" />
+
+							</p:panelGrid>
+
+						</div>
+
+					</div>
+				</div>
 
 			</h:form>
-			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
-				widgetVar="cd" style="color:red">
-				<p:commandButton value="Oui" type="button"
-					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-				<p:commandButton value="Non" type="button"
-					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-			</p:confirmDialog>
+			<h:form>
+				<p:confirmDialog id="deleteDialogId" widgetVar="deleteDialog"
+					header="Confirmation" message="Voulez-vous vraiment supprimer ?"
+					icon="pi pi-question-circle" showEffect="fade" hideEffect="fade">
+
+					<p:commandButton value="Oui" icon="pi pi-check-circle"
+						styleClass="ui-button-outlined ui-button-danger"
+						action="#{ecritureVew.delete()}" update=":frm"
+						oncomplete="PF('deleteDialog').hide();" />
+
+					<p:commandButton value="Non" type="button"
+						icon="pi pi-times-circle"
+						styleClass="ui-button-outlined ui-button-info"
+						onclick="PF('deleteDialog').hide();" />
+
+				</p:confirmDialog>
+
+			</h:form>
 
 			<p:dialog widgetVar="dlgJrnl" header="Liste des journaux"
-				modal="true" appendTo="@(body)" width="600" responsive="true">
+				modal="true" dynamic="true" width="600" responsive="true">
 				<h:form id="frmJrnl">
 
 					<div class="ui-g">
 						<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
-							<p:panelGrid columns="3"
+							<p:panelGrid columns="3" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-6,ui-grid-col-3"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="background-color:transparent;">
@@ -324,8 +358,8 @@
 							<p:dataTable value="#{ecritureVew.listJrnl}" var="jrn"
 								selectionMode="single" id="tblJrnl"
 								selection="#{ecritureVew.selectedJrnl}" rowKey="#{jrn.id}"
-								reflow="true" scrollable="true" scrollHeight="200"
-								emptyMessage="">
+								reflow="true" scrollable="true" scrollHeight="200" size="small"
+								showGridlines="true" emptyMessage="">
 
 								<p:ajax event="rowSelect"
 									listener="#{ecritureVew.getSelecedJrnlValue()}"
@@ -350,13 +384,13 @@
 			</p:dialog>
 
 			<p:dialog widgetVar="dlgCpt" header="Plan comptable" modal="true"
-				appendTo="@(body)" width="700" responsive="true">
+				dynamic="true" width="700" responsive="true">
 				<h:form id="frmCpt">
 
 					<div class="ui-g">
 						<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
 
-							<p:panelGrid columns="3"
+							<p:panelGrid columns="3" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-8" layout="grid"
 								styleClass="ui-panelgrid-blank"
 								style="background-color:transparent;">
@@ -373,7 +407,7 @@
 								selectionMode="single" id="tblCpt"
 								selection="#{ecritureVew.selectedCpte}" rowKey="#{cpt.id}"
 								reflow="true" scrollable="true" scrollHeight="200"
-								emptyMessage="">
+								emptyMessage="" size="small" showGridlines="true">
 
 								<p:ajax event="rowSelect"
 									listener="#{ecritureVew.getSelecedCptValue()}"
@@ -397,13 +431,13 @@
 			</p:dialog>
 
 			<p:dialog widgetVar="dlgEcr" header="Ecritures comptables"
-				position="top" modal="true" appendTo="@(body)" width="1250"
+				position="top" modal="true" dynamic="true" width="1000"
 				responsive="true">
 				<h:form id="frmEcr">
 
 					<div class="ui-g">
 						<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
-							<p:panelGrid columns="6"
+							<p:panelGrid columns="6" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,
 										  ui-grid-col-1,ui-grid-col-2"
 								layout="grid" styleClass="ui-panelgrid-blank"
@@ -437,7 +471,8 @@
 								</p:inputMask>
 								<p:spacer />
 								<p:commandButton value="Rechercher" style="border-radius:10px"
-									action="#{ecritureVew.chargerEcriture()}" update="tbl" />
+									action="#{ecritureVew.chargerEcriture()}" update="tbl"
+									icon="pi pi-search" />
 
 							</p:panelGrid>
 							<p:panelGrid columns="1" columnClasses="ui-grid-col-6"
@@ -451,36 +486,37 @@
 							<p:dataTable var="ecr" value="#{ecritureVew.listeEcriture}"
 								id="tbl" selectionMode="single"
 								selection="#{ecritureVew.selectedEcriture}" rowKey="#{ecr.id}"
-								reflow="true" rows="10"
+								reflow="true" rows="10" size="small" showGridlines="true"
 								paginatorAlwaysVisible="#{ecritureVew.pagination}"
 								paginator="true" emptyMessage="" paginatorPosition="bottom">
 
 								<p:ajax event="rowSelect"
-									listener="#{ecritureVew.getSelectedSaisie()}" update=":frm:tblSaisie,:frm:pnlTotaux,:frm:btnDelete" />
+									listener="#{ecritureVew.getSelectedSaisie()}"
+									update=":frm:tblSaisie,:frm:pnlTotaux,:frm:btnDelete" />
 
-								<p:column headerText="Date" width="7%">
-									<h:outputText value="#{ecr.printDate}" />							
+								<p:column headerText="Date" width="8%">
+									<h:outputText value="#{ecr.printDate}" />
 								</p:column>
 
-								<p:column headerText="Compte" width="10%">
-									<h:outputText value="#{ecr.cpte}" />							
+								<p:column headerText="Compte" width="8%">
+									<h:outputText value="#{ecr.cpte}" />
 								</p:column>
 
 								<p:column headerText="Journal" width="5%">
 									<h:outputText value="#{ecr.jrnl}" />
 								</p:column>
-								<p:column headerText="Piece" width="15%">
+								<p:column headerText="Piece" width="10%">
 									<h:outputText value="#{ecr.pieceCpb}" />
 								</p:column>
 								<p:column headerText="Libellé" width="43%">
 									<h:outputText value="#{ecr.libelle}" />
 								</p:column>
 
-								<p:column headerText="Débit" width="10%">
+								<p:column headerText="Débit" width="11%">
 									<h:outputText value="#{ecr.printDebit}" style="float:right" />
 								</p:column>
 
-								<p:column headerText="Crédit" width="10%">
+								<p:column headerText="Crédit" width="11%">
 									<h:outputText value="#{ecr.printCredit}" style="float:right" />
 								</p:column>
 

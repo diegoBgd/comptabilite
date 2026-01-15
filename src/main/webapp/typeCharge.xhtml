@@ -6,11 +6,12 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
+	<ui:define name="title">Type charge</ui:define>
+	<ui:define name="head">
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/style.css" />
+	</ui:define>
 	<ui:define name="content">
-		<h:head>
-			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
-			<title>type de charges</title>
-		</h:head>
 		<body>
 			<h:form id="frm"
 				onkeypress="if (event.keyCode == 13) { return false; }">
@@ -18,161 +19,172 @@
 				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
 				<div class="ui-g">
 					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
-					
-						
+
+
 						<div class="ui-g-12 ui-fluid card">
 
-							<p:panelGrid columns="4"
+							<p:panelGrid columns="4" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-1,ui-grid-col-6"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
-								<h:outputText value="Référence"/>
+								<h:outputText value="Référence" />
 								<p:inputText id="txtRef" value="#{typeChargeVew.code}">
 									<p:ajax event="blur" listener="#{typeChargeVew.searchCharge()}"
-										update=":frm"/>
-								</p:inputText>	
-								
-								<h:outputText value="Libellé"/>					
-								<p:inputText id="txtLbl" value="#{typeChargeVew.designation}"/>
+										update=":frm" />
+								</p:inputText>
+
+								<h:outputText value="Libellé" />
+								<p:inputText id="txtLbl" value="#{typeChargeVew.designation}" />
 							</p:panelGrid>
-							<p:panelGrid columns="4"
+							<p:panelGrid columns="4" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-7,ui-grid-col-1"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
-								
+
 								<p:outputLabel value="Code comptable" />
 								<p:inputText id="txtCpt" value="#{typeChargeVew.compteCpbl}">
 									<p:ajax event="blur" listener="#{typeChargeVew.searchCompte()}"
-										update="txtLblCpt"/>
+										update="txtLblCpt" />
 								</p:inputText>
-								<p:inputText id="txtLblCpt" value="#{typeChargeVew.libelleCpt}"/>
-								<p:commandButton icon="fa fa-search" style="border-radius:10px"
-									onclick="PF('dlgCpt').show();" />
-								
+								<p:inputText id="txtLblCpt" value="#{typeChargeVew.libelleCpt}" />
+								<p:commandButton icon="pi pi-search"  style="border-radius:10px"
+									onclick="PF('dlgCpt').show();" process="@this"/>
+
 							</p:panelGrid>
-							<p:panelGrid columns="4"
+							<p:panelGrid columns="4" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-7,ui-grid-col-1"
 								layout="grid" styleClass="ui-panelgrid-blank"
-								style="border:0px none; background-color:transparent;" rendered="false">
-								
+								style="border:0px none; background-color:transparent;"
+								rendered="false">
+
 								<p:outputLabel value="Type" />
-								<p:selectOneMenu value="#{typeChargeVew.typeChrg}" autoWidth="false">
+								<p:selectOneMenu value="#{typeChargeVew.typeChrg}"
+									autoWidth="false">
 									<f:selectItem itemLabel=" " itemValue="0" />
 									<f:selectItem itemLabel="Direct" itemValue="1" />
 									<f:selectItem itemLabel="Indirect" itemValue="2" />
 
 								</p:selectOneMenu>
 							</p:panelGrid>
-						
-								
-							
+
+
+
 						</div>
 
-					<div class="ui-g-12 ui-fluid card">
-						<p:dataTable var="chg" value="#{typeChargeVew.listChrg}" id="tbl" emptyMessage=""
-							selectionMode="single" selection="#{typeChargeVew.selectedChrg}"
-							rowKey="#{chg.id}" reflow="true" scrollable="true" scrollHeight="200">
+						<div class="ui-g-12 ui-fluid card">
+							<p:dataTable var="chg" value="#{typeChargeVew.listChrg}" id="tbl"
+								emptyMessage="" selectionMode="single"
+								selection="#{typeChargeVew.selectedChrg}" showGridlines="true"
+								size="small" rowKey="#{chg.id}" reflow="true" scrollable="true"
+								scrollHeight="200">
 
-							<p:ajax event="rowSelect" listener="#{typeChargeVew.getSelectedChrgValue()}"
-								update="frm" />
+								<p:ajax event="rowSelect"
+									listener="#{typeChargeVew.getSelectedChrgValue()}" update="frm" />
 
-							<p:column headerText="Référence" width="10%">
-								<h:outputText value="#{chg.codeChg}" />
-							</p:column>
+								<p:column headerText="Référence" width="10%">
+									<h:outputText value="#{chg.codeChg}" />
+								</p:column>
 
-							<p:column headerText="Libellé">
-								<h:outputText value="#{chg.libelle}" />
-							</p:column>
+								<p:column headerText="Libellé">
+									<h:outputText value="#{chg.libelle}" />
+								</p:column>
 
-						</p:dataTable>
-					</div>
+							</p:dataTable>
+						</div>
 
 						<div class="ui-g-12 ui-fluid card">
 							<div class="ui-g-12 ui-md-1" />
-							<div class="ui-g-3">
-								<p:commandButton value="Enregistrer"
-									action="#{typeChargeVew.save()}" icon="ui-icon-disk" update="frm"
-									style="border-radius:10px" id="btnSave" />
-							</div> 
-							<div class="ui-g-3">
-								<p:commandButton value="Supprimer"
-									action="#{typeChargeVew.delete()}" icon="ui-icon-trash" id="btnDelete"
-									update="frm" styleClass="orange-btn" style="border-radius:10px">
-									<p:confirm header="Confirmation"
-										disabled="#{typeChargeVew.disableMsg}"
-										message="Voulez vous vraiment supprimer ?"
-										icon="ui-icon-alert" />
-								</p:commandButton>
+							<div class="ui-g-2">
+								<p:commandButton value="Enregistrer" 
+									action="#{typeChargeVew.save()}" icon="pi pi-save"
+									update="frm" style="border-radius:10px" id="btnSave" />
 							</div>
-							<div class="ui-g-3">   
+							<div class="ui-g-2">
+								<p:commandButton value="Supprimer"
+									onclick="PF('deleteDialog').show(); return false;"
+									id="btnDelete" update="frm" 
+									style="border-radius:10px"
+									icon="pi pi-trash" styleClass="ui-button-danger"/>
+									
+							</div>
+							<div class="ui-g-2">
 								<p:commandButton value="Initialiser" id="btnClean"
-									action="#{typeChargeVew.initializeControl()}" 
-									icon="ui-icon ui-icon-refresh" update="frm"
-									style="border-radius:10px" />
+									action="#{typeChargeVew.initializeControl()}"
+									icon="pi pi-sync" update="frm"
+									style="border-radius:10px" styleClass="ui-button-secondary" />
 							</div>
 						</div>
 					</div>
 
 				</div>
 			</h:form>
-			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
-				widgetVar="cd">
-				<p:commandButton value="Oui" type="button"
-					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-				<p:commandButton value="Non" type="button"
-					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-			</p:confirmDialog>
 			
-			
-		
-		<p:dialog widgetVar="dlgCpt" header="Plan comptable"
-			modal="true" appendTo="@(body)" width="700" responsive="true">
-			<h:form id="frmCpt">
+			<h:form>
+				<p:confirmDialog id="deleteDialogId" widgetVar="deleteDialog" rendered="#{typeChargeVew.disableMsg}"
+					header="Confirmation" message="Voulez-vous vraiment supprimer ?"
+					icon="pi pi-question-circle" showEffect="fade" hideEffect="fade">
 
-				<div class="ui-g">
-					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
-						<p:panelGrid columns="3"
-							columnClasses="ui-grid-col-1,ui-grid-col-6,ui-grid-col-3"
-							layout="grid" styleClass="ui-panelgrid-blank"
-							style="background-color:transparent;">
-							
-							<p:outputLabel value="Libellé" />
-							<p:inputText value="#{typeChargeVew.rechLblCpt}"/>
-	
-							<p:commandButton value="Rechercher"
-								style="border-radius:10px"
-								action="#{typeChargeVew.chargerCompte()}"
-								update="tblCpt"/>
+					<p:commandButton value="Oui" icon="pi pi-check-circle"
+						styleClass="ui-button-outlined ui-button-danger"
+						action="#{typeChargeVew.delete()}" update=":frm"
+						oncomplete="PF('deleteDialog').hide();" />
 
-						</p:panelGrid>
+					<p:commandButton value="Non" type="button"
+						icon="pi pi-times-circle"
+						styleClass="ui-button-outlined ui-button-info"
+						onclick="PF('deleteDialog').hide();" />
 
-						<p:dataTable value="#{typeChargeVew.listCpte}"
-							var="cpt" selectionMode="single" id="tblCpt"
-							selection="#{typeChargeVew.selectedCpt}" rowKey="#{cpt.id}"
-							reflow="true" scrollable="true" scrollHeight="200"
-							emptyMessage="">
+				</p:confirmDialog>
 
-							<p:ajax event="rowSelect"
-								listener="#{typeChargeVew.getSelecedCptValue()}"
-								update=":frm:txtLblCpt,:frm:txtCpt" />
-
-							<p:column headerText="Compte" width="15%">
-								<h:outputText value="#{cpt.compteCod}" />
-							</p:column>
-
-							<p:column headerText="Libelle">
-								<h:outputText value="#{cpt.libelle}" />
-							</p:column>
-
-						</p:dataTable>
-
-
-					</div>
-				</div>
 			</h:form>
-		</p:dialog>
-		
-		
+
+
+			<p:dialog widgetVar="dlgCpt" header="Plan comptable" modal="true"
+				dynamic="true" width="700" responsive="true">
+				<h:form id="frmCpt">
+
+					<div class="ui-g">
+						<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+							<p:panelGrid columns="3" contentStyleClass="compact-grid"
+								columnClasses="ui-grid-col-1,ui-grid-col-6,ui-grid-col-3"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="background-color:transparent;">
+
+								<p:outputLabel value="Libellé" />
+								<p:inputText value="#{typeChargeVew.rechLblCpt}" />
+
+								<p:commandButton value="Charger" style="border-radius:10px"
+									action="#{typeChargeVew.chargerCompte()}" update="tblCpt" />
+
+							</p:panelGrid>
+
+							<p:dataTable value="#{typeChargeVew.listCpte}" var="cpt"
+								selectionMode="single" id="tblCpt"
+								selection="#{typeChargeVew.selectedCpt}" rowKey="#{cpt.id}"
+								reflow="true" scrollable="true" scrollHeight="200"
+								emptyMessage="" showGridlines="true" size="small">
+
+								<p:ajax event="rowSelect"
+									listener="#{typeChargeVew.getSelecedCptValue()}"
+									update=":frm:txtLblCpt,:frm:txtCpt" />
+
+								<p:column headerText="Compte" width="15%">
+									<h:outputText value="#{cpt.compteCod}" />
+								</p:column>
+
+								<p:column headerText="Libelle">
+									<h:outputText value="#{cpt.libelle}" />
+								</p:column>
+
+							</p:dataTable>
+
+
+						</div>
+					</div>
+				</h:form>
+
+			</p:dialog>
 		</body>
 	</ui:define>
+
 </ui:composition>

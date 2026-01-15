@@ -5,166 +5,180 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title">Utilisateurs</ui:define>
+	<ui:define name="head">
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/style.css" />
+	</ui:define>
 	<ui:define name="content">
-		<h:head>
-			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
-			<h:outputScript library="primefaces" name="jquery/jquery.js" />
-			<title>Utilisateurs</title>
-		</h:head>
+		<body>
+			<h:form id="frm"
+				onkeypress="if (event.keyCode == 13) { return false; }">
 
-		<h:form id="frm"
-			onkeypress="if (event.keyCode == 13) { return false; }">
+				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
+				<p:blockUI block="frm" trigger="btnSave" />
 
-			<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
-			<p:blockUI block="frm" trigger="btnSave" />
-			<div class="ui-g">
-				<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
-				
-				<div class="ui-g-12 ui-fluid card">
-				<div class="ui-g-12 ui-md-4">
-								<p:commandButton value="Liste des utilisateurs" icon="fa fa-search"								
-									style="border-radius:10px" 
-									oncomplete="PF('dlgResearch').show();" />
-							</div> 
+				<div class="card">
+					<p:commandButton value="Liste des utilisateurs" icon="pi pi-bars"
+						style="border-radius:10px" onclick="PF('dlgResearch').show()"
+						process="@this" />
 				</div>
-				
-					<div class="ui-g-12 ui-fluid card">
-						<p:panelGrid id="pnl1" columns="2"
-							columnClasses="ui-grid-col-2,ui-grid-col-8" layout="grid"
-							styleClass="ui-panelgrid-blank"
-							style="border:0px none; background-color:transparent;">
 
-							<h:outputText value="Code" />
-							<p:inputText id="txtCode" value="#{userVew.code}"
-								autocomplete="off">
-								<p:ajax event="blur" listener="#{userVew.searchUser()}"
-										update="frm" />
-							</p:inputText>
+				<div class="card">
 
-							<h:outputText value="Nom et prénom" />
-							<p:inputText id="txtNom" value="#{userVew.nom}"
-								autocomplete="off" />
+					<p:panelGrid  columns="2" 
+								 columnClasses="ui-grid-col-2,ui-grid-col-2" 
+								 layout="grid"
+                 				 styleClass="ui-panelgrid-blank ui-fluid"
+                 				 style="border:0px none; background-color:transparent;"
+                 				 contentStyleClass="compact-grid">
+                 				 
+						<h:outputText value="Code" />
+						<p:inputText id="txtCode" value="#{userVew.code}"
+							autocomplete="off">
+							<p:ajax event="blur" listener="#{userVew.searchUser()}"
+								update="frm" />
+						</p:inputText>
 
-							<p:outputLabel value="Droit d'acces" />
-								<p:selectOneMenu id="txtRole" value="#{userVew.idRole}"
-								valueChangeListener="#{userVew.changeRoleElement}">
-								<f:selectItem itemLabel=" " itemValue="0" />
-								<f:selectItems value="#{userVew.listeRole}" />
-								<p:ajax event="change" update="txtRole" />
-							</p:selectOneMenu>
-								
-							<h:outputText value="E-Mail" />
-							<p:inputText id="txtMail" value="#{userVew.mail}"
-								autocomplete="off" />
+			
 
-							<h:outputText value="Mot de passe" />
-							<p:password id="txtpwd" value="#{userVew.motPasse}"
-								redisplay="true">								
-							</p:password>
+					</p:panelGrid>
+					<p:panelGrid  columns="2" 
+								 columnClasses="ui-grid-col-2,ui-grid-col-8" 
+								 layout="grid"
+                 				 styleClass="ui-panelgrid-blank ui-fluid"
+                 				 style="border:0px none; background-color:transparent;"
+                 				 contentStyleClass="compact-grid">
+                 				 <h:outputText value="Nom et prénom" />
+						<p:inputText id="txtNom" value="#{userVew.nom}"
+							style="width:600px" autocomplete="off" />
 
-							<h:outputText value="Confirmer mot de passe" />
-							<p:password id="txtCfpwd" value="#{userVew.confirmPwd}"
-								redisplay="true">
-								<p:ajax event="blur" listener="#{userVew.confirmPwd()}" update="msg,btnSave"/>
-							</p:password>
+						<p:outputLabel value="Droit d'acces" />
+						<p:selectOneMenu id="txtRole" value="#{userVew.idRole}"
+							style="width:600px"
+							valueChangeListener="#{userVew.changeRoleElement}">
+							<f:selectItem itemLabel=" " itemValue="0" />
+							<f:selectItems value="#{userVew.listeRole}" />
+							<p:ajax event="change" update="txtRole" />
+						</p:selectOneMenu>
 
-							<p:outputLabel value="Actif" />
-							<p:selectBooleanCheckbox value="#{userVew.enable}" />
+						<h:outputText value="E-Mail" />
+						<p:inputText id="txtMail" value="#{userVew.mail}"
+							style="width:600px" autocomplete="off" />
+                 		
+                 	</p:panelGrid>
+                 	<p:panelGrid  columns="4" 
+								 columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2" 
+								 layout="grid"
+                 				 styleClass="ui-panelgrid-blank ui-fluid"
+                 				 style="border:0px none; background-color:transparent;"
+                 				 contentStyleClass="compact-grid">
+                 				 <h:outputText value="Mot de passe" />
+						<p:password id="txtpwd" value="#{userVew.motPasse}"
+							redisplay="true" toggleMask="true">
+						</p:password>
+
+						<h:outputText value="Confirmer mot de passe" />
+						<p:password id="txtCfpwd" value="#{userVew.confirmPwd}"
+							redisplay="true" toggleMask="true">
+							<p:ajax event="blur" listener="#{userVew.confirmPwd()}"
+								update="msg,btnSave" />
+						</p:password>
+                 					
+						
+						<p:outputLabel value="Actif" />
+						<p:selectBooleanCheckbox value="#{userVew.enable}" />
+                 		
+                 	</p:panelGrid>
+				</div>
+				<div class="card">
+					<p:panelGrid  columns="4" 
+								 columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2" 
+								 layout="grid"
+                 				 styleClass="ui-panelgrid-blank ui-fluid"
+                 				 style="border:0px none; background-color:transparent;"
+                 				 contentStyleClass="compact-grid">
+                 		<p:spacer/>
+						<p:commandButton id="btnSave" icon="pi pi-save"
+							value="Enregistrer" action="#{userVew.saveUser()}" update=":frm"
+							style="border-radius:10px" disabled="#{userVew.disableSave}" />
+							
+						<p:commandButton id="btnDelete" icon="pi pi-trash"
+							styleClass="ui-button-danger" value="Supprimer"
+							style="border-radius:10px"
+							onclick="PF('deleteDialog').show(); return false;" />
+
+						<p:commandButton id="btnAnnuler" style="border-radius:10px"
+							icon="pi pi-sync" value="Initialiser"
+							styleClass="ui-button-secondary"
+							action="#{userVew.initializeControl()}" update=":frm" />
+					</p:panelGrid>
+				</div>
 
 
-						</p:panelGrid>
+
+			</h:form>
+
+			<h:form>
+				<p:confirmDialog id="deleteDialogId" widgetVar="deleteDialog"
+					header="Confirmation" message="Voulez-vous vraiment supprimer ?"
+					icon="pi pi-question-circle" showEffect="fade" hideEffect="fade">
+
+					<p:commandButton value="Oui" icon="pi pi-check-circle"
+						styleClass="ui-button-outlined ui-button-danger"
+						action="#{userVew.deleteUser()}" update=":frm"
+						oncomplete="PF('deleteDialog').hide();" />
+
+					<p:commandButton value="Non" type="button"
+						icon="pi pi-times-circle"
+						styleClass="ui-button-outlined ui-button-info"
+						onclick="PF('deleteDialog').hide();" />
+
+				</p:confirmDialog>
+
+			</h:form>
+			<p:dialog widgetVar="dlgResearch" header="Liste des utilisateurs"
+				modal="true" dynamic="true" width="600" responsive="true">
+				<h:form id="frmRecherche">
+
+					<div class="ui-g">
+						<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+							<h:panelGrid cellpadding="7" columns="3">
+								<p:outputLabel value="Mot a rechercher" />
+								<p:inputText value="#{userVew.motRecherche}" />
+								<p:commandButton value="Rechercher" style="border-radius:10px"
+									action="#{userVew.displayUsers()}" update="tbl"
+									icon="pi pi-search" />
+
+							</h:panelGrid>
+
+							<p:dataTable value="#{userVew.listUs}" var="u"
+								selectionMode="single" id="tbl"
+								selection="#{userVew.selectedUser}" rowKey="#{u.id}"
+								reflow="true" scrollable="true" scrollHeight="200"
+								emptyMessage="" size="small" showGridlines="true">
+
+								<p:ajax event="rowSelect" listener="#{userVew.getUser()}"
+									update=":frm" />
+
+								<p:column headerText="Code" width="10%">
+									<h:outputText value="#{u.userCod}" />
+								</p:column>
+
+								<p:column headerText="Nom et Prénom">
+									<h:outputText value="#{u.userName}" />
+								</p:column>
 
 
 
-					</div>
-					<div class="ui-g-12 ui-fluid card">
-						<div class="ui-g">
-							<div class="ui-g-12 ui-md-6 ui-fluid contact-form">
-								<div class="ui-g-8 ui-md-3" />
-								<div class="ui-g-8 ui-md-3">
-									<p:commandButton id="btnSave" icon="ui-icon ui-icon-disk"
-										value="Enregistrer" action="#{userVew.saveUser()}" 
-										update=":frm" style="border-radius:10px" disabled="#{userVew.disableSave}" />
-								</div>
-								<div class="ui-g-8 ui-md-3">
-									<p:commandButton id="btnDelete" icon="ui-icon ui-icon-trash"
-										value="Supprimer" action="#{userVew.deleteUser()}"
-										update=":frm" styleClass="orange-btn" 
-										style="border-radius:10px">
-										<p:confirm header="Confirmation"
-											disabled="#{userVew.disableMsg}"
-											message="Voulez-vous vraiment supprimer ?"
-											icon="ui-icon-alert" />
-									</p:commandButton>
-								</div>
-								<div class="ui-g-8 ui-md-3">
-									<p:commandButton id="btnAnnuler" style="border-radius:10px"
-										icon="ui-icon ui-icon-refresh" value="Initialiser" 
-										action="#{userVew.initializeControl()}" update=":frm" />
-								</div>
-							</div>
+							</p:dataTable>
+
+
 						</div>
 					</div>
-				</div>
-			</div>
-		</h:form>
-
-		<h:form>
-			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
-				responsive="true">
-				<p:commandButton value="Oui" type="button"
-					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-				<p:commandButton value="Non" type="button"
-					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-			</p:confirmDialog>
-		</h:form>
-		<p:dialog widgetVar="dlgResearch" header="Liste des utilisateurs"
-			modal="true" appendTo="@(body)" width="600" responsive="true">
-			<h:form id="frmRecherche">
-
-				<div class="ui-g">
-					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
-						<p:panelGrid columns="3"
-							columnClasses="ui-grid-col-3,ui-grid-col-6,ui-grid-col-3"
-							layout="grid" styleClass="ui-panelgrid-blank"
-							style="background-color:transparent;">
-
-							<p:outputLabel value="Mot a rechercher" />
-							<p:inputText value="#{userVew.motRecherche}"/>
-							<p:commandButton value="Rechercher"
-								style="border-radius:10px"
-								action="#{userVew.displayUsers()}"
-								update="tbl" />
-
-						</p:panelGrid>
-
-						<p:dataTable value="#{userVew.listUs}"
-							var="u" selectionMode="single" id="tbl"
-							selection="#{userVew.selectedUser}" rowKey="#{u.id}"
-							reflow="true" scrollable="true" scrollHeight="200"
-							emptyMessage="">
-
-							<p:ajax event="rowSelect"
-								listener="#{userVew.getUser()}"
-								update=":frm" />
-
-							<p:column headerText="Code" width="10%">
-								<h:outputText value="#{u.userCod}" />
-							</p:column>
-
-							<p:column headerText="Nom et Prénom">
-								<h:outputText value="#{u.userName}" />
-							</p:column>
-
-							
-
-						</p:dataTable>
-
-
-					</div>
-				</div>
-			</h:form>
-		</p:dialog>
-
+				</h:form>
+			</p:dialog>
+		</body>
 	</ui:define>
 </ui:composition>

@@ -1,15 +1,5 @@
-$primaryColor:#26C6DA;
-$primaryTextColor:#ffffff;
-$menuBgColor:#ffffff;
-$menuitemTextColor:#424242;
-$submenuActiveBgColor:#ffffff;
-$menuItemHoverTextColor:#26C6DA;
-$menuItemActiveTextColor:#26C6DA;
+$primaryColor:#26C6DA !default;
+$primaryTextColor:#ffffff !default;
 
-$bodyBgColor:#EEF2F6;
-$textColor:#424242;
-$textSecondaryColor:#7a7a7a;
-$placeholderColor:#a0a0a0;
-$dividerColor:#dddddd;
-
+@import '../../sass/variables/layout/_layout_light';
 @import '../../sass/layout/_layout.scss';

@@ -1,77 +1,80 @@
- package entite;
- 
- import java.io.Serializable;
- import javax.persistence.Column;
- import javax.persistence.Entity;
- import javax.persistence.GeneratedValue;
- import javax.persistence.GenerationType;
- import javax.persistence.Id;
- import javax.persistence.JoinColumn;
- import javax.persistence.ManyToOne;
- import javax.persistence.Table;
- import javax.persistence.Transient;
-  
- 
- @Entity
- @Table(name = "tb_produit_taxe")
- public class ProduitTaxe
-   implements Serializable
- {
-   private static final long serialVersionUID = -5776183440001382255L;
-   @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
-   @Column(name = "pt_id")
-   private int id;
-   @ManyToOne
-   @JoinColumn(name = "id_prod")
-   private Produit product;
-   @ManyToOne
-   @JoinColumn(name = "id_taxe")
-   private Taxes taxe;
-   @Column(name = "taux")
-   private double taux;
-   @Transient
-   private double valeurTaxe;
-   
-   public int getId() {
-     return this.id;
-   }
-   
-   public void setId(int id) {
-     this.id = id;
-   }
-   
-   public Produit getProduct() {
-     return this.product;
-   }
-   
-   public void setProduct(Produit product) {
-     this.product = product;
-   }
-   
-   public Taxes getTaxe() {
-     return this.taxe;
-   }
-   
-   public void setTaxe(Taxes taxe) {
-     this.taxe = taxe;
-   }
-   
-   public double getTaux() {
-     return this.taux;
-   }
-   
-   public void setTaux(double taux) {
-     this.taux = taux;
-   }
-   
-   public double getValeurTaxe() {
-     return this.valeurTaxe;
-   }
-   
-   public void setValeurTaxe(double valeurTaxe) {
-     this.valeurTaxe = valeurTaxe;
-   }
- }
+package entite;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
+import javax.persistence.*;
 
+@Entity
+@Table(name = "tb_produit_taxe")
+public class ProduitTaxe implements Serializable {
+
+    private static final long serialVersionUID = -5270737652631871279L;
+
+    /** Clé primaire auto-incrémentée correspondant à pt_id */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "pt_id")
+    private Long id;
+
+    /** Produit associé */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "produit_id", nullable = false)
+    private Produit produit;
+
+    /** Taxe associée */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "taxe_id", nullable = false)
+    private Taxes taxe;
+
+    /** Taux de la taxe */
+    @Column(name = "taux", precision = 10, scale = 2, nullable = false)
+    private BigDecimal taux;
+
+    /** Valeur calculée de la taxe */
+    @Transient
+    private BigDecimal valeurTaxe;
+
+    // =========================
+    // ===== GETTERS / SETTERS =====
+    // =========================
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Produit getProduit() {
+        return produit;
+    }
+
+    public void setProduit(Produit produit) {
+        this.produit = produit;
+    }
+
+    public Taxes getTaxe() {
+        return taxe;
+    }
+
+    public void setTaxe(Taxes taxe) {
+        this.taxe = taxe;
+    }
+
+    public BigDecimal getTaux() {
+        return taux;
+    }
+
+    public void setTaux(BigDecimal taux) {
+        this.taux = taux;
+    }
+
+    public BigDecimal getValeurTaxe() {
+    	  BigDecimal valeur=getTaux().divide(BigDecimal.valueOf(100), 2, BigDecimal.ROUND_HALF_UP);
+    	valeurTaxe=getProduit().getPvHt().multiply(valeur);
+        return valeurTaxe;
+    }
+
+   
+}

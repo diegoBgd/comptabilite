@@ -6,11 +6,13 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
+	
+	<ui:define name="title">Famille produit</ui:define>
+	<ui:define name="head">
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/style.css" />
+	</ui:define>
 	<ui:define name="content">
-		<h:head>
-			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
-			<title>Famille produit</title>
-		</h:head>
 		<body>
 			<h:form id="frm"
 				onkeypress="if (event.keyCode == 13) { return false; }">
@@ -22,7 +24,7 @@
 						 
 						<div class="ui-g-12 ui-fluid card">
 
-							<p:panelGrid columns="4"
+							<p:panelGrid columns="4" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-7"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
@@ -42,7 +44,8 @@
 					<div class="ui-g-12 ui-fluid card">
 						<p:dataTable var="fm" value="#{familleVew.listFamille}" id="tbl" emptyMessage=""
 							selectionMode="single" selection="#{familleVew.selecetdFamille}"
-							rowKey="#{fm.id}" reflow="true" scrollable="true" scrollHeight="200">
+							rowKey="#{fm.id}" reflow="true" scrollable="true" 
+							scrollHeight="200" showGridlines="true" size="small">
 
 							<p:ajax event="rowSelect" listener="#{familleVew.getSelectedFamilleValue()}"
 								update="frm" />
@@ -60,25 +63,23 @@
 
 						<div class="ui-g-12 ui-fluid card">
 							<div class="ui-g-12 ui-md-1" />
-							<div class="ui-g-3">
+							<div class="ui-g-2">
 								<p:commandButton value="Enregistrer"
-									action="#{familleVew.save()}" icon="ui-icon-disk" update="frm"
+									action="#{familleVew.save()}" icon="pi pi-save"  update="frm"
 									style="border-radius:10px" id="btnSave" />
 							</div> 
-							<div class="ui-g-3">
+							<div class="ui-g-2">
 								<p:commandButton value="Supprimer"
-									action="#{familleVew.delete()}" icon="ui-icon-trash" id="btnDelete"
-									update="frm" styleClass="orange-btn" style="border-radius:10px">
-									<p:confirm header="Confirmation"
-										disabled="#{familleVew.disableMsg}"
-										message="Voulez vous vraiment supprimer ?"
-										icon="ui-icon-alert" />
-								</p:commandButton>
+									onclick="PF('deleteDialog').show()"
+									icon="pi pi-trash"  id="btnDelete"
+									update="frm" styleClass="ui-button-danger"
+									style="border-radius:10px"/>
+									
 							</div>
-							<div class="ui-g-3"> 
+							<div class="ui-g-2"> 
 								<p:commandButton value="Initialiser" id="btnClean"
 									action="#{familleVew.initializeControl()}"
-									icon="ui-icon ui-icon-refresh" update="frm"
+									icon="pi pi-sync" update="frm"
 									style="border-radius:10px" />
 							</div>
 						</div>
@@ -86,14 +87,24 @@
 
 				</div>
 			</h:form>
-			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
-				widgetVar="cd">
-				<p:commandButton value="Oui" type="button"
-					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-				<p:commandButton value="Non" type="button"
-					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-			</p:confirmDialog>
-	
+			<h:form>
+				<p:confirmDialog id="deleteDialogId" widgetVar="deleteDialog" rendered="#{familleVew.disableMsg}"
+					header="Confirmation" message="Voulez-vous vraiment supprimer ?"
+					icon="pi pi-question-circle" showEffect="fade" hideEffect="fade">
+
+					<p:commandButton value="Oui" icon="pi pi-check-circle"
+						styleClass="ui-button-outlined ui-button-danger"
+						action="#{familleVew.delete()}" update=":frm"
+						oncomplete="PF('deleteDialog').hide();" />
+
+					<p:commandButton value="Non" type="button"
+						icon="pi pi-times-circle"
+						styleClass="ui-button-outlined ui-button-info"
+						onclick="PF('deleteDialog').hide();" />
+
+				</p:confirmDialog>
+
+			</h:form>
 		</body>
 	</ui:define>
 </ui:composition>

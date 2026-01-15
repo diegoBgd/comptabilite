@@ -14,6 +14,8 @@ import entite.TypeRecette;
 import entite.User;
 import java.io.IOException;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -84,13 +86,13 @@ public class ReglementCltVew implements Serializable {
 	private String comment;
 	private String pieceOper;
 	private String numRegl;
-	private double totalRegle;
-	private double montantFacture;
-	private double tauxTva;
-	private double tauxDevise;
-	private double montantHt;
-	private double montantTvac;
-	private double reste;
+	private BigDecimal totalRegle;
+	private BigDecimal montantFacture;
+	private BigDecimal tauxTva;
+	private BigDecimal tauxDevise;
+	private BigDecimal montantHt;
+	private BigDecimal montantTvac;
+	private BigDecimal reste;
 
 	ReglementClientModel model;
 	Exercice selectdExercice;
@@ -385,51 +387,51 @@ public class ReglementCltVew implements Serializable {
 		this.numRegl = numRegl;
 	}
 
-	public double getTotalRegle() {
+	public BigDecimal getTotalRegle() {
 		return this.totalRegle;
 	}
 
-	public void setTotalRegle(double totalRegle) {
+	public void setTotalRegle(BigDecimal totalRegle) {
 		this.totalRegle = totalRegle;
 	}
 
-	public double getMontantFacture() {
+	public BigDecimal getMontantFacture() {
 		return this.montantFacture;
 	}
 
-	public void setMontantFacture(double montantFacture) {
+	public void setMontantFacture(BigDecimal montantFacture) {
 		this.montantFacture = montantFacture;
 	}
 
-	public double getTauxTva() {
+	public BigDecimal getTauxTva() {
 		return this.tauxTva;
 	}
 
-	public void setTauxTva(double tauxTva) {
+	public void setTauxTva(BigDecimal tauxTva) {
 		this.tauxTva = tauxTva;
 	}
 
-	public double getTauxDevise() {
+	public BigDecimal getTauxDevise() {
 		return this.tauxDevise;
 	}
 
-	public void setTauxDevise(double tauxDevise) {
+	public void setTauxDevise(BigDecimal tauxDevise) {
 		this.tauxDevise = tauxDevise;
 	}
 
-	public double getMontantHt() {
+	public BigDecimal getMontantHt() {
 		return this.montantHt;
 	}
 
-	public void setMontantHt(double montantHt) {
+	public void setMontantHt(BigDecimal montantHt) {
 		this.montantHt = montantHt;
 	}
 
-	public double getMontantTvac() {
+	public BigDecimal getMontantTvac() {
 		return this.montantTvac;
 	}
 
-	public void setMontantTvac(double montantTvac) {
+	public void setMontantTvac(BigDecimal montantTvac) {
 		this.montantTvac = montantTvac;
 	}
 
@@ -449,11 +451,11 @@ public class ReglementCltVew implements Serializable {
 		this.listReglement = listReglement;
 	}
 
-	public double getReste() {
+	public BigDecimal getReste() {
 		return reste;
 	}
 
-	public void setReste(double reste) {
+	public void setReste(BigDecimal reste) {
 		this.reste = reste;
 	}
 
@@ -592,7 +594,7 @@ public class ReglementCltVew implements Serializable {
 				calculerMontantTTC();
 			} else {
 
-				this.tauxTva = 0.0D;
+				this.tauxTva = BigDecimal.ZERO;
 			}
 		}
 	}
@@ -641,24 +643,31 @@ public class ReglementCltVew implements Serializable {
 	}
 
 	public void calculerMontantTTC() {
-		this.montantTvac = 0.0D;
-		if (this.tauxTva > 0.0D) {
+	    if (montantHt == null) montantHt = BigDecimal.ZERO;
 
-			this.montantTvac = this.montantHt * (1.0D + this.tauxTva / 100.0D);
-		} else {
+	    BigDecimal taux = BigDecimal.valueOf(tauxTva.longValue());
+	    BigDecimal cent = BigDecimal.valueOf(100);
 
-			this.montantTvac = this.montantHt;
-		}
+	    if (taux.compareTo(BigDecimal.ZERO) > 0) {
+	        BigDecimal facteur = BigDecimal.ONE.add(taux.divide(cent, 4, RoundingMode.HALF_UP));
+	        montantTvac = montantHt.multiply(facteur).setScale(2, RoundingMode.HALF_UP);
+	    } else {
+	        montantTvac = montantHt.setScale(2, RoundingMode.HALF_UP);
+	    }
 	}
 
 	public void calculerMontantHT() {
-		if (this.tauxTva > 0.0D) {
+	    if (montantTvac == null) montantTvac = BigDecimal.ZERO;
 
-			this.montantHt = this.montantTvac / (1.0D + this.tauxTva / 100.0D);
-		} else {
+	    BigDecimal taux = BigDecimal.valueOf(tauxTva.longValue());
+	    BigDecimal cent = BigDecimal.valueOf(100);
 
-			this.montantHt = this.montantTvac;
-		}
+	    if (taux.compareTo(BigDecimal.ZERO) > 0) {
+	        BigDecimal diviseur = BigDecimal.ONE.add(taux.divide(cent, 4, RoundingMode.HALF_UP));
+	        montantHt = montantTvac.divide(diviseur, 2, RoundingMode.HALF_UP);
+	    } else {
+	        montantHt = montantTvac.setScale(2, RoundingMode.HALF_UP);
+	    }
 	}
 
 	public void changeDate() {
@@ -762,12 +771,14 @@ public class ReglementCltVew implements Serializable {
 			this.idTaxe = this.selectedTaxe.getId();
 		
 		chargerReglement();
-		totalRegle=0;
+		totalRegle = BigDecimal.ZERO;
+
 		for (ReglementClient reg : listReglement) {
-			reg.calculMontantTTC();
-			totalRegle+=reg.getMontantTTC();
+		    reg.calculMontantTTC();
+		    totalRegle = totalRegle.add(reg.getMontantTTC());
 		}
-		reste=montantFacture-totalRegle;
+
+		reste = montantFacture.subtract(totalRegle);
 	}
 
 	public void chargerReglement() {
@@ -840,7 +851,7 @@ public class ReglementCltVew implements Serializable {
 		this.selectedReglement.setAccount(this.selectedCpt);
 		this.selectedReglement.setCaisse(this.selectedCaisse);
 		this.selectedReglement.setComment(this.comment);
-		this.selectedReglement.setCoursRgl(Double.valueOf(this.tauxDevise));
+		this.selectedReglement.setCoursRgl(this.tauxDevise);
 		this.selectedReglement.setDateReglement(this.dateOp);
 		this.selectedReglement.setDeviseRgl(this.selectedDev);
 		this.selectedReglement.setEncaissement(this.selectedEncaissement);
@@ -867,11 +878,10 @@ public class ReglementCltVew implements Serializable {
 		}
 	}
 	private boolean testMontant() {
-		boolean bl = false;
-		if (this.totalRegle + getMontantTvac() <= this.montantFacture)
-			bl = true;
-		return bl;
+	    BigDecimal total = totalRegle.add(getMontantTvac());
+	    return total.compareTo(montantFacture) <= 0;
 	}
+
 	public void initializeControl() {
 		this.selectedCentre = null;
 		this.selectedDev = null;
@@ -891,11 +901,11 @@ public class ReglementCltVew implements Serializable {
 		this.pieceOper = "";
 		this.comment = "";
 		this.modePmt = 0;
-		this.tauxDevise = 0.0D;
-		this.tauxTva = 0.0D;
+		this.tauxDevise = BigDecimal.ZERO;
+		this.tauxTva = BigDecimal.ZERO;
 		this.idReg = 0;
-		this.montantTvac = 0.0D;
-		this.montantHt = 0.0D;
+		this.montantTvac =BigDecimal.ZERO;
+		this.montantHt = BigDecimal.ZERO;
 		this.disableMsg = true;
 	}
 }

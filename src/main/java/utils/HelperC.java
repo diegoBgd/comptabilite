@@ -14,7 +14,8 @@
  import java.io.FileOutputStream;
  import java.io.InputStream;
  import java.io.OutputStream;
- import java.text.DecimalFormat;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
  import java.text.DecimalFormatSymbols;
  import java.text.ParseException;
  import java.text.SimpleDateFormat;
@@ -1290,7 +1291,34 @@
      return nbr;
    }
  
-   
+   public static String decimalNumber(BigDecimal nombre, int nbrDc, boolean separat) {
+	    if (nombre == null || nombre.compareTo(BigDecimal.ZERO) == 0) {
+	        return "0";
+	    }
+
+	    // Construire le format décimal (par ex. ".0##" selon le nombre de décimales)
+	    StringBuilder fmt = new StringBuilder();
+	    if (nbrDc > 0) {
+	        fmt.append(".");
+	        fmt.append("0"); // première décimale obligatoire
+	        for (int i = 1; i < nbrDc; i++) {
+	            fmt.append("#"); // décimales facultatives
+	        }
+	    }
+
+	    // Définir le motif du format
+	    DecimalFormat format;
+	    if (separat) {
+	        format = new DecimalFormat("###,###,###" + fmt);
+	        DecimalFormatSymbols symbols = format.getDecimalFormatSymbols();
+	        symbols.setGroupingSeparator(' ');
+	        format.setDecimalFormatSymbols(symbols);
+	    } else {
+	        format = new DecimalFormat("######" + fmt);
+	    }
+
+	    return format.format(nombre);
+	}
    public static String NoSepartorNumber(String number) {
      String nb = "";
      String[] mots = null;
@@ -1993,7 +2021,6 @@
      FacesMessage msg = new FacesMessage(severity, titre, message);
      FacesContext.getCurrentInstance().addMessage(null, msg);
    }
- 
    
    public static String getExtension(FileUploadEvent file) {
      String extension = "";
@@ -2073,7 +2100,7 @@
      String url = "";
      
      try {
-       InputStream in = event.getFile().getInputstream();
+       InputStream in = event.getFile().getInputStream();
        ServletContext servletContext = (ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext();
        url = String.valueOf(servletContext.getRealPath("/resources")) + "\\" + repertoire + "\\" + nomFichier;
        OutputStream out = new FileOutputStream(new File(url));

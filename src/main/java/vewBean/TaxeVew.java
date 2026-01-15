@@ -6,7 +6,8 @@
  import entite.User;
  import java.io.IOException;
  import java.io.Serializable;
- import java.util.List;
+import java.math.BigDecimal;
+import java.util.List;
  import javax.annotation.PostConstruct;
  import javax.faces.bean.ManagedBean;
  import javax.faces.bean.ViewScoped;
@@ -40,7 +41,7 @@
    private String designation;
    private Compte selectedCpt;
    private int typeTx;
-   private double tauxTaxe;
+   private BigDecimal tauxTaxe;
    SessionFactory factory = DBConfiguration.getSessionFactory();
    
    TaxeModel model;
@@ -141,11 +142,11 @@
      this.designation = designation;
    }
    
-   public double getTauxTaxe() {
+   public BigDecimal getTauxTaxe() {
      return this.tauxTaxe;
    }
    
-   public void setTauxTaxe(double tauxTaxe) {
+   public void setTauxTaxe(BigDecimal tauxTaxe) {
      this.tauxTaxe = tauxTaxe;
    }
    
@@ -289,7 +290,7 @@
      this.code = "";
      this.idTx = 0;
      this.designation = "";
-     this.tauxTaxe = 0.0D;
+     this.tauxTaxe = BigDecimal.ZERO;
      this.selectedCpt = null;
      this.selectedTaxe = null;
      this.libelleCpt = "";

@@ -1,53 +1,47 @@
-<ui:composition 
-    xmlns="http://www.w3.org/1999/xhtml"
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:p="http://primefaces.org/ui"
-    xmlns:pa="http://primefaces.org/apollo">
+    xmlns:p="http://primefaces.org/ui">
 
     <div class="topbar clearfix">
-        <p:graphicImage styleClass="logo" library="apollo-layout" name="images/logoUB1.png" />
-       	
-      
-        
-        <a id="menu-button" href="#">
-            <i class="fa fa-align-justify"></i>
-        </a>
-         
-        
-             
-        <a href="#" class="profile">
-        	<span class="username">
-        	
-        	<h:form>
-        		<p:outputLabel value="EXERCICE : #{loginView.getNumero()}"/>
-        		<p:spacer width="2000"/> 
-				<p:outputLabel value=" #{loginView.GetProperties()}"/>          		
-           		<i class="fa fa-angle-down"></i>	
-		    </h:form>
-        	
-            </span>
-        </a>
-         <ul class="topbar-menu fadeInDown">
-            <li>
-                <a href="#">
-                    <i class="topbar-icon fa fa-fw fa-user"></i>
-                    <span class="topbar-item-name">
-                    	<h:form>
-							<p:commandButton value="Deconnexion"  actionListener="#{loginView.logOut()}" style="background-color:transparent"/>	
-   					 	</h:form>
-		   			</span>
-                </a>
-            </li>
-            <li class="topbar-search-item">
-                <span class="topbar-search">
-                    <input type="text" placeholder="Search"/>
-                    <span class="fa fa-search"></span>
-                </span>
-            </li>
-        </ul>
-       
-    </div>
 
+        <!-- Logo -->
+        <p:graphicImage styleClass="logo" library="apollo-layout"
+                        name="images/logoUB1.png" />
+
+        <!-- Bouton menu gauche -->
+        <a id="menu-button" href="#">
+            <i class="pi pi-align-justify"></i>
+        </a>
+
+        <!-- Profil utilisateur aligné à droite -->
+        <div class="profile" style="margin-left:auto; display:flex; align-items:center; gap:1rem;">
+            <h:form id="userForm" style="display:flex; align-items:center; gap:0.5rem;">
+                <!-- Nom + Exercice -->
+                  
+                <p:outputLabel value="Exercice : #{loginView.exerCode}" style="font-weight:bold;color:#eee;" />
+                <p:spacer width="20px"/>
+                <p:outputLabel value="Utilisateur : #{loginView.nameUser}" style="color:#eee;" />
+
+                <!-- Avatar + menu -->
+                <p:commandLink id="userMenuBtn" style="margin-left:0.5rem;">
+                    <i class="pi pi-user" style="font-size:1.5rem;color:#eee;" />
+                </p:commandLink>
+
+                <p:overlayPanel for="userMenuBtn" hideEffect="fade" dismissable="true">
+                    <p:menu style="min-width:180px;text-align:left">
+                        <p:submenu label="Options">
+                            <p:menuitem value="Profil" icon="pi pi-id-card" action="/user/profile.xhtml" />
+                            <p:menuitem value="Paramètres B.D" icon="pi pi-cog" action="/parametreConnexion.xhtml" />
+                        </p:submenu>
+                        <p:separator />
+                        <p:menuitem value="Déconnexion" icon="pi pi-power-off"
+                                    action="#{loginView.logOut}" ajax="false"
+                                    styleClass="ui-button-danger" />
+                    </p:menu>
+                </p:overlayPanel>
+            </h:form>
+        </div>
+    </div>
 </ui:composition>

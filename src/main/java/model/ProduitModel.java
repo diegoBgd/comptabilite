@@ -10,7 +10,9 @@
  import javax.persistence.criteria.Predicate;
  import javax.persistence.criteria.Root;
  import javax.persistence.criteria.Selection;
- import org.hibernate.Criteria;
+import javax.transaction.Transactional;
+
+import org.hibernate.Criteria;
  import org.hibernate.Session;
  import org.hibernate.SessionFactory;
  import org.hibernate.criterion.Criterion;
@@ -19,7 +21,7 @@
  import org.hibernate.criterion.Restrictions;
  import org.hibernate.criterion.SimpleExpression;
  
-  
+ @Transactional
  public class ProduitModel
  {
    public void saveProduit(SessionFactory factory, Produit prd) {
@@ -32,7 +34,7 @@
      ss.close();
    }
  
-   
+   @Transactional
    public void updateProduit(SessionFactory factory, Produit prd) {
      Session ss = null;
      ss = factory.openSession();
@@ -41,7 +43,7 @@
      ss.getTransaction().commit();
      ss.close();
    }
-   
+   @Transactional
    public void deleteProduit(SessionFactory factory, Produit prd) {
      Session ss = null;
      
@@ -87,23 +89,22 @@
  
    
    public List<Produit> getListProduit(SessionFactory factory, String libelle) {
-     List<Produit> list = null;
-     try {
-       Session session = factory.openSession();
-       session.beginTransaction();
-       Criteria cr = session.createCriteria(Produit.class);
-       if (libelle != null && !libelle.equals(""))
-         cr.add((Criterion)Restrictions.like("libelle", libelle, MatchMode.ANYWHERE)); 
-       cr.addOrder(Order.asc("codePrd"));
-       
-       list = cr.list();
-       session.getTransaction().commit();
-       session.close();
-     }
-     catch (Exception e) {
-       System.out.println(e.toString());
-     } 
-     return list;
+    
+	   Session session = factory.openSession();
+	    try {
+	        // Utilise LIKE avec le caractère % pour "commence par"
+	        List<Produit> produits = session.createQuery(
+	            "SELECT DISTINCT p FROM Produit p " +
+	            "LEFT JOIN FETCH p.listTaxes " +
+	            "WHERE p.codePrd LIKE :prefix OR p.libelle LIKE :prefix", Produit.class
+	        )
+	        .setParameter("prefix", libelle + "%")
+	        .getResultList();
+	        return produits;
+	    } finally {
+	        session.close();
+	    }
+    
    }
    
    public List<Produit> getListProduitSfamille(SessionFactory factory, SoufamilleProd sf) {

@@ -6,7 +6,7 @@
     <defs>
         <rect id="path-1" x="0" y="0" width="286" height="104"></rect>
         <linearGradient x1="50%" y1="0.729432398%" x2="50%" y2="100%" id="linearGradient-3">
-            <stop stop-color="#FFFFFF" stop-opacity="0.8" offset="0%"></stop>
+            <stop stop-color="#B2ED89" stop-opacity="0.9" offset="0%"></stop>
             <stop stop-color="#6CBB37" offset="100%"></stop>
         </linearGradient>
     </defs>

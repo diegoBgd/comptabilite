@@ -6,11 +6,12 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
+	<ui:define name="title">Saisie des immo</ui:define>
+	<ui:define name="head">
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/style.css" />
+	</ui:define>
 	<ui:define name="content">
-		<h:head>
-			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
-			<title>Depense</title>
-		</h:head>
 		<body>
 			<h:form id="frmRF"
 				onkeypress="if (event.keyCode == 13) { return false; }">
@@ -18,378 +19,410 @@
 				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
 				<div class="ui-g">
 					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
-					
+
 						<div class="ui-g-12 ui-fluid card">
-							<div class="ui-g-12 ui-md-1"/>
-							<div class="ui-g-12 ui-md-4">
-							<p:commandButton value="Recherche des factures"
-								icon="fa fa-search" style="border-radius:10px"
-								oncomplete="PF('dlgDep').show();" />
+							<div class="ui-g-12 ui-md-1" />
+							<div class="ui-g-12 ui-md-3">
+								<p:commandButton value="Liste des factures"
+									icon="pi pi-list" style="border-radius:10px"
+									oncomplete="PF('dlgDep').show();" />
+							</div>
+							<div class="ui-g-12 ui-md-3">
+								<p:commandButton value="Liste des règlements"
+									icon="pi pi-list" style="border-radius:10px"
+									oncomplete="PF('dlgRegl').show();" />
+							</div>
 						</div>
-						<div class="ui-g-12 ui-md-4">
-							<p:commandButton value="Recherche des règlements"
-								icon="fa fa-search" style="border-radius:10px"
-								oncomplete="PF('dlgRegl').show();" />
-						</div>
-						</div>
-						
-						
+
+
 						<div class="ui-g-12 ui-fluid card">
-						<p:panelGrid columns="4" id="pnl1"
+							<p:panelGrid columns="4" id="pnl1"
+								contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-5,ui-grid-col-2,ui-grid-col-2"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
-								
-								<h:outputText value="N° facture"/>								
-								<p:inputText value="#{reglementVew.numeroDepense}"/>
-								
-								<p:outputLabel value="Montat de la facture"/>
-								<p:inputNumber id="txtTotDep" value="#{reglementVew.montantDepense}"
-										thousandSeparator="&nbsp;" inputStyle="text-align:right;text-align:right;color:green;font-weight:bold"
-										decimalPlaces="2"/>
-						</p:panelGrid>
-							<p:panelGrid columns="4"  id="pnl2"
+
+								<h:outputText value="N° facture" />
+								<p:inputText value="#{reglementVew.numeroDepense}" />
+
+								<p:outputLabel value="Montat de la facture" />
+								<p:inputNumber id="txtTotDep"
+									value="#{reglementVew.montantDepense}"
+									thousandSeparator="&nbsp;"
+									inputStyle="text-align:right;text-align:right;color:green;font-weight:bold"
+									decimalPlaces="2" />
+							</p:panelGrid>
+							<p:panelGrid columns="4" id="pnl2"
+								contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-7,ui-grid-col-1"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
-								
-								<h:outputText value="Fournisseur"/>
+
+								<h:outputText value="Fournisseur" />
 								<p:inputText id="txtCodFrn" value="#{reglementVew.codeFrn}">
-									<p:ajax event="blur" listener="#{reglementVew.searchFournisseur()}"
-										update="txtLblFrn"/>
-								</p:inputText>	
-												
-								<p:inputText id="txtLblFrn" value="#{reglementVew.libelleFrn}"/>
-								<p:commandButton icon="fa fa-search" style="border-radius:10px"
+									<p:ajax event="blur"
+										listener="#{reglementVew.searchFournisseur()}"
+										update="txtLblFrn" />
+								</p:inputText>
+
+								<p:inputText id="txtLblFrn" value="#{reglementVew.libelleFrn}" />
+								<p:commandButton icon="pi pi-search" style="border-radius:10px"
 									onclick="PF('dlgFrn').show();" />
-								
+
 							</p:panelGrid>
-							
-							
+
+
 						</div>
 						<div class="ui-g-12 ui-fluid card">
 
-							
-							<p:panelGrid columns="4"
+
+							<p:panelGrid columns="4" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-5,ui-grid-col-2,ui-grid-col-2"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
-								
+
 								<p:outputLabel value="Mode règlement" />
 								<p:selectOneMenu id="txtMod" value="#{reglementVew.modePmt}">
-								<f:selectItem itemLabel="Cach" itemValue="1" />
-								<f:selectItem itemLabel="Chèque" itemValue="2" />
-								<f:selectItem itemLabel="Virement" itemValue="3" />								
-								<p:ajax event="change" update="txtMod" />
+									<f:selectItem itemLabel="Cach" itemValue="1" />
+									<f:selectItem itemLabel="Chèque" itemValue="2" />
+									<f:selectItem itemLabel="Virement" itemValue="3" />
+									<p:ajax event="change" update="txtMod" />
 								</p:selectOneMenu>
-								
-								<p:outputLabel value="Date règlement"/>
-									<p:inputMask id="txtDate" value="#{reglementVew.printDate}" mask="99/99/9999">
-										<p:ajax event="blur" listener="#{reglementVew.changeDate()}" 
+
+								<p:outputLabel value="Date règlement" />
+								<p:inputMask id="txtDate" value="#{reglementVew.printDate}"
+									mask="99/99/9999">
+									<p:ajax event="blur" listener="#{reglementVew.changeDate()}"
 										update=":frmRF:msg,:frmRF:txtDate,:frmRF:btnSave" />
-									</p:inputMask>
-								
-								<p:outputLabel value="Pièce règlement"/>
+								</p:inputMask>
+
+								<p:outputLabel value="Pièce règlement" />
 								<p:inputText value="#{reglementVew.pieceRegl}">
-									
+
 								</p:inputText>
-								
-								
+
+
 								<p:outputLabel value="Montant H.T" />
 								<p:inputNumber id="txtMt" value="#{reglementVew.montantHt}"
-										thousandSeparator="&nbsp;" inputStyle="text-align:right"
-										decimalPlaces="2"> 
-										<p:ajax event="blur" listener="#{reglementVew.calculerMontantTTC()}"
-										update="txtTvc"/>
+									thousandSeparator="&nbsp;" inputStyle="text-align:right"
+									decimalPlaces="2">
+									<p:ajax event="blur"
+										listener="#{reglementVew.calculerMontantTTC()}"
+										update="txtTvc" />
 								</p:inputNumber>
-								
+
 								<p:outputLabel value="Devise" />
 								<p:selectOneMenu id="txtDev" value="#{reglementVew.idDevise}"
-								valueChangeListener="#{reglementVew.changeDeviseElement}">
-								<f:selectItem itemLabel=" " itemValue="0" />
-								<f:selectItems value="#{reglementVew.listDevise}" />
-								<p:ajax event="change" update="txtDev" />
+									valueChangeListener="#{reglementVew.changeDeviseElement}">
+									<f:selectItem itemLabel=" " itemValue="0" />
+									<f:selectItems value="#{reglementVew.listDevise}" />
+									<p:ajax event="change" update="txtDev" />
 								</p:selectOneMenu>
-								
+
 								<p:outputLabel value="Cours" />
 								<p:inputNumber id="txtCrs" value="#{reglementVew.courDevse}"
-										thousandSeparator="&nbsp;" inputStyle="text-align:right"
-										decimalPlaces="2" />
-								
-								
+									thousandSeparator="&nbsp;" inputStyle="text-align:right"
+									decimalPlaces="2" />
+
+
 								<p:outputLabel value="Taxes" />
 								<p:selectOneMenu id="txtTx" value="#{reglementVew.idTaxe}"
-								valueChangeListener="#{reglementVew.changeTaxeElement}">
-								<f:selectItem itemLabel=" " itemValue="0" />
-								<f:selectItems value="#{reglementVew.listTaxe}" />
-								<p:ajax event="change" update="txtTx,txtRt,txtTvc,txtMt" />
+									valueChangeListener="#{reglementVew.changeTaxeElement}">
+									<f:selectItem itemLabel=" " itemValue="0" />
+									<f:selectItems value="#{reglementVew.listTaxe}" />
+									<p:ajax event="change" update="txtTx,txtRt,txtTvc,txtMt" />
 								</p:selectOneMenu>
-								
+
 								<p:outputLabel value="Taux" />
 								<p:inputNumber id="txtRt" value="#{reglementVew.tauxTaxe}"
-										thousandSeparator="&nbsp;" inputStyle="text-align:right"
-										decimalPlaces="2" />
-								
-							
-							<p:outputLabel value="Banque" />
+									thousandSeparator="&nbsp;" inputStyle="text-align:right"
+									decimalPlaces="2" />
+
+
+								<p:outputLabel value="Banque" />
 								<p:selectOneMenu id="txtBk" value="#{reglementVew.idCaisse}"
-								valueChangeListener="#{reglementVew.changeBankElement}">
-								<f:selectItem itemLabel=" " itemValue="" />
-								<f:selectItems value="#{reglementVew.listCaisse}" />
-								<p:ajax event="change" update="txtBk,txtCpt" />
+									valueChangeListener="#{reglementVew.changeBankElement}">
+									<f:selectItem itemLabel=" " itemValue="" />
+									<f:selectItems value="#{reglementVew.listCaisse}" />
+									<p:ajax event="change" update="txtBk,txtCpt" />
 								</p:selectOneMenu>
-								
+
 								<p:outputLabel value="Montant TTC" />
 								<p:inputNumber id="txtTvc" value="#{reglementVew.montantTTC}"
-										thousandSeparator="&nbsp;" inputStyle="text-align:right"
-										decimalPlaces="2">
-									<p:ajax event="blur" listener="#{reglementVew.calculerMontantHT()}"
-										update="txtMt,txtCpt"/>
+									thousandSeparator="&nbsp;" inputStyle="text-align:right"
+									decimalPlaces="2">
+									<p:ajax event="blur"
+										listener="#{reglementVew.calculerMontantHT()}"
+										update="txtMt,txtCpt" />
 								</p:inputNumber>
-								
-								
-								<p:outputLabel value="Compte" /> 
+
+
+								<p:outputLabel value="Compte" />
 								<p:selectOneMenu id="txtCpt" value="#{reglementVew.idCompte}"
-								valueChangeListener="#{reglementVew.changeCompteElement}">
-								<f:selectItem itemLabel=" " itemValue="0" />
-								<f:selectItems value="#{reglementVew.listCompte}" />
-								<p:ajax event="change" update="txtCpt" />
+									valueChangeListener="#{reglementVew.changeCompteElement}">
+									<f:selectItem itemLabel=" " itemValue="0" />
+									<f:selectItems value="#{reglementVew.listCompte}" />
+									<p:ajax event="change" update="txtCpt" />
 								</p:selectOneMenu>
-								
-								<p:outputLabel value="Montat déjà reglé"/>
+
+								<p:outputLabel value="Montat déjà reglé" />
 								<p:inputNumber id="txtTotReg" value="#{reglementVew.totalRegle}"
-										thousandSeparator="&nbsp;" inputStyle="text-align:right;color:blue;font-weight:bold"
-										decimalPlaces="2" readonly="true"/>
-									
+									thousandSeparator="&nbsp;"
+									inputStyle="text-align:right;color:blue;font-weight:bold"
+									decimalPlaces="2" readonly="true" />
+
 							</p:panelGrid>
-							
-							<p:panelGrid columns="4"
+
+							<p:panelGrid columns="4" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-5,ui-grid-col-2,ui-grid-col-2"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
-								
-								<p:outputLabel value="Commentaire" />
-								<p:inputTextarea id="txtCmt" value="#{reglementVew.commentaire}"/>
-								
-								<p:outputLabel value="Reste"/>
-								<p:inputNumber id="txtRest" value="#{reglementVew.reste}"
-										thousandSeparator="&nbsp;" inputStyle="text-align:right;color:red;font-weight:bold"
-										decimalPlaces="2" readonly="true"/>
-										
-							</p:panelGrid>
-					</div>
 
-					
- 
+								<p:outputLabel value="Commentaire" />
+								<p:inputTextarea id="txtCmt" value="#{reglementVew.commentaire}" />
+
+								<p:outputLabel value="Reste" />
+								<p:inputNumber id="txtRest" value="#{reglementVew.reste}"
+									thousandSeparator="&nbsp;"
+									inputStyle="text-align:right;color:red;font-weight:bold"
+									decimalPlaces="2" readonly="true" />
+
+							</p:panelGrid>
+						</div>
+
+
+
 						<div class="ui-g-12 ui-fluid card">
 							<div class="ui-g-12 ui-md-1" />
-							<div class="ui-g-3">
+							<div class="ui-g-2">
 								<p:commandButton value="Enregistrer"
-									action="#{reglementVew.save()}" icon="ui-icon-disk" update="frmRF"
-									style="border-radius:10px" id="btnSave" />
-							</div> 
-							<div class="ui-g-3">
-								<p:commandButton value="Supprimer"
-									action="#{reglementVew.delete()}" icon="ui-icon-trash" id="btnDelete"
-									update="frmRF" styleClass="orange-btn" style="border-radius:10px">
-									<p:confirm header="Confirmation"
-										disabled="#{reglementVew.disableMsg}"
-										message="Voulez vous vraiment supprimer ?"
-										icon="ui-icon-alert" />
-								</p:commandButton>
+									action="#{reglementVew.save()}" icon="pi pi-save"
+									update="frmRF" style="border-radius:10px" id="btnSave" />
 							</div>
-							<div class="ui-g-3">  
+							<div class="ui-g-2">
+								<p:commandButton value="Supprimer"
+									onclick="PF('deleteDialog').show()" 
+									icon="pi pi-trash" id="btnDelete"
+									update="frmRF" styleClass="ui-button-danger" 
+									style="border-radius:10px"/>
+									
+							</div>
+							<div class="ui-g-2">
 								<p:commandButton value="Initialiser" id="btnClean"
 									action="#{reglementVew.initializeControl()}"
-									icon="ui-icon ui-icon-refresh" update="frmRF"
-									style="border-radius:10px" />
+									icon="pi pi-sync" update="frmRF"
+									style="border-radius:10px" 
+									styleClass="ui-button-secondary"/>
 							</div>
 						</div>
 					</div>
 
 				</div>
 			</h:form>
-			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
-				widgetVar="cd">
-				<p:commandButton value="Oui" type="button"
-					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-				<p:commandButton value="Non" type="button"
-					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-			</p:confirmDialog>
-			
-			
-		
-		<p:dialog widgetVar="dlgFrn" header="Liste fournisseur"
-			modal="true" appendTo="@(body)" width="700" responsive="true">
-			<h:form id="frmFrn">
+			<h:form>
+				<p:confirmDialog id="deleteDialogId" widgetVar="deleteDialog" rendered="#{reglementVew.disableMsg}"
+					header="Confirmation" message="Voulez-vous vraiment supprimer ?"
+					icon="pi pi-question-circle" showEffect="fade" hideEffect="fade">
 
-				<div class="ui-g">
-					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
-						<p:panelGrid columns="3"
-							columnClasses="ui-grid-col-1,ui-grid-col-6,ui-grid-col-3"
-							layout="grid" styleClass="ui-panelgrid-blank"
-							style="background-color:transparent;">
-							
-							<p:outputLabel value="Libellé" />
-							<p:inputText value="#{reglementVew.rechLblFrn}"/>
-	
-							<p:commandButton value="Rechercher"
-								style="border-radius:10px"
-								action="#{reglementVew.chargerFournisseur()}"
-								update="tblFrn"/>
+					<p:commandButton value="Oui" icon="pi pi-check-circle"
+						styleClass="ui-button-outlined ui-button-danger"
+						action="#{reglementVew.delete()}" update="frmRF"
+						oncomplete="PF('deleteDialog').hide();" />
 
-						</p:panelGrid>
+					<p:commandButton value="Non" type="button"
+						icon="pi pi-times-circle"
+						styleClass="ui-button-outlined ui-button-info"
+						onclick="PF('deleteDialog').hide();" />
 
-						<p:dataTable value="#{reglementVew.listFournisseur}"
-							var="frn" selectionMode="single" id="tblFrn"
-							selection="#{reglementVew.selectedFourn}" rowKey="#{frn.id}"
-							reflow="true" scrollable="true" scrollHeight="200"
-							emptyMessage="">
+				</p:confirmDialog>
 
-							<p:ajax event="rowSelect"
-								listener="#{reglementVew.getSelectedFrnValue()}"
-								update=":frmRF:txtCodFrn,:frmRF:txtLblFrn"/>
-
-							<p:column headerText="Référence" width="15%">
-								<h:outputText value="#{frn.codeFrn}" />
-							</p:column>
-
-							<p:column headerText="Fournisseur">
-								<h:outputText value="#{frn.nameFrn}" />
-							</p:column>
-
-						</p:dataTable>
-
-
-					</div>
-				</div>
 			</h:form>
-		</p:dialog>
-		
-		<p:dialog widgetVar="dlgRegl" header="Listes des règlements"
-			modal="true" appendTo="@(body)" width="700" responsive="true">
-			<h:form id="frmRg"> 
 
-				<div class="ui-g">
-					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
-						<p:panelGrid columns="4"
-							columnClasses="ui-grid-col-2,ui-grid-col-3,ui-grid-col-2,ui-grid-col-3"
-							layout="grid" styleClass="ui-panelgrid-blank"
-							style="background-color:transparent;">
 
-									<p:outputLabel value="Date début"/>
-									<p:inputMask id="txtDatDebut" value="#{reglementVew.rechDateDeb}" mask="99/99/9999">
-										<p:ajax event="blur" listener="#{reglementVew.changeDateDebut()}" update=":frmRg:txtMsge,:frmRg:txtDatDebut" />
-									</p:inputMask>
-								
-									<p:outputLabel value="Date fin"/>
-									<p:inputMask id="txtDatFin" value="#{reglementVew.rechDateFin}" mask="99/99/9999">
-										<p:ajax event="blur" listener="#{reglementVew.changeDateFin()}" update=":frmRg:txtMsge,:frmRg:txtDatFin" />
-									</p:inputMask>
-							<p:spacer/>
-							<p:commandButton value="Rechercher"
-								style="border-radius:10px"
-								action="#{reglementVew.chargerReglement()}"
-								update="tblRg"/>
-								
-						
-						
-						</p:panelGrid>
-						<p:panelGrid columns="1"
-							columnClasses="ui-grid-col-6"
-							layout="grid" styleClass="ui-panelgrid-blank"
-							style="background-color:transparent;">
-							<p:outputLabel value="#{reglementVew.infoMsg}" id="txtMsge" style="color:red"/>
-							
+			<p:dialog widgetVar="dlgFrn" header="Liste fournisseur" modal="true"
+				appendTo="@(body)" width="700" responsive="true">
+				<h:form id="frmFrn">
+
+					<div class="ui-g">
+						<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+							<p:panelGrid columns="3" contentStyleClass="compact-grid"
+								columnClasses="ui-grid-col-1,ui-grid-col-6,ui-grid-col-3"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="background-color:transparent;">
+
+								<p:outputLabel value="Libellé" />
+								<p:inputText value="#{reglementVew.rechLblFrn}" />
+
+								<p:commandButton value="Rechercher" style="border-radius:10px"
+									action="#{reglementVew.chargerFournisseur()}" update="tblFrn" />
+
 							</p:panelGrid>
-						<p:dataTable var="reg" value="#{reglementVew.listReglement}" id="tblRg" emptyMessage=""
-							selectionMode="single" selection="#{reglementVew.selectedReglement}"
-							rowKey="#{reg.id}" reflow="true" scrollable="true" scrollHeight="200">
 
-							<p:ajax event="rowSelect" listener="#{reglementVew.getSelectedReglValue()}"
-								update="frmRF" />
+							<p:dataTable value="#{reglementVew.listFournisseur}" var="frn"
+								selectionMode="single" id="tblFrn"
+								selection="#{reglementVew.selectedFourn}" rowKey="#{frn.id}"
+								reflow="true" scrollable="true" scrollHeight="200"
+								emptyMessage="" size="small" showGridlines="true">
 
-							<p:column headerText="Référence" width="25%">
-								<h:outputText value="#{reg.piece}" />
-							</p:column>
-							<p:column headerText="Date" width="10%">
-								<h:outputText value="#{reg.dateToPrint}" />
-							</p:column>
-							<p:column headerText="Montant reglé" width="15%">
-								<h:outputText value="#{reg.amountToPrint}" style="float:right"/>
-							</p:column>
-						</p:dataTable>
+								<p:ajax event="rowSelect"
+									listener="#{reglementVew.getSelectedFrnValue()}"
+									update=":frmRF:txtCodFrn,:frmRF:txtLblFrn" />
+
+								<p:column headerText="Référence" width="15%">
+									<h:outputText value="#{frn.codeFrn}" />
+								</p:column>
+
+								<p:column headerText="Fournisseur">
+									<h:outputText value="#{frn.nameFrn}" />
+								</p:column>
+
+							</p:dataTable>
 
 
+						</div>
 					</div>
-				</div>
-			</h:form>
-		</p:dialog>
-		<p:dialog widgetVar="dlgDep" header="Liste des dépenses"
-			modal="true" appendTo="@(body)" width="800" responsive="true">
-			<h:form id="frmDep">
+				</h:form>
+			</p:dialog>
 
-				<div class="ui-g">
-					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
-						<p:panelGrid columns="6"
-							columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,
+			<p:dialog widgetVar="dlgRegl" header="Listes des règlements"
+				modal="true" appendTo="@(body)" width="700" responsive="true">
+				<h:form id="frmRg">
+
+					<div class="ui-g">
+						<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+							<p:panelGrid columns="5" contentStyleClass="compact-grid"
+								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="background-color:transparent;">
+
+								<p:outputLabel value="Date début" />
+								<p:inputMask id="txtDatDebut"
+									value="#{reglementVew.rechDateDeb}" mask="99/99/9999">
+									<p:ajax event="blur"
+										listener="#{reglementVew.changeDateDebut()}"
+										update=":frmRg:txtMsge,:frmRg:txtDatDebut" />
+								</p:inputMask>
+
+								<p:outputLabel value="Date fin" />
+								<p:inputMask id="txtDatFin" value="#{reglementVew.rechDateFin}"
+									mask="99/99/9999">
+									<p:ajax event="blur" listener="#{reglementVew.changeDateFin()}"
+										update=":frmRg:txtMsge,:frmRg:txtDatFin" />
+								</p:inputMask>
+							
+								<p:commandButton value="Rechercher" style="border-radius:10px"
+									action="#{reglementVew.chargerReglement()}" 
+									update="tblRg" icon="pi pi-search"/>
+
+
+
+							</p:panelGrid>
+							<p:panelGrid columns="1" contentStyleClass="compact-grid"
+								columnClasses="ui-grid-col-6" layout="grid"
+								styleClass="ui-panelgrid-blank"
+								style="background-color:transparent;">
+								<p:outputLabel value="#{reglementVew.infoMsg}" id="txtMsge"
+									style="color:red" />
+
+							</p:panelGrid>
+							<p:dataTable var="reg" value="#{reglementVew.listReglement}"
+								id="tblRg" emptyMessage="" selectionMode="single"
+								selection="#{reglementVew.selectedReglement}" rowKey="#{reg.id}"
+								reflow="true" scrollable="true" scrollHeight="200" size="small"
+								showGridlines="true">
+
+								<p:ajax event="rowSelect"
+									listener="#{reglementVew.getSelectedReglValue()}"
+									update="frmRF" />
+
+								<p:column headerText="Référence" width="25%">
+									<h:outputText value="#{reg.piece}" />
+								</p:column>
+								<p:column headerText="Date" width="10%">
+									<h:outputText value="#{reg.dateToPrint}" />
+								</p:column>
+								<p:column headerText="Montant reglé" width="15%">
+									<h:outputText value="#{reg.amountToPrint}" style="float:right" />
+								</p:column>
+							</p:dataTable>
+
+
+						</div>
+					</div>
+				</h:form>
+			</p:dialog>
+			<p:dialog widgetVar="dlgDep" header="Liste des dépenses" modal="true"
+				appendTo="@(body)" width="800" responsive="true">
+				<h:form id="frmDep">
+
+					<div class="ui-g">
+						<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+							<p:panelGrid columns="6" contentStyleClass="compact-grid"
+								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,
 										  ui-grid-col-1,ui-grid-col-2"
-							layout="grid" styleClass="ui-panelgrid-blank"
-							style="background-color:transparent;">
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="background-color:transparent;">
 
-							
-						
-							<p:outputLabel value="Date début"/>
-									<p:inputMask id="txtDateDebut" value="#{reglementVew.rechDateDeb}" mask="99/99/9999">
-										<p:ajax event="blur" listener="#{reglementVew.changeDateDebut()}" update=":frmDep:txtMsg,:frmDep:txtDateDebut" />
-									</p:inputMask>
-								
-									<p:outputLabel value="Date fin"/>
-									<p:inputMask id="txtDateFin" value="#{reglementVew.rechDateFin}" mask="99/99/9999">
-										<p:ajax event="blur" listener="#{reglementVew.changeDateFin()}" update=":frmDep:txtMsg,:frmDep:txtDateFin" />
-									</p:inputMask>
-							<p:spacer/>
-							<p:commandButton value="Rechercher"
-								style="border-radius:10px"
-								action="#{reglementVew.chargerDepense()}"
-								update="tbl"/> 
-						
-						</p:panelGrid>
-						<p:panelGrid columns="1"
-							columnClasses="ui-grid-col-6"
-							layout="grid" styleClass="ui-panelgrid-blank"
-							style="background-color:transparent;">
-							<p:outputLabel value="#{reglementVew.infoMsg}" id="txtMsg" style="color:red"/>
-							
+
+
+								<p:outputLabel value="Date début" />
+								<p:inputMask id="txtDateDebut"
+									value="#{reglementVew.rechDateDeb}" mask="99/99/9999">
+									<p:ajax event="blur"
+										listener="#{reglementVew.changeDateDebut()}"
+										update=":frmDep:txtMsg,:frmDep:txtDateDebut" />
+								</p:inputMask>
+
+								<p:outputLabel value="Date fin" />
+								<p:inputMask id="txtDateFin" value="#{reglementVew.rechDateFin}"
+									mask="99/99/9999">
+									<p:ajax event="blur" listener="#{reglementVew.changeDateFin()}"
+										update=":frmDep:txtMsg,:frmDep:txtDateFin" />
+								</p:inputMask>
+								<p:spacer />
+								<p:commandButton value="Rechercher" style="border-radius:10px"
+									action="#{reglementVew.chargerDepense()}" update="tbl"
+									icon="pi pi-search" />
+
 							</p:panelGrid>
-							
-						<p:dataTable var="dep" value="#{reglementVew.listDepense}" id="tbl"
-								selectionMode="single" selection="#{reglementVew.selectedDepense}"
-								rowKey="#{dep.id}" reflow="true" 
+							<p:panelGrid columns="1" contentStyleClass="compact-grid"
+								columnClasses="ui-grid-col-6" layout="grid"
+								styleClass="ui-panelgrid-blank"
+								style="background-color:transparent;">
+								<p:outputLabel value="#{reglementVew.infoMsg}" id="txtMsg"
+									style="color:red" />
+
+							</p:panelGrid>
+
+							<p:dataTable var="dep" value="#{reglementVew.listDepense}"
+								id="tbl" selectionMode="single"
+								selection="#{reglementVew.selectedDepense}" rowKey="#{dep.id}"
+								reflow="true" size="small" showGridlines="true"
 								scrollable="true" scrollHeight="250" emptyMessage="">
- 
-								<p:ajax event="rowSelect" listener="#{reglementVew.getSelectedDepenseValue()}"
+
+								<p:ajax event="rowSelect"
+									listener="#{reglementVew.getSelectedDepenseValue()}"
 									update=":frmRF:pnl1,:frmRF:pnl2,:frmRF:txtTotReg,:frmRF:txtRest" />
 
 								<p:column headerText="Date" width="8%">
 									<h:outputText value="#{dep.dateToPrint}" />
 								</p:column>
 
-								<p:column headerText="Piece"  width="15%">
-									<h:outputText value="#{dep.piece}"/>
+								<p:column headerText="Piece" width="15%">
+									<h:outputText value="#{dep.piece}" />
 								</p:column>
-								
-								<p:column headerText="Montant"  width="10%">
-									<h:outputText value="#{dep.amountToPrint}"  style="float:right"/>
+
+								<p:column headerText="Montant" width="10%">
+									<h:outputText value="#{dep.amountToPrint}" style="float:right" />
 								</p:column>
-								
+
 							</p:dataTable>
 
 
+						</div>
 					</div>
-				</div>
-			</h:form>
-		</p:dialog>
+				</h:form>
+			</p:dialog>
 		</body>
 	</ui:define>
 </ui:composition>

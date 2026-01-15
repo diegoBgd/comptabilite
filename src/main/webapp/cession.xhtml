@@ -1,0 +1,285 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/masterPage.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title">Cession</ui:define>
+	<ui:define name="head">
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/style.css" />
+	</ui:define>
+
+	<ui:define name="content">
+		<body>
+			<h:form id="frm"
+				onkeypress="if (event.keyCode == 13) { return false; }">
+
+				<p:growl id="msg" showDetail="true" />
+				<p:blockUI block="frm" trigger="btnSave" />
+
+				<div class="card">
+					<p:commandButton value="Liste des cessions" icon="pi pi-bars"
+						style="border-radius:10px"
+						action="#{cessionVew.chargerListCession()}" update="frmRecherche"
+						oncomplete="PF('dlgCession').show();" process="@this" />
+				</div>
+				<div class="card">
+					<p:panelGrid columns="4"
+						columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-6,ui-grid-col-1"
+						layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+						style="border:0px none; background-color:transparent;"
+						contentStyleClass="compact-grid">
+
+						<p:outputLabel value="Code immo" />
+						<p:inputText id="txtCode" value="#{cessionVew.codeImmo}">
+							<p:ajax event="blur" listener="#{cessionVew.searchImmo()}"
+								update=":frm" />
+						</p:inputText>
+
+						<p:inputText id="txtLibelleImmo" value="#{cessionVew.libelleImmo}" />
+
+						<p:commandButton icon="pi pi-search" style="border-radius:10px"
+							action="#{cessionVew.chargerListCession()}" update="frmRecherche"
+							oncomplete="PF('dlgImmo').show();" process="@this" />
+
+					</p:panelGrid>
+					<p:panelGrid columns="4"
+						columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+						layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+						style="border:0px none; background-color:transparent;"
+						contentStyleClass="compact-grid">
+
+						<p:outputLabel value="Valeur acquisition" />
+						<p:inputText id="txtMtAcq" value="#{cessionVew.printValeurAq}"
+							style="text-align:right" readonly="true" />
+
+						<p:outputLabel value="Date acquisition" />
+						<p:inputMask id="txtDateAcq" value="#{cessionVew.printDateAq}"
+							mask="99/99/9999" readonly="true" />
+
+						<p:outputLabel value="V.N.C" />
+						<p:inputNumber id="txtVnc" value="#{cessionVew.montantVnc}"
+							readonly="true" thousandSeparator="&nbsp;"
+							inputStyle="text-align:right" decimalPlaces="0" />
+
+						<p:outputLabel value="Durée de vie" />
+						<p:inputText id="txtDure" value="#{cessionVew.dureeVie}"
+							readonly="true" />
+
+					</p:panelGrid>
+					<p:panelGrid columns="4"
+						columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+						layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+						style="border:0px none; background-color:transparent;"
+						contentStyleClass="compact-grid">
+
+						<p:outputLabel value="Date Cession" />
+						<p:inputMask id="txtDateCes"
+							value="#{cessionVew.printDateCession}" mask="99/99/9999">
+							<p:ajax event="blur" listener="#{cessionVew.changeDateCession()}"
+								update=":frm:msg,:frm:txtDateCes,btnSave,tblEcr" />
+						</p:inputMask>
+
+						<h:outputText value="Type cession" />
+						<p:selectOneMenu value="#{cessionVew.type}" autoWidth="false"
+							id="chkType">
+							<f:selectItem itemLabel="Declassement " itemValue="0" />
+							<f:selectItem itemLabel="Vente" itemValue="1" />
+							<f:selectItem itemLabel="Don" itemValue="2" />
+							<f:selectItem itemLabel="Perte" itemValue="3" />
+
+							<p:ajax event="change" update=":frm"
+								listener="#{cessionVew.checkType()}" />
+						</p:selectOneMenu>
+
+					</p:panelGrid>
+
+					<p:panelGrid columns="2" id="grd-2"
+						columnClasses="ui-grid-col-2,ui-grid-col-6" layout="grid"
+						styleClass="ui-panelgrid-blank ui-fluid"
+						style="border:0px none; background-color:transparent;"
+						contentStyleClass="compact-grid">
+
+						<p:outputLabel value="Motif" />
+						<p:inputText value="#{cessionVew.motifCession}" />
+					</p:panelGrid>
+
+					<p:panelGrid columns="4" rendered="#{cessionVew.vente}"
+						id="grdVente"
+						columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+						layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+						style="border:0px none; background-color:transparent;"
+						contentStyleClass="compact-grid">
+
+						<p:outputLabel value="Montant cession" />
+						<p:inputNumber id="txtMont" value="#{cessionVew.montantCession}"
+							thousandSeparator="&nbsp;" inputStyle="text-align:right"
+							decimalPlaces="0">
+							<p:ajax event="blur"
+								listener="#{cessionVew.calculPlusMoinsValue()}" update="txtDiff" />
+						</p:inputNumber>
+
+
+						<p:outputLabel value="Plus ou mois value" />
+						<p:inputText id="txtDiff" value="#{cessionVew.printDiff}"
+							readonly="true" style="color: blue" />
+					</p:panelGrid>
+				</div>
+				<div class="card">
+
+					<p:dataTable value="#{cessionVew.listEcriture}" var="ecr" rowKey="#{ecr.cpte}"
+						selectionMode="single" id="tblEcr" reflow="true" scrollable="true"
+						scrollHeight="200" emptyMessage="" size="small"
+						showGridlines="true" >
+
+						<f:facet name="header" style="text-align:center">
+          					 Ecritures comptables
+      					</f:facet>
+						<p:column headerText="Date" width="10%">
+							<h:outputText value="#{ecr.printDate}" />
+						</p:column>
+
+						<p:column headerText="Compte" width="15%">
+							<h:outputText value="#{ecr.cpte}" />
+						</p:column>
+
+						<p:column headerText="Libellé" width="45%">
+							<h:outputText value="#{ecr.libelle}" />
+						</p:column>
+
+						<p:column headerText="Débit" width="10%">
+							<h:outputText value="#{ecr.printDebit}" style="float:right" />
+						</p:column>
+
+						<p:column headerText="Crédit" width="10%">
+							<h:outputText value="#{ecr.printCredit}" style="float:right" />
+						</p:column>
+
+					</p:dataTable>
+				</div>
+				<div class="card">
+					<p:panelGrid columns="4"
+						columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+						layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+						style="border:0px none; background-color:transparent;"
+						contentStyleClass="compact-grid">
+						<p:spacer />
+						<p:commandButton value="Enregistrer" action="#{cessionVew.save()}"
+							icon="pi pi-save" update=":frm" id="btnSave"
+							style="border-radius:10px" disabled="#{cessionVew.disableSave}" />
+
+						<p:commandButton value="Supprimer" style="border-radius:10px"
+							id="btnDelete" icon="pi pi-trash" styleClass="ui-button-danger"
+							onclick="PF('deleteDialog').show(); return false;" />
+
+						<p:commandButton value="Initialiser"
+							action="#{cessionVew.initialiseControls()}" icon="pi pi-sync"
+							update=":frm" style="border-radius:10px" id="btnClean"
+							styleClass="ui-button-secondary" />
+
+					</p:panelGrid>
+
+				</div>
+
+			</h:form>
+			<h:form>
+				<p:confirmDialog id="deleteDialogId" widgetVar="deleteDialog" rendered="#{cessionVew.disableMsg}"
+					header="Confirmation" message="Voulez-vous vraiment supprimer ?"
+					icon="pi pi-question-circle" showEffect="fade" hideEffect="fade">
+
+					<p:commandButton value="Oui" icon="pi pi-check-circle"
+						styleClass="ui-button-outlined ui-button-danger"
+						action="#{cessionVew.delete()}" update=":frm"
+						oncomplete="PF('deleteDialog').hide();" />
+
+					<p:commandButton value="Non" type="button"
+						icon="pi pi-times-circle"
+						styleClass="ui-button-outlined ui-button-info"
+						onclick="PF('deleteDialog').hide();" />
+
+				</p:confirmDialog>
+
+			</h:form>
+			<p:dialog widgetVar="dlgImmo" header="Liste des immo" modal="true"
+				dynamic="true" width="700" responsive="true">
+				<h:form id="frmRecherche">
+
+					<div class="card">
+
+						<p:dataTable value="#{cessionVew.listImmo}" var="im"
+							selectionMode="single" id="tbl"
+							selection="#{cessionVew.selectedImmo}" rowKey="#{im.id}"
+							reflow="true" scrollable="true" scrollHeight="200"
+							emptyMessage="" size="small" showGridlines="true">
+
+							<p:ajax event="rowSelect"
+								listener="#{cessionVew.takeSelectedImmo()}" update=":frm" />
+
+							<p:column headerText="Code immo" width="15%">
+								<h:outputText value="#{im.codeImmo}" />
+							</p:column>
+
+							<p:column headerText="Libellé" width="45%">
+								<h:outputText value="#{im.libelle}" />
+							</p:column>
+
+							<p:column headerText="Compte immo" width="10%">
+								<h:outputText value="#{im.compteImmo}" />
+							</p:column>
+
+							<p:column headerText="Valeur d'acquisition" width="10%">
+								<h:outputText value="#{im.printAcqValue}" style="float:right" />
+							</p:column>
+
+						</p:dataTable>
+
+
+
+					</div>
+				</h:form>
+			</p:dialog>
+
+			<p:dialog widgetVar="dlgCession" header="Liste des cesions"
+				modal="true" dynamic="true" width="700" responsive="true">
+				<h:form id="frmCession">
+
+					<div class="card">
+
+						<p:dataTable value="#{cessionVew.listCession}" var="ces"
+							selectionMode="single" id="tbl"
+							selection="#{cessionVew.selectedCession}" rowKey="#{ces.id}"
+							reflow="true" scrollable="true" scrollHeight="200"
+							emptyMessage="" size="small" showGridlines="true">
+
+							<p:ajax event="rowSelect"
+								listener="#{cessionVew.takeSelectedCession()}" update=":frm" />
+
+							<p:column headerText="Date" width="10%">
+								<h:outputText value="#{ces.printDateCession}" />
+							</p:column>
+							<p:column headerText="Code immo" width="15%">
+								<h:outputText value="#{ces.immo.codeImmo}" />
+							</p:column>
+
+							<p:column headerText="Libellé" width="45%">
+								<h:outputText value="#{ces.immo.libelle}" />
+							</p:column>
+
+
+
+
+						</p:dataTable>
+
+
+
+					</div>
+				</h:form>
+			</p:dialog>
+
+			
+		</body>
+	</ui:define>
+</ui:composition>

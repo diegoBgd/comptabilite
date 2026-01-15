@@ -12,6 +12,5 @@
    <supported-locale>fr</supported-locale>
    <supported-locale>fi</supported-locale>
   </locale-config>
- </application>  
+ </application>
 </faces-config>
- 

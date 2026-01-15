@@ -24,10 +24,11 @@
 	transform: translate(-50%, -50%);
 	box-shadow: 5px 10px 18px #888888;
 	border-radius: 15px;
+	background-color: white;
 }
 
 .myBack {
-	background-color: white
+	background-color: #EDF0EE;
 }
 
 #cercle {
@@ -45,7 +46,7 @@
 	text-align: center;
 	font-size: 20px;
 	color: white;
-	height:auto;
+	height: auto;
 	/*background-color: #118baa;*/
 	border-radius: 15px;
 }
@@ -62,27 +63,30 @@
 			<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
 				<div class="ui-g-12 ui-md-12 ui-lg-6 ui-fluid contact-form">
 					<div class="ui-g" id="info">
-					
-					<h:graphicImage url="/resources/Images/gatech.png" height="90%" width="70%"/>
-					
+
+						<h:graphicImage url="/resources/Images/gatech.png" height="90%"
+							width="70%" />
+
 					</div>
 					<div class="ui-g-12">
-					<h:outputLabel value="GATECH COMPTA" style="color:#118baa;font-weight:bold;font-size:18px"/>
+						<h:outputLabel value="GATECH COMPTA"
+							style="color:#118baa;font-weight:bold;font-size:18px" />
 					</div>
 				</div>
 
-				<div class="ui-g-12 ui-md-12 ui-lg-6 ui-fluid contact-form" style="border-left: 0.25rem solid  #118baa">
+				<div class="ui-g-12 ui-md-12 ui-lg-6 ui-fluid contact-form"
+					style="border-left: 0.25rem solid #118baa">
 					<div class="ui-g">
 						<div class="ui-g-12 ui-md-12">
 							<div class="ui-inputgroup">
-								<p:commandButton icon="fa fa-calendar" />
+								<p:commandButton icon="pi pi-calendar" />
 								<p:selectOneMenu
-									valueChangeListener="#{loginView.changeExercice}"
-									id="smExerc" placeholder="exercice"
-									value="#{loginView.idExercice}"
+									valueChangeListener="#{loginView.changeExercice}" id="smExerc"
+									placeholder="exercice" value="#{loginView.idExercice}"
 									disabled="false">
 									<f:selectItems value="#{loginView.listExerc}" />
 									<p:ajax event="change" update="smExerc" />
+
 								</p:selectOneMenu>
 							</div>
 						</div>
@@ -90,20 +94,18 @@
 						<div class="ui-g-12 ui-md-12">
 							<div class="ui-inputgroup">
 
-								<p:commandButton icon="fa fa-user" />
+								<p:commandButton icon="pi pi-user" />
 								<p:inputText placeholder="Code utilisateur"
-									value="#{loginView.code}"
-									disabled="false" autocomplete="off" />
+									value="#{loginView.code}" disabled="false" autocomplete="off" />
 
 							</div>
 						</div>
 						<div class="ui-g-12 ui-md-12">
 							<div class="ui-inputgroup">
 
-								<p:commandButton icon="fa fa-key" />
-								<p:password placeholder="Mot de passe"
-									value="#{loginView.pwd}" autocomplete="off"
-									disabled="false" />
+								<p:commandButton icon="pi pi-key" />
+								<p:password placeholder="Mot de passe" value="#{loginView.pwd}"
+									autocomplete="off" disabled="false" />
 
 
 							</div>
@@ -111,36 +113,33 @@
 						<div class="ui-g-12" />
 						<div class="ui-g-12" />
 						<div class="ui-g-12">
-							<p:commandButton value="Entrer"
-								disabled="false"
-								icon="fa fa-unlock-alt" action="#{loginView.login()}"
+							<p:commandButton value="Entrer" disabled="#{loginView.desableLogin}" 
+								icon="pi pi-sign-in" action="#{loginView.login()}"
 								style="border-radius:10px" update="msgs" />
 						</div>
 
 						<div class="ui-g-12">
-							<p:commandLink value="Mot de passe oublié ?"
-								action="a"
+							<p:commandLink value="Mot de passe oublié ?" action="a"
 								disabled="false" />
 						</div>
 					</div>
-					<div class="ui-g-12"></div>
+					<div class="ui-g-12">
+						
+							<p:panelGrid columns="1" columnClasses="ui-grid-col-12"
+								layout="grid" styleClass="ui-panelgrid-blank" rendered="#{loginView.desableLogin}"
+								style="border:0px none; background-color:transparent;">
+								<p:outputLabel value="#{loginView.message}" style="color:red" />
+
+								<p:commandLink value="Connexion à la base de données"
+									action="#{loginView.redirectionBdd()}" />
+							</p:panelGrid>
+						
+					</div>
 				</div>
 
 
 			</div>
-			<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
-				<p:panel visible="false">
-					<p:panelGrid columns="1" columnClasses="ui-grid-col-12"
-						layout="grid" styleClass="ui-panelgrid-blank"
-						style="border:0px none; background-color:transparent;">
-						<p:outputLabel value=" "
-							style="color:red" />
 
-						<p:commandLink value="Connexion à la base de données"
-							action="a" />
-					</p:panelGrid>
-				</p:panel>
-			</div>
 		</div>
 
 

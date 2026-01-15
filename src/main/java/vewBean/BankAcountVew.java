@@ -302,10 +302,10 @@
          }  chargementBkAccount();
          initializeControl();
        } else {
-         HelperC.afficherAttention("Attention", "Il faut prÃ©ciser la Banque !");
+         HelperC.afficherAttention("Attention", "Il faut préciser la Banque !");
        } 
      } else {
-       HelperC.afficherAttention("Attention", "Il faut prÃ©ciser le NÂ° de compte !");
+       HelperC.afficherAttention("Attention", "Il faut préciser le N° de compte !");
      } 
    }
  

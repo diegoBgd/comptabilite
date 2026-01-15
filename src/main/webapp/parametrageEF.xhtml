@@ -6,361 +6,388 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
+	<ui:define name="title">Rubriques</ui:define>
+	<ui:define name="head">
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/style.css" />
+	</ui:define>
 	<ui:define name="content">
-		<h:head>
-			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
-			<title>Rubriques</title>
-		</h:head>
+
 		<body>
 			<h:form id="frm"
 				onkeypress="if (event.keyCode == 13) { return false; }">
 				<p:blockUI block="frm" trigger="btnSave" />
 				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
-				<div class="ui-g">
-					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
+ 				<div class="card">
+					<p:panelGrid columns="4"  
+								 columnClasses="ui-grid-col-2,ui-grid-col-2,
+								 ui-grid-col-7,ui-grid-col-1" layout="grid"
+                 				 styleClass="ui-panelgrid-blank ui-fluid"
+                 				 style="border:0px none; background-color:transparent;"
+                 				 contentStyleClass="compact-grid">
+
+						<h:outputText value="Etat financier" />
+						<p:inputText id="txtEfi" value="#{rubriqueEFiVew.codeEfi}">
+							<p:ajax event="blur" listener="#{rubriqueEFiVew.searchEtat()}"
+								update="txtLblEfi,tbl" />
+						</p:inputText>
+						<p:inputText id="txtLblEfi" value="#{rubriqueEFiVew.libelleEfi}"/>
+
+						<p:commandButton icon="pi pi-search" style="border-radius:10px"
+							onclick="PF('dlgEfi').show();" process="@this"/>
+
+					</p:panelGrid>
+					<p:panelGrid columns="4"  
+								 columnClasses="ui-grid-col-2,ui-grid-col-2,
+								 ui-grid-col-1,ui-grid-col-6" layout="grid"
+                 				 styleClass="ui-panelgrid-blank ui-fluid"
+                 				 style="border:0px none; background-color:transparent;"
+                 				 contentStyleClass="compact-grid">
+
+						<h:outputText value="Référence" />
+						
+						<p:inputText id="txtCod" value="#{rubriqueEFiVew.codeRub}">
+							<p:ajax event="blur"
+								listener="#{rubriqueEFiVew.searchRubrique()}"
+								update="txtLbl,tbl" />
+						</p:inputText>
+
+						<h:outputText value="Libéllé" />
+						<p:inputText id="txtLbl" value="#{rubriqueEFiVew.designation}" />
+					</p:panelGrid>
+					<p:panelGrid  columns="8" 
+								 columnClasses="ui-grid-col-2,ui-grid-col-2,
+								 ui-grid-col-1,ui-grid-col-1,ui-grid-col-1,
+								 ui-grid-col-1,ui-grid-col-2,ui-grid-col-2" 
+								 layout="grid"
+                 				 styleClass="ui-panelgrid-blank ui-fluid"
+                 				 style="border:0px none; background-color:transparent;"
+                 				 contentStyleClass="compact-grid">
+                 				 
+						<p:outputLabel value="Type rubrique" />
+						<p:selectOneMenu value="#{rubriqueEFiVew.type}" autoWidth="false">
+							<f:selectItem itemLabel=" " itemValue="0" />
+							<f:selectItem itemLabel="Actif" itemValue="1" />
+							<f:selectItem itemLabel="Passif" itemValue="2" />
+
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Signe" />
+						<p:selectOneMenu value="#{rubriqueEFiVew.sign}" autoWidth="false">
+
+							<f:selectItem itemLabel="+" itemValue="P" />
+							<f:selectItem itemLabel="-" itemValue="M" />
+							<f:selectItem itemLabel=" " itemValue="N" />
+
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Titre" />
+						<p:selectBooleanCheckbox value="#{rubriqueEFiVew.title}" />
+
+						<p:outputLabel value="Afficher montant" />
+						<p:selectBooleanCheckbox value="#{rubriqueEFiVew.printable}" />
+
+					</p:panelGrid>
+					<p:panelGrid columns="2" 
+								 columnClasses="ui-grid-col-2,ui-grid-col-4" 
+								 layout="grid"
+                 				 styleClass="ui-panelgrid-blank ui-fluid"
+                 				 style="border:0px none; background-color:transparent;"
+                 				 contentStyleClass="compact-grid">
+						<p:spacer />
+						<p:commandButton value="Comptes comptables" icon="pi pi-ellipsis-h"
+							style="border-radius:10px" onclick="PF('dlgDetail').show();" 
+							process="@this"/>
+					</p:panelGrid>
+
+				</div>
+				<div class="card">
+					<p:dataTable value="#{rubriqueEFiVew.listRubrique}" var="rb"
+						selectionMode="single" id="tbl"
+						selection="#{rubriqueEFiVew.selectedRubrique}" rowKey="#{rb.id}"
+						reflow="true" scrollable="true" scrollHeight="200" emptyMessage=""
+						size="small" showGridlines="true">
+
+						<p:ajax event="rowSelect"
+							listener="#{rubriqueEFiVew.getSelectedRubriqueValues()}"
+							update=":frm,:frmDet:tblCpt" />
+
+						<p:column headerText="Référence" width="10%">
+							<h:outputText value="#{rb.code}" />
+						</p:column>
+
+						<p:column headerText="Libéllé">
+							<h:outputText value="#{rb.libelle}" />
+						</p:column>
+
+					</p:dataTable>
+				</div>
+				<div class="card">
+					<p:panelGrid columns="2" 
+								 columnClasses="ui-grid-col-2,ui-grid-col-7" 
+								 layout="grid"
+                 				 styleClass="ui-panelgrid-blank ui-fluid"
+                 				 style="border:0px none; background-color:transparent;"
+                 				 contentStyleClass="compact-grid">
+						<p:outputLabel value="Formule" />
+						<p:inputText id="txtFormul"
+							value="#{rubriqueEFiVew.formulElement}" readonly="true" />
+					</p:panelGrid>
 					
-						
-						<div class="ui-g-12 ui-fluid card"> 
+					<p:panelGrid columns="7" 
+								 columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-1,ui-grid-col-1,ui-grid-col-1,ui-grid-col-1,ui-grid-col-1" 
+								 layout="grid"
+                 				 styleClass="ui-panelgrid-blank ui-fluid"
+                 				 style="border:0px none; background-color:transparent;"
+                 				 contentStyleClass="compact-grid">
+						<p:outputLabel value="Eléments de la formule" />
+						<p:selectOneMenu id="txtElt" value="#{rubriqueEFiVew.element}"
+							valueChangeListener="#{rubriqueEFiVew.changeElement}">
+							<f:selectItem itemLabel=" " itemValue="" />
+							<f:selectItems value="#{rubriqueEFiVew.listElement}" />
+							<p:ajax event="change" update="txtElt" />
+						</p:selectOneMenu>
 
-							<p:panelGrid columns="4"
-								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-7,ui-grid-col-1"
-								layout="grid" styleClass="ui-panelgrid-blank"
-								style="border:0px none; background-color:transparent;">
-								
-								<h:outputText value="Etat financier"/>								
-								<p:inputText id="txtEfi" value="#{rubriqueEFiVew.codeEfi}">
-								<p:ajax event="blur" listener="#{rubriqueEFiVew.searchEtat()}"
-										update="txtLblEfi,tbl"/>
-								</p:inputText>
-								<p:inputText id="txtLblEfi" value="#{rubriqueEFiVew.libelleEfi}"/>
-								
-								<p:commandButton icon="fa fa-search" style="border-radius:10px"
-									onclick="PF('dlgEfi').show();" />
-								
-							</p:panelGrid>
-							<p:panelGrid columns="4"
-								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-1,ui-grid-col-6"
-								layout="grid" styleClass="ui-panelgrid-blank"
-								style="border:0px none; background-color:transparent;">
-								
-								<h:outputText value="Référence"/>
-								<p:inputText id="txtCod" value="#{rubriqueEFiVew.codeRub}">
-									<p:ajax event="blur" listener="#{rubriqueEFiVew.searchRubrique()}"
-										update="txtLbl,tbl"/>
-								</p:inputText>	
-								
-								<h:outputText value="Libéllé"/>			
-								<p:inputText id="txtLbl" value="#{rubriqueEFiVew.designation}"/>																
-							</p:panelGrid>
-							
-						
-						<p:panelGrid columns="8"
-								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-1,ui-grid-col-1,
-											  ui-grid-col-1,ui-grid-col-1,ui-grid-col-2,ui-grid-col-1"
-								layout="grid" styleClass="ui-panelgrid-blank"
-								style="border:0px none; background-color:transparent;">
-								
-								
-								<p:outputLabel value="Type rubrique" />
-								<p:selectOneMenu value="#{rubriqueEFiVew.type}" autoWidth="false">
-									<f:selectItem itemLabel=" " itemValue="0" />
-									<f:selectItem itemLabel="Actif" itemValue="1" />
-									<f:selectItem itemLabel="Passif" itemValue="2" />
-									
-								</p:selectOneMenu>
-								
-								<p:outputLabel value="Signe" />
-								<p:selectOneMenu value="#{rubriqueEFiVew.sign}" autoWidth="false">
-								
-									<f:selectItem itemLabel="+" itemValue="P" />
-									<f:selectItem itemLabel="-" itemValue="M" />
-									<f:selectItem itemLabel=" " itemValue="N" />
-									
-								</p:selectOneMenu>
-								
-								<p:outputLabel value="Titre" />
-								<p:selectBooleanCheckbox value="#{rubriqueEFiVew.title}"/>		
-								
-								<p:outputLabel value="Afficher montant" />
-								<p:selectBooleanCheckbox value="#{rubriqueEFiVew.printable}"/>	
-									
-											
-					  </p:panelGrid>
+						<p:outputLabel value="Symbole" />
+						<p:selectOneMenu value="#{rubriqueEFiVew.symbol}"
+							autoWidth="false">
+							<f:selectItem itemLabel=" " itemValue="" />
+							<f:selectItem itemLabel="-" itemValue="-" />
+							<f:selectItem itemLabel="+" itemValue="+" />
+							<f:selectItem itemLabel="*" itemValue="*" />
+							<f:selectItem itemLabel="/" itemValue=":" />
+							<f:selectItem itemLabel="(" itemValue="(" />
+							<f:selectItem itemLabel=")" itemValue=")" />
+						</p:selectOneMenu>
+
+						<p:commandButton icon="pi pi-refresh"
+							action="#{rubriqueEFiVew.refreshElementList()}" id="btnRefresh"
+							update="txtElt" style="border-radius:10px" />
+
+						<p:commandButton icon="pi pi-plus-circle"
+							action="#{rubriqueEFiVew.addElement()}" id="btnAdd"
+							update="txtFormul" style="border-radius:10px" />
+
+						<p:commandButton icon="pi pi-arrow-left"
+							action="#{rubriqueEFiVew.removeElement()}" id="btnRemv"
+							update="txtFormul" style="border-radius:10px" />
+
+						<p:tooltip for="btnRefresh"
+							value="Initialiser les éléments de la formule" />
+						<p:tooltip for="btnAdd" value="Ajouter l'élément à la formule" />
+						<p:tooltip for="btnRemv" value="Effacer l'élément de la formule" />
+					</p:panelGrid>
+				</div>
+				<div class="card">
+					<p:panelGrid  columns="4" 
+								 columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2" 
+								 layout="grid"
+                 				 styleClass="ui-panelgrid-blank ui-fluid"
+                 				 style="border:0px none; background-color:transparent;"
+                 				 contentStyleClass="compact-grid">
+                 		<p:spacer/>
+						<p:commandButton value="Enregistrer"
+							action="#{rubriqueEFiVew.save()}" icon="pi pi-save"
+							update="frm,frmDet" style="border-radius:10px" id="btnSave" />
+
+
+						<p:commandButton value="Supprimer"
+							 icon="pi pi-trash"
+							styleClass="ui-button-danger" 
+							style="border-radius:10px"
+							onclick="PF('deleteDialog').show(); return false;" />
 					
-						<p:panelGrid columns="2"
-								columnClasses="ui-grid-col-2,ui-grid-col-4"
-								layout="grid" styleClass="ui-panelgrid-blank"
-								style="border:0px none; background-color:transparent;">
-								
-								<p:spacer/>
-								<p:commandButton value="Comptes comptables"  style="border-radius:10px"
-									onclick="PF('dlgDetail').show();" />
-								
-								
-								
-						</p:panelGrid>
-						</div>
+						<p:commandButton value="Initialiser" id="btnClean"
+							action="#{rubriqueEFiVew.initializeControl()}"
+							icon="pi pi-sync" styleClass="ui-button-secondary" 
+							update="frm,frmDet"
+							style="border-radius:10px" />
 
-					<div class="ui-g-12 ui-fluid card">
-						
-						<p:dataTable value="#{rubriqueEFiVew.listRubrique}"
-							var="rb" selectionMode="single" id="tbl"
-							selection="#{rubriqueEFiVew.selectedRubrique}" rowKey="#{rb.id}"
-							reflow="true" scrollable="true" scrollHeight="200"
-							emptyMessage="">
+					</p:panelGrid>
+				</div>
 
-							<p:ajax event="rowSelect"
-								listener="#{rubriqueEFiVew.getSelectedRubriqueValues()}"
-								update=":frm,:frmDet:tblCpt" />
 
-							<p:column headerText="Référence" width="10%">
-								<h:outputText value="#{rb.code}" />
-							</p:column>
 
-							<p:column headerText="Libéllé">
-								<h:outputText value="#{rb.libelle}" />
-							</p:column>
+			</h:form>
 
-						</p:dataTable>
-					</div>
-						<div class="ui-g-12 ui-fluid card">
+		<h:form>
+				<p:confirmDialog id="deleteDialogId" widgetVar="deleteDialog"
+					header="Confirmation" message="Voulez-vous vraiment supprimer ?"
+					icon="pi pi-question-circle" showEffect="fade" hideEffect="fade">
+
+					<p:commandButton value="Oui" icon="pi pi-check-circle"
+						styleClass="ui-button-outlined ui-button-danger"
+						action="#{rubriqueEFiVew.delete()}" update=":frm"
+						oncomplete="PF('deleteDialog').hide();" />
+
+					<p:commandButton value="Non" type="button"
+						icon="pi pi-times-circle"
+						styleClass="ui-button-outlined ui-button-info"
+						onclick="PF('deleteDialog').hide();" />
+
+				</p:confirmDialog>
+
+			</h:form>
+
+
+			<p:dialog widgetVar="dlgEfi" header="Etats financiers" modal="true"
+				dynamic="true" width="700" responsive="true">
+				<h:form id="frmCpt">
+
+					<div class="ui-g">
+						<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
 							<p:panelGrid columns="2"
-								columnClasses="ui-grid-col-2,ui-grid-col-9"
-								layout="grid" styleClass="ui-panelgrid-blank"
-								style="border:0px none; background-color:transparent;">
-								
-								<p:outputLabel value="Formule" />
-								<p:inputText id="txtFormul" value="#{rubriqueEFiVew.formulElement}" readonly="true"/>
-							</p:panelGrid>
-							
-							
-							<p:panelGrid columns="7"
-								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,
-											   ui-grid-col-1,ui-grid-col-1,ui-grid-col-1"
-								layout="grid" styleClass="ui-panelgrid-blank"
-								style="border:0px none; background-color:transparent;">
-								
-								<p:outputLabel value="Eléments de la formule" />
-								<p:selectOneMenu id="txtElt" value="#{rubriqueEFiVew.element}"
-								valueChangeListener="#{rubriqueEFiVew.changeElement}">
-								<f:selectItem itemLabel=" " itemValue="" />
-								<f:selectItems value="#{rubriqueEFiVew.listElement}" />
-								<p:ajax event="change" update="txtElt" />
-								</p:selectOneMenu>
-								
-								<p:outputLabel value="Symbole" />
-								<p:selectOneMenu value="#{rubriqueEFiVew.symbol}" autoWidth="false">
-									<f:selectItem itemLabel=" " itemValue="" />
-									<f:selectItem itemLabel="-" itemValue="-" />
-									<f:selectItem itemLabel="+" itemValue="+" />
-									<f:selectItem itemLabel="*" itemValue="*" />
-									<f:selectItem itemLabel="/" itemValue=":" />
-									<f:selectItem itemLabel="(" itemValue="(" />
-									<f:selectItem itemLabel=")" itemValue=")" />
-								</p:selectOneMenu>
-								
-								<p:commandButton icon="fa fa-refresh" action="#{rubriqueEFiVew.refreshElementList()}" 
-												 id="btnRefresh" update="txtElt" style="border-radius:10px"/>
-								
-								<p:commandButton icon="fa fa-plus-circle" action="#{rubriqueEFiVew.addElement()}" 
-								 			    id="btnAdd" update="txtFormul"	style="border-radius:10px"/>
-								
-								<p:commandButton icon="fa fa-long-arrow-left" action="#{rubriqueEFiVew.removeElement()}" 
-												id="btnRemv" update="txtFormul" style="border-radius:10px"/>
-												 
-								<p:tooltip for="btnRefresh" value="Initialiser les éléments de la formule"/>
-								<p:tooltip for="btnAdd" value="Ajouter l'élément à la formule" />
-								<p:tooltip for="btnRemv" value="Effacer l'élément de la formule" />
-							</p:panelGrid>
-							
-						</div>
-						<div class="ui-g-12 ui-fluid card">
-							<div class="ui-g-12 ui-md-1" />
-							<div class="ui-g-3">
-								<p:commandButton value="Enregistrer"
-									action="#{rubriqueEFiVew.save()}" icon="ui-icon-disk" update="frm,frmDet"
-									style="border-radius:10px" id="btnSave" />
-							</div> 
-							<div class="ui-g-3">
-								<p:commandButton value="Supprimer"
-									action="#{rubriqueEFiVew.delete()}" icon="ui-icon-trash" id="btnDelete"
-									update="frm,frmDet" styleClass="orange-btn" style="border-radius:10px">
-									<p:confirm header="Confirmation"
-										disabled="#{rubriqueEFiVew.disableMsg}"
-										message="Voulez vous vraiment supprimer ?"
-										icon="ui-icon-alert" />
-								</p:commandButton>
-							</div> 
-							<div class="ui-g-3">  
-								<p:commandButton value="Initialiser" id="btnClean"
-									action="#{rubriqueEFiVew.initializeControl()}"
-									icon="ui-icon ui-icon-refresh" update="frm,frmDet"
-									style="border-radius:10px" />
-							</div>
-						</div>
-					</div>
+								columnClasses="ui-grid-col-3,ui-grid-col-3" layout="grid"
+								styleClass="ui-panelgrid-blank"
+								style="border:0px none; 
+								background-color:transparent;">
 
-				</div>
-			</h:form>
-			
-			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
-				widgetVar="cd">
-				<p:commandButton value="Oui" type="button"
-					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-				<p:commandButton value="Non" type="button"
-					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-			</p:confirmDialog>
-			
-			
-		
-		<p:dialog widgetVar="dlgEfi" header="Etats financiers"
-			modal="true" appendTo="@(body)" width="700" responsive="true">
-			<h:form id="frmCpt">
-
-				<div class="ui-g">
-					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
-						<p:panelGrid columns="2"
-								columnClasses="ui-grid-col-2,ui-grid-col-2"
-								layout="grid" styleClass="ui-panelgrid-blank"
-								style="border:0px none; background-color:transparent;">
-								
-								<p:outputLabel value="Type rubrique" id="chkType"/>
-								<p:selectOneMenu value="#{rubriqueEFiVew.typeRb}" autoWidth="false">
+								<p:outputLabel value="Type rubrique" id="chkType" />
+								<p:selectOneMenu value="#{rubriqueEFiVew.typeRb}"
+									autoWidth="false">
 									<f:selectItem itemLabel=" " itemValue="0" />
 									<f:selectItem itemLabel="Actif" itemValue="1" />
 									<f:selectItem itemLabel="Passif" itemValue="2" />
-									<p:ajax event="change" update="chkType"/>
+									<p:ajax event="change" update="chkType" />
 								</p:selectOneMenu>
-								
-						</p:panelGrid>
-						
-						<p:dataTable value="#{rubriqueEFiVew.listeEtat}"
-							var="efi" selectionMode="single" id="tblCpt"
-							selection="#{rubriqueEFiVew.selectedEfi}" rowKey="#{efi.id}"
-							reflow="true" scrollable="true" scrollHeight="200"
-							emptyMessage="">
 
-							<p:ajax event="rowSelect"
-								listener="#{rubriqueEFiVew.getSelectedEfiValue()}"
-								update=":frm:txtLblEfi,:frm:txtEfi,:frm:tbl" />
+							</p:panelGrid>
 
-							<p:column headerText="Référence" width="15%">
-								<h:outputText value="#{efi.code}" />
-							</p:column>
+							<p:dataTable value="#{rubriqueEFiVew.listeEtat}" var="efi"
+								selectionMode="single" id="tblCpt"
+								selection="#{rubriqueEFiVew.selectedEfi}" rowKey="#{efi.id}"
+								reflow="true" scrollable="true" scrollHeight="200"
+								emptyMessage="" size="small" showGridlines="true">
 
-							<p:column headerText="Libellé">
-								<h:outputText value="#{efi.libelle}" />
-							</p:column>
+								<p:ajax event="rowSelect"
+									listener="#{rubriqueEFiVew.getSelectedEfiValue()}"
+									update=":frm:txtLblEfi,:frm:txtEfi,:frm:tbl" />
 
-						</p:dataTable>
-						 
+								<p:column headerText="Référence" width="15%">
+									<h:outputText value="#{efi.code}" />
+								</p:column>
 
+								<p:column headerText="Libellé">
+									<h:outputText value="#{efi.libelle}" />
+								</p:column>
+
+							</p:dataTable>
+
+
+						</div>
 					</div>
-				</div>
-			</h:form>
-		</p:dialog>
-		
-		<p:dialog widgetVar="dlgDetail" header="Détails du rubrique"
-			modal="true" appendTo="@(body)" width="700" responsive="true">
-			<h:form id="frmDet">
+				</h:form>
+			</p:dialog>
 
-				<div class="ui-g">
-					<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
-					
-						<p:dataTable value="#{rubriqueEFiVew.listDetail}"
-							var="det" selectionMode="single" id="tblCpt" 
-							selection="#{rubriqueEFiVew.selectedDetail}" 
-							rowKey="#{det.id}" style="border: 1px solid gray"
-							reflow="true" scrollable="true" scrollHeight="200"
-							emptyMessage="">
+			<p:dialog widgetVar="dlgDetail" header="Détails du rubrique"
+				modal="true" dynamic="true" width="700" responsive="true">
+				<h:form id="frmDet">
 
-							<p:ajax event="rowSelect"
-								listener="#{rubriqueEFiVew.getSelectedDetailValue()}"
-								update="frmDet" />
+					<div class="ui-g">
+						<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
 
-							<p:column headerText="Compte début" width="20%">
-								<h:outputText value="#{det.compteDeb}" />
-							</p:column>
+							<p:dataTable value="#{rubriqueEFiVew.listDetail}" var="det"
+								selectionMode="single" id="tblCpt"
+								selection="#{rubriqueEFiVew.selectedDetail}" rowKey="#{det.ligne}"
+								style="border: 1px solid gray" reflow="true" scrollable="true"
+								scrollHeight="200" emptyMessage="" size="small" showGridlines="true">
 
-							<p:column headerText="Compte fin"  width="20%">
-								<h:outputText value="#{det.compteFin}"/>
-							</p:column>
+								<p:ajax event="rowSelect"
+									listener="#{rubriqueEFiVew.getSelectedDetailValue()}"
+									update="frmDet" />
 
-							<p:column headerText="Valeur"  width="10%">
-								<h:outputText value="#{det.printSldType}"/>
-							</p:column>
-							<p:column headerText="Signe" width="10%">
-								<h:outputText value="#{det.signe}" />
-							</p:column>
-							<p:column headerText=""/>
-						</p:dataTable>
-					
-						<div class="ui-g-3">
+								<p:column headerText="Compte début" width="20%">
+									<h:outputText value="#{det.compteDeb}" />
+								</p:column>
+
+								<p:column headerText="Compte fin" width="20%">
+									<h:outputText value="#{det.compteFin}" />
+								</p:column>
+
+								<p:column headerText="Valeur" width="10%">
+									<h:outputText value="#{det.printSldType}" />
+								</p:column>
+								<p:column headerText="Signe" width="10%">
+									<h:outputText value="#{det.signe}" />
+								</p:column>
+								<p:column headerText="" />
+							</p:dataTable>
+
+							<div class="ui-g-3">
 								<p:inputText id="txtCptDeb" value="#{rubriqueEFiVew.cptDeb}">
-									<p:ajax event="blur" listener="#{rubriqueEFiVew.searchCompteDb()}"
-										update="txtMsg,btnPlus"/>
+									<p:ajax event="blur"
+										listener="#{rubriqueEFiVew.searchCompteDb()}"
+										update="txtMsg,btnPlus" />
 								</p:inputText>
-						</div>
-						<div class="ui-g-3">
+							</div>
+							<div class="ui-g-3">
 								<p:inputText id="txtCptfin" value="#{rubriqueEFiVew.cptFin}">
-									<p:ajax event="blur" listener="#{rubriqueEFiVew.searchCompteFn()}"
-										update="txtMsg,btnPlus"/>
+									<p:ajax event="blur"
+										listener="#{rubriqueEFiVew.searchCompteFn()}"
+										update="txtMsg,btnPlus" />
 								</p:inputText>
-						</div>
-						<div class="ui-g-2">
-							
-								<p:selectOneMenu value="#{rubriqueEFiVew.valeur}" autoWidth="false">
+							</div>
+							<div class="ui-g-2">
+
+								<p:selectOneMenu value="#{rubriqueEFiVew.valeur}"
+									autoWidth="false">
 									<f:selectItem itemLabel=" Solde" itemValue="1" />
 									<f:selectItem itemLabel="Solde débiteur" itemValue="2" />
-									<f:selectItem itemLabel="Solde créditeur" itemValue="3" />							
+									<f:selectItem itemLabel="Solde créditeur" itemValue="3" />
 								</p:selectOneMenu>
-						</div>
-						
-						<div class="ui-g-1">
-							
-								<p:selectOneMenu value="#{rubriqueEFiVew.signeDetail}" autoWidth="false">
+							</div>
+
+							<div class="ui-g-1">
+
+								<p:selectOneMenu value="#{rubriqueEFiVew.signeDetail}"
+									autoWidth="false">
 									<f:selectItem itemLabel=" +" itemValue="P" />
 									<f:selectItem itemLabel="-" itemValue="M" />
 								</p:selectOneMenu>
-						</div>
-						
-						<div class="ui-g-3">
-							
-								<p:selectOneMenu value="#{rubriqueEFiVew.valeurColone}" autoWidth="false">
+							</div>
+
+							<div class="ui-g-3">
+
+								<p:selectOneMenu value="#{rubriqueEFiVew.valeurColone}"
+									autoWidth="false">
 									<f:selectItem itemLabel="Brut" itemValue="0" />
 									<f:selectItem itemLabel="Déduction" itemValue="1" />
 								</p:selectOneMenu>
-						</div>
-						
-						<div class="ui-g-1">
-						<p:commandButton icon="fa fa-plus-circle" action="#{rubriqueEFiVew.addDetail()}" 
-												disabled="#{rubriqueEFiVew.disableAddCpt}"
-												 id="btnPlus" update="frmDet" style="border-radius:10px"/>							
-						</div>
-						
-						<div class="ui-g-1">
-						<p:commandButton icon="fa fa-minus-circle" action="#{rubriqueEFiVew.removeDetail()}" 
-												 id="btnMns" update="frmDet" style="border-radius:10px"/>							
-						</div>
-						
-						<div class="ui-g-1">
-						<p:commandButton icon="fa fa-refresh" action="#{rubriqueEFiVew.clearDetail()}" 
-												 id="btnInit" update="frmDet" style="border-radius:10px"/>							
-						</div>
-					
-						<p:panelGrid columns="2"
-								columnClasses="ui-grid-col-2,ui-grid-col-8"
-								layout="grid" styleClass="ui-panelgrid-blank"
+							</div>
+
+							<div class="ui-g-1">
+								<p:commandButton icon="pi pi-plus-circle"
+									action="#{rubriqueEFiVew.addDetail()}"
+									disabled="#{rubriqueEFiVew.disableAddCpt}" id="btnPlus"
+									update="frmDet" style="border-radius:10px" />
+							</div>
+
+							<div class="ui-g-1">
+								<p:commandButton icon="pi pi-minus-circle"
+									action="#{rubriqueEFiVew.removeDetail()}" id="btnMns"
+									update="frmDet" style="border-radius:10px" />
+							</div>
+
+							<div class="ui-g-1">
+								<p:commandButton icon="pi pi-refresh"
+									action="#{rubriqueEFiVew.clearDetail()}" id="btnInit"
+									update="frmDet" style="border-radius:10px" />
+							</div>
+
+							<p:panelGrid columns="2"
+								columnClasses="ui-grid-col-2,ui-grid-col-8" layout="grid"
+								styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
-								<p:spacer/>
-								<p:outputLabel id="txtMsg" value="#{rubriqueEFiVew.infoMsg}" style="color:red"/>
-						</p:panelGrid>
+								<p:spacer />
+								<p:outputLabel id="txtMsg" value="#{rubriqueEFiVew.infoMsg}"
+									style="color:red" />
+							</p:panelGrid>
+						</div>
 					</div>
-				</div>
-			</h:form>
-		</p:dialog>
-		
-		
+				</h:form>
+			</p:dialog>
+
+
 		</body>
 	</ui:define>
 </ui:composition>

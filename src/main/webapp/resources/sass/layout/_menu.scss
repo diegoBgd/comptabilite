@@ -10,7 +10,7 @@
         z-index: 101;
         top: 50px;
         @include border-box();
-        @include overlay-shadow;
+        box-shadow: 0 0px 6px 0px rgba(0, 0, 0, 0.32);
 
         .layout-menu {
             margin: 0;
@@ -19,7 +19,7 @@
 
             li {
                 > a {
-                    color: $menuitemTextColor;
+                    color: $textColor;
                     display: block;
                     @include border-box();
 
@@ -110,7 +110,7 @@
                 padding: 0 5px;
                 position: absolute;
                 left: 61px;
-                top: 7px;
+                top: 8px;
                 line-height: 1;
                 
                 .layout-menu-tooltip-text {
@@ -122,7 +122,7 @@
                    white-space: nowrap;
                    text-align: center;
                    @include border-radius($borderRadius);
-                   @include overlay-shadow();
+                   box-shadow: 0 0px 6px 0px rgba(0, 0, 0, 0.12);
                 }
                 
                 .layout-menu-tooltip-arrow {
@@ -139,38 +139,19 @@
                 }
             }
         }
-        
-        .nano {
-            > .nano-content {
-                &.menu-scroll-content {
-                    display: block;
-                    height: 100%;
-                    position: relative;
-                    overflow: scroll;
-                    overflow-x: hidden;
-                }
 
-                .nano-scroll-footer {
-                    height: 120px;
-                }
-            }
-            
-            > .nano-pane {
-                .nano-slider {
-                    background-color: #aaaaaa;
-                    opacity: 0.3;
-                    filter: alpha(opacity=30);
-                }
-            }
+        .menu-scroll-content {
+            display: block;
+            height: calc(100% - 50px);
+            position: relative;
+            overflow: auto;
         }
     }
 }
 
-@media (min-width: 1025px) {
+@media (min-width: #{$tabletBreakpoint + 1}) {
     .layout-wrapper {
-
         &.layout-horizontal {
-
             .layout-menu-container {
                 padding: 0 20px;
                 width: 100%;
@@ -180,20 +161,38 @@
                 }
 
                 .layout-menu {
-
                     > li {
                         display: inline-block;
                         position: relative;
 
                         > a {
-                            padding: 12px;
-                            height: 50px;
+                            padding: 8px 12px;
+                            margin-right: 6px;
+                            height: 40px;
                             border-bottom: 2px solid transparent;
                             @include transition(border-bottom-color $transitionDuration, background-color $transitionDuration);
 
+                            > span {
+                                display: inline-block;
+                                vertical-align: middle;
+                            }
+
+                            i {
+                                margin-right: 6px;
+
+                                &.layout-menuitem-toggler {
+                                    float: right;
+                                    display: block;
+                                    margin-top: 6px;
+                                    font-size: 12px;
+                                    margin-left: 12px;
+                                    margin-right: 0px;
+                                }
+                            }
+
                             &:hover {
                                 border-bottom-color: $primaryColor;
-                                color: $menuItemHoverTextColor;
+                                color: $primaryColor;
                             }
                         }
 
@@ -204,7 +203,7 @@
                             }
 
                             > ul {
-                                top: 50px;
+                                top: 40px;
                                 left: 0;
                                 position: absolute;
                             }
@@ -212,7 +211,7 @@
 
                         > ul {
                             min-width: 200px;
-                            @include overlay-shadow();
+                            box-shadow: 0 0px 6px 0px rgba(0, 0, 0, 0.24);
                         }
 
                         ul {
@@ -228,13 +227,17 @@
                                     display: block;
 
                                     span {
+                                        display: inline-block;
+                                        vertical-align: middle;
                                         margin-left: 6px;
+                                        margin-right: 10px;
                                     }
 
                                     i.layout-menuitem-toggler {
                                         float: right;
                                         display: block;
-                                        margin-top: 4px;
+                                        margin-top: 6px;
+                                        font-size: 12px;
                                     }
 
                                     &:hover {
@@ -245,7 +248,7 @@
 
                                 &.active-menuitem {
                                     > a {
-                                        color: $menuItemActiveTextColor;
+                                        color: $primaryColor;
 
                                         &:hover {
                                             color: $primaryTextColor;
@@ -313,14 +316,6 @@
                     }
                 }
 
-                .nano {
-                    overflow: visible;
-
-                    > .nano-content {
-                        overflow: visible;
-                    }
-                }
-
                 .layout-menu-footer {
                     display: none;
                 }
@@ -338,15 +333,14 @@
 
                 .layout-menu-title {
                     display: block;
-                    padding: 11px;
-                    font-size: 16px;
+                    padding: 9px 11px;
                     color: $textSecondaryColor;
                     border-bottom: 1px solid $dividerColor;
                     letter-spacing: 2px;
                 }
 
                 .layout-menu {
-
+                    flex: 1 1 auto;
                     li {
                         a {
                             padding: 10px 12px;
@@ -358,7 +352,6 @@
                             }
 
                             i:first-child {
-                                font-size: 18px;
                                 vertical-align: middle;
                                 display: inline-block;
                             }
@@ -366,20 +359,20 @@
                             i.layout-menuitem-toggler {
                                 float: right;
                                 line-height: 22px;
+                                font-size: 12px;
                             }
 
                             > span {
                                 vertical-align: middle;
                                 display: inline-block;
-                                line-height: $fontSize + 1;
-                                margin-left: 6px;
+                                margin: 0 6px;
                             }
                         }
 
                         &.active-menuitem {
                             > a {
-                                background-color: $submenuActiveBgColor;
-                                color: $menuItemActiveTextColor;
+                                background-color: $menuitemActiveBgColor;
+                                color: $primaryColor;
 
                                 &:hover {
                                     background-color: $primaryColor;
@@ -395,7 +388,7 @@
                         }
 
                         ul {
-                            background: $submenuActiveBgColor;
+                            background: $menuBgColor;
 
                             li {
                                 a {
@@ -441,8 +434,7 @@
                 .layout-menu-footer {
                     .layout-menu-footer-title {
                         display: block;
-                        padding: 11px;
-                        font-size: 16px;
+                        padding: 9px 11px;
                         color: $textSecondaryColor;
                         border-bottom: 1px solid $dividerColor;
                         letter-spacing: 2px;
@@ -450,7 +442,7 @@
 
                     .layout-menu-footer-content {
                         padding: 10px 12px;
-                        color: $menuitemTextColor;
+                        color: $textColor;
 
                         .ui-progressbar {
                             height: 5px;
@@ -492,19 +484,6 @@
                 .layout-menu-title, .layout-menu-footer {
                     display: none;
                 }
-                            
-                .nano {
-                    overflow: visible;
-                    
-                    .nano-content {
-                        overflow: visible;
-                        margin-right: 0px !important;
-                    }
-                    
-                    .nano-pane {
-                        display: none !important;
-                    }
-                }
                 
                 .layout-menu {
                     padding: 8px 0 0 0;
@@ -538,7 +517,7 @@
                         }
                         
                         > ul {
-                            @include overlay-shadow();
+                            box-shadow: 0 0px 6px 0px rgba(0, 0, 0, 0.24);
                             background-color: $menuBgColor;
                             position: absolute;
                             top: 0;
@@ -568,7 +547,7 @@
 
                                 &.active-menuitem {
                                     > a {
-                                        color: $menuItemActiveTextColor;
+                                        color: $primaryColor;
 
                                         &:hover {
                                             color: $primaryTextColor;
@@ -627,8 +606,8 @@
                         
                         &.active-menuitem {
                             > a {
-                                background-color: $submenuActiveBgColor;
-                                color: $menuItemActiveTextColor;
+                                background-color: $menuitemActiveBgColor;
+                                color: $primaryColor;    
 
                                 &:hover {
                                     background-color: $primaryColor;
@@ -647,31 +626,18 @@
         
         &.layout-horizontal, &.layout-slim {
             .layout-menu-container {
-                .nano {
-                    > .nano-content {
-                        &.menu-scroll-content {
-                            display: block;
-                            height: auto;
-                            position: static;
-                            overflow: visible;
-                            overflow-x: visible;
-                        }
-
-                        .nano-scroll-footer {
-                            height: 0px;
-                        }
-                    }
-                    
-                    > .nano-pane {
-                        display: none !important;
-                    }
+                .menu-scroll-content {
+                    display: block;
+                    height: auto;
+                    position: static;
+                    overflow: visible;
                 }
             }
         }
     }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: $mobileBreakpoint) {
     .layout-wrapper {
         
         .layout-mask {
@@ -687,8 +653,7 @@
 
             .layout-menu-title {
                 display: block;
-                padding: 16px;
-                font-size: 16px;
+                padding: 9px 11px;
                 color: $textSecondaryColor;
                 border-bottom: 1px solid $dividerColor;
                 letter-spacing: 2px;
@@ -707,7 +672,6 @@
                         }
 
                         i:first-child {
-                            font-size: 18px;
                             vertical-align: middle;
                             display: inline-block;
                         }
@@ -720,15 +684,14 @@
                         > span {
                             vertical-align: middle;
                             display: inline-block;
-                            line-height: $fontSize + 1;
                             margin-left: 6px;
                         }
                     }
 
                     &.active-menuitem {
                         > a {
-                            background-color: $submenuActiveBgColor;
-                            color: $menuItemActiveTextColor;
+                            background-color: $primaryColor;
+                            color: $primaryTextColor;
 
                             &:hover {
                                 background-color: $primaryColor;
@@ -744,7 +707,7 @@
                     }
 
                     ul {
-                        background: $submenuActiveBgColor;
+                        background: $menuBgColor;
 
                         li {
                             a {
@@ -790,8 +753,7 @@
             .layout-menu-footer {
                 .layout-menu-footer-title {
                     display: block;
-                    padding: 16px;
-                    font-size: 16px;
+                    padding: 9px 11px;
                     color: $textSecondaryColor;
                     border-bottom: 1px solid $dividerColor;
                     letter-spacing: 2px;
@@ -799,7 +761,7 @@
 
                 .layout-menu-footer-content {
                     padding: 10px 12px;
-                    color: $menuitemTextColor;
+                    color: $textColor;
 
                     .ui-progressbar {
                         height: 5px;

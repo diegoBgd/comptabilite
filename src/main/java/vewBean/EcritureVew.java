@@ -6,7 +6,8 @@ import entite.Compte;
  import entite.Ecriture;
  import entite.Exercice;
  import entite.Journal;
- import entite.User;
+import entite.TypeEcriture;
+import entite.User;
  import java.io.File;
  import java.io.FileInputStream;
  import java.io.FileNotFoundException;
@@ -936,7 +937,7 @@ public void setCheckClose(boolean checkClose) {
 		selectedEcriture.setLibelle(libelleOperation);
 		selectedEcriture.setPieceCpb(piece);
 		selectedEcriture.setOrderIndex(listeSaisie.size());
-
+        selectedEcriture.setTypeOperation(TypeEcriture.saisieManuel);
 		if (!selected)
 			listeSaisie.add(selectedEcriture);
 		else {
@@ -988,6 +989,7 @@ public void setCheckClose(boolean checkClose) {
 			selectedEcriture.setLibelle(libelleOperation);
 			selectedEcriture.setPieceCpb(piece);
 			selectedEcriture.setOrderIndex(listeSaisie.size());
+			selectedEcriture.setTypeOperation(TypeEcriture.saisieManuel);
 			if (listeSaisie.size() > 1) {
 				listeSaisie.remove(index);
 				listeSaisie.add(index, selectedEcriture);
@@ -1124,7 +1126,7 @@ List<Ecriture>listeEcr=new ArrayList<Ecriture>();
 					this.selectedEcriture.setJrnl(jrnl);
 					this.selectedEcriture.setLibelle(libelle);
 					this.selectedEcriture.setPieceCpb(piece);
-					
+					 selectedEcriture.setTypeOperation(TypeEcriture.saisieManuel);
 					listeEcr.add(selectedEcriture);
 					
 					this.selectedEcriture = new Ecriture();
@@ -1137,7 +1139,7 @@ List<Ecriture>listeEcr=new ArrayList<Ecriture>();
 					this.selectedEcriture.setJrnl(jrnl);
 					this.selectedEcriture.setLibelle(libelle);
 					this.selectedEcriture.setPieceCpb(piece);
-					
+					 selectedEcriture.setTypeOperation(TypeEcriture.saisieManuel);
 					listeEcr.add(selectedEcriture);
 					}
 					
@@ -1153,7 +1155,7 @@ List<Ecriture>listeEcr=new ArrayList<Ecriture>();
 						this.selectedEcriture.setJrnl(jrnl);
 						this.selectedEcriture.setLibelle(libelle);
 						this.selectedEcriture.setPieceCpb(piece);
-						
+						 selectedEcriture.setTypeOperation(TypeEcriture.saisieManuel);
 						listeEcr.add(selectedEcriture);
 						
 						this.selectedEcriture = new Ecriture();
@@ -1166,7 +1168,7 @@ List<Ecriture>listeEcr=new ArrayList<Ecriture>();
 						this.selectedEcriture.setJrnl(jrnl);
 						this.selectedEcriture.setLibelle(libelle);
 						this.selectedEcriture.setPieceCpb(piece);
-						
+						 selectedEcriture.setTypeOperation(TypeEcriture.saisieManuel);
 						listeEcr.add(selectedEcriture);	
 					}
 					this.model.saveEcriture(this.factory, listeEcr,null);

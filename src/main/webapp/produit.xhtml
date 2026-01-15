@@ -6,11 +6,12 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
+	<ui:define name="title">Produit</ui:define>
+	<ui:define name="head">
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/style.css" />
+	</ui:define>
 	<ui:define name="content">
-		<h:head>
-			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
-			<title>Produit</title>
-		</h:head>
 		<body>
 			<h:form id="frm"
 				onkeypress="if (event.keyCode == 13) { return false; }">
@@ -21,7 +22,7 @@
 
 						<div class="ui-g-12 ui-fluid card">
 							<div class="ui-g-12 ui-md-1" />
-							<div class="ui-g-12 ui-md-4">
+							<div class="ui-g-12 ui-md-3">
 								<p:commandButton value="Recherche des produits"
 									icon="fa fa-search" style="border-radius:10px"
 									oncomplete="PF('dlgPrd').show();" />
@@ -30,7 +31,7 @@
 						</div>
 						<div class="ui-g-12 ui-fluid card">
 
-							<p:panelGrid columns="4"
+							<p:panelGrid columns="4" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-1,ui-grid-col-5"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
@@ -43,7 +44,7 @@
 
 
 							</p:panelGrid>
-							<p:panelGrid columns="2"
+							<p:panelGrid columns="2" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-8" layout="grid"
 								styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
@@ -60,7 +61,7 @@
 								</p:selectOneMenu>
 
 							</p:panelGrid>
-							<p:panelGrid columns="4" rendered="false"
+							<p:panelGrid columns="4"  contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-2"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="border:0px none; background-color:transparent;">
@@ -73,13 +74,13 @@
 									thousandSeparator="&nbsp;" inputStyle="text-align:right"
 									decimalPlaces="0" />
 
-								<p:outputLabel value="Gérer stock" />
+								<p:outputLabel value="Gestion de stock" />
 								<p:selectBooleanCheckbox value="#{produitVew.stockElement}" />
 
 							</p:panelGrid>
 							<p:tabView id="prd" style="font-size:13px">
 								<p:tab id="tab1" title="Prix et taxes">
-									<p:panelGrid columns="4"
+									<p:panelGrid columns="4" contentStyleClass="compact-grid"
 										columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-2"
 										layout="grid" styleClass="ui-panelgrid-blank"
 										style="border:0px none; background-color:transparent;">
@@ -124,20 +125,20 @@
 										selectionMode="single" id="tblTx"
 										selection="#{produitVew.selectedTxe}" rowKey="#{tx.taxe.id}"
 										reflow="true" scrollable="true" scrollHeight="100"
-										emptyMessage="">
+										emptyMessage="" showGridlines="true" size="small">
 
 										<p:ajax event="rowSelect"
 											listener="#{produitVew.takeSelectedTaxe()}"
 											update=":frm:prd:txtTx,:frm:prd:txtTauxTx" />
-										<p:column headerText="Taxe">
-											<h:outputText value="#{tx.taxe.libelle}" width="50%" />
+										<p:column headerText="Taxe"  width="75%">
+											<h:outputText value="#{tx.taxe.libelle}" />
 										</p:column>
 
-										<p:column headerText="Taux">
-											<h:outputText value="#{tx.taux}" />
+										<p:column headerText="Taux" width="5%">
+											<h:outputText value="#{tx.taux}"   />
 										</p:column>
 
-										<p:column headerText="Valeur" width="30%">
+										<p:column headerText="Valeur" width="20%">
 											<h:outputText value="#{tx.valeurTaxe}" style="float:right" />
 
 										</p:column>
@@ -145,14 +146,10 @@
 
 
 									</p:dataTable>
-									<p:panelGrid columns="4"
-										columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-1,ui-grid-col-1"
-										layout="grid" styleClass="ui-panelgrid-blank"
-										style="border:0px none; background-color:transparent;">
-
-										<p:selectOneMenu id="txtTx" value="#{produitVew.idTaxe}"
+									<div style="display: flex; justify-content: flex-end; gap: 10px;padding-top:10px;">
+								<p:selectOneMenu id="txtTx" value="#{produitVew.idTaxe}" style="flex: 14;" 
 											valueChangeListener="#{produitVew.changeTaxElement}">
-											<f:selectItem itemLabel=" " itemValue="" />
+										
 											<f:selectItems value="#{produitVew.listTax}" />
 											<p:ajax event="change" update="txtTx,txtTauxTx" />
 										</p:selectOneMenu>
@@ -160,24 +157,27 @@
 
 										<p:inputNumber id="txtTauxTx" value="#{produitVew.tauxTaxe}"
 											thousandSeparator="&nbsp;" inputStyle="text-align:right"
-											decimalPlaces="2" />
+											decimalPlaces="2" style="flex: 2;" />
 
-										<p:commandButton icon="fa fa-plus-circle"
+										<p:commandButton icon="pi pi-plus-circle"
+											styleClass="ui-button-outlined "
 											action="#{produitVew.addTaxe()}"
 											update="tblTx,txtTx,txtTauxTx,txtPHT,txtPTTC"
-											style="border-radius:10px" />
-										<p:commandButton icon="fa fa-minus-circle"
+											style="border-radius:10px;flex: 0.5;"  />
+											
+										<p:commandButton icon="pi pi-minus-circle" 
+											styleClass="ui-button-outlined ui-button-danger"
 											action="#{produitVew.removeTaxe()}"
 											update="tblTx,txtTx,txtTauxTx,txtPHT,txtPTTC"
-											style="border-radius:10px" />
-
-									</p:panelGrid>
+											style="border-radius:10px;flex: 0.5;"   />
+									</div>
+									
 
 								</p:tab>
 
 								<p:tab id="tab3" title="Compte">
 							
-									<p:panelGrid columns="4" 
+									<p:panelGrid columns="4" contentStyleClass="compact-grid"
 										columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-6,ui-grid-col-1"
 										layout="grid" styleClass="ui-panelgrid-blank"
 										style="border:0px none; background-color:transparent;">
@@ -190,7 +190,7 @@
 										</p:inputText>
 										<p:inputText id="txtLblCptStk"
 											value="#{produitVew.lblCptStck}" />
-										<p:commandButton icon="fa fa-search"
+										<p:commandButton icon="pi pi-search" process="@this"
 											style="border-radius:10px" onclick="PF('dlgCptStk').show();" />
 
 										<p:outputLabel value="Compte sortie" />
@@ -200,7 +200,7 @@
 												update="txtLblCptSrt" />
 										</p:inputText>
 										<p:inputText id="txtLblCptSrt" value="#{produitVew.lblCptSrt}" />
-										<p:commandButton icon="fa fa-search"
+										<p:commandButton icon="pi pi-search" process="@this"
 											style="border-radius:10px" onclick="PF('dlgCptSrt').show();" />
 
 										<p:outputLabel value="Compte vente" />
@@ -210,7 +210,7 @@
 												update="txtLblCptVt" />
 										</p:inputText>
 										<p:inputText id="txtLblCptVt" value="#{produitVew.lblCptVnt}" />
-										<p:commandButton icon="fa fa-search"
+										<p:commandButton icon="pi pi-search" process="@this"
 											style="border-radius:10px" onclick="PF('dlgCptVt').show();" />
 
 									</p:panelGrid>
@@ -222,49 +222,56 @@
 
 						<div class="ui-g-12 ui-fluid card">
 							<div class="ui-g-12 ui-md-1" />
-							<div class="ui-g-3">
+							<div class="ui-g-2">
 								<p:commandButton value="Enregistrer"
-									action="#{produitVew.save()}" icon="ui-icon-disk" update="frm"
+									action="#{produitVew.save()}" icon="pi pi-save"  update="frm"
 									style="border-radius:10px" id="btnSave" />
 							</div>
-							<div class="ui-g-3">
+							<div class="ui-g-2">
 								<p:commandButton value="Supprimer"
-									action="#{produitVew.delete()}" icon="ui-icon-trash"
-									id="btnDelete" update="frm" styleClass="orange-btn"
-									style="border-radius:10px">
-									<p:confirm header="Confirmation"
-										disabled="#{produitVew.disableMsg}"
-										message="Voulez vous vraiment supprimer ?"
-										icon="ui-icon-alert" />
-								</p:commandButton>
+									onclick="PF('deleteDialog').show()" icon="pi pi-trash"
+									id="btnDelete" update="frm" styleClass="ui-button-danger" 
+									style="border-radius:10px"/>
+									
 							</div>
-							<div class="ui-g-3">
+							<div class="ui-g-2">
 								<p:commandButton value="Initialiser" id="btnClean"
 									action="#{produitVew.initializeControl()}"
-									icon="ui-icon ui-icon-refresh" update="frm"
-									style="border-radius:10px" />
+									icon="pi pi-sync" update="frm"
+									style="border-radius:10px" 
+									styleClass="ui-button-secondary"/>
 							</div>
 						</div>
 					</div>
 
 				</div>
 			</h:form>
-			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
-				widgetVar="cd">
-				<p:commandButton value="Oui" type="button"
-					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-				<p:commandButton value="Non" type="button"
-					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-			</p:confirmDialog>
+			<h:form>
+				<p:confirmDialog id="deleteDialogId" widgetVar="deleteDialog" rendered="#{produitVew.disableMsg}"
+					header="Confirmation" message="Voulez-vous vraiment supprimer ?"
+					icon="pi pi-question-circle" showEffect="fade" hideEffect="fade">
 
+					<p:commandButton value="Oui" icon="pi pi-check-circle"
+						styleClass="ui-button-outlined ui-button-danger"
+						action="#{produitVew.delete()}" update=":frm"
+						oncomplete="PF('deleteDialog').hide();" />
+
+					<p:commandButton value="Non" type="button"
+						icon="pi pi-times-circle"
+						styleClass="ui-button-outlined ui-button-info"
+						onclick="PF('deleteDialog').hide();" />
+
+				</p:confirmDialog>
+
+			</h:form>
 
 			<p:dialog widgetVar="dlgCptStk" header="Plan comptable" modal="true"
-				appendTo="@(body)" width="700" responsive="true">
+				dynamic="true" width="700" responsive="true">
 				<h:form id="frmCpt">
 
 					<div class="ui-g">
 						<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
-							<p:panelGrid columns="3"
+							<p:panelGrid columns="3" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-1,ui-grid-col-6,ui-grid-col-3"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="background-color:transparent;">
@@ -304,12 +311,12 @@
 			</p:dialog>
 
 			<p:dialog widgetVar="dlgCptSrt" header="Plan comptable" modal="true"
-				appendTo="@(body)" width="700" responsive="true">
+				dynamic="true" width="700" responsive="true">
 				<h:form id="frmCptSrt">
 
 					<div class="ui-g">
 						<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
-							<p:panelGrid columns="3"
+							<p:panelGrid columns="3" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-1,ui-grid-col-6,ui-grid-col-3"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="background-color:transparent;">
@@ -326,7 +333,7 @@
 								selectionMode="single" id="tblCptSrt"
 								selection="#{produitVew.cptSrt}" rowKey="#{cpt.id}"
 								reflow="true" scrollable="true" scrollHeight="200"
-								emptyMessage="">
+								emptyMessage=""  showGridlines="true" size="small">
 
 								<p:ajax event="rowSelect"
 									listener="#{produitVew.getSelectedCptSrtValue()}"
@@ -349,12 +356,12 @@
 			</p:dialog>
 
 			<p:dialog widgetVar="dlgCptVt" header="Plan comptable" modal="true"
-				appendTo="@(body)" width="700" responsive="true">
+				dynamic="true" width="700" responsive="true">
 				<h:form id="frmCptVt">
 
 					<div class="ui-g">
 						<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
-							<p:panelGrid columns="3"
+							<p:panelGrid columns="3" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-1,ui-grid-col-6,ui-grid-col-3"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="background-color:transparent;">
@@ -371,7 +378,7 @@
 								selectionMode="single" id="tblCptVt"
 								selection="#{produitVew.cptVente}" rowKey="#{cpt.id}"
 								reflow="true" scrollable="true" scrollHeight="200"
-								emptyMessage="">
+								emptyMessage=""  showGridlines="true" size="small">
 
 								<p:ajax event="rowSelect"
 									listener="#{produitVew.getSelecedCptVtValue()}"
@@ -394,12 +401,12 @@
 			</p:dialog>
 
 			<p:dialog widgetVar="dlgPrd" header="Listes des produits"
-				modal="true" appendTo="@(body)" width="700" responsive="true">
+				modal="true" dynamic="true" width="700" responsive="true">
 				<h:form id="frmPrd">
 
 					<div class="ui-g">
 						<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
-							<p:panelGrid columns="3"
+							<p:panelGrid columns="3" contentStyleClass="compact-grid"
 								columnClasses="ui-grid-col-2,ui-grid-col-6,ui-grid-col-3"
 								layout="grid" styleClass="ui-panelgrid-blank"
 								style="background-color:transparent;">
@@ -409,7 +416,7 @@
 								<p:outputLabel value="Libellé" />
 								<p:inputText value="#{produitVew.rechPrd}" />
 
-								<p:commandButton value="Rechercher" style="border-radius:10px"
+								<p:commandButton value="Charger" style="border-radius:10px"
 									action="#{produitVew.chargerProduit()}" update="tblPrd" />
 
 
@@ -419,7 +426,8 @@
 							<p:dataTable var="prd" value="#{produitVew.listProd}" id="tblPrd"
 								emptyMessage="" selectionMode="single"
 								selection="#{produitVew.selectedProd}" rowKey="#{prd.id}"
-								reflow="true" scrollable="true" scrollHeight="200">
+								reflow="true" scrollable="true" scrollHeight="200"  
+								showGridlines="true" size="small">
 
 								<p:ajax event="rowSelect"
 									listener="#{produitVew.getselectedProduct()}" update="frm" />

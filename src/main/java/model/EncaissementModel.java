@@ -101,7 +101,7 @@ public class EncaissementModel {
 	
 	@SuppressWarnings("unchecked")
 	public List<Encaissement> getHistoriquEncaissement(SessionFactory factory, int idExercice, Date deb, Date fin,
-			Banque bank, BankAccount cpte, TypeEcriture type) {
+			Banque bank, BankAccount cpte) {
 		List<Encaissement> list = null;
 		Session session = factory.openSession();
 		session.beginTransaction();

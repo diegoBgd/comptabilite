@@ -6,114 +6,131 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
+	<ui:define name="title">Paramètres spécifiques</ui:define>
+	<ui:define name="head">
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/style.css" />
+	</ui:define>
+
 	<ui:define name="content">
-		<h:head>
-			<link type="text/css" rel="stylesheet" href="../resources/style.css" />
-			<title>Parametres compta</title>
-		</h:head>
+
 		<body>
 			<h:form id="frm"
 				onkeypress="if (event.keyCode == 13) { return false; }">
 				<p:blockUI block="frm" trigger="btnSave" />
 				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
-				<div class="ui-g">
-					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
-					
-						<div class="ui-g-12 ui-fluid card">
- 
-							
-							<p:panelGrid columns="3"
-								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-7"
-								layout="grid" styleClass="ui-panelgrid-blank"
-								style="border:0px none; background-color:transparent;">
-								
-								<h:outputText value="Journl A.N"/>
-								<p:inputText id="txtCodJrnl" value="#{parametreComptaVew.jrnAN}">
-									<p:ajax event="blur" listener="#{parametreComptaVew.searchJournalAN()}"
-										update="txtLblJrnl"/>
-								</p:inputText>	
-												
-								<p:inputText id="txtLblJrnl" value="#{parametreComptaVew.libelleJrnAn}" readonly="true"/>
-								
-							
-							<h:outputText value="Journl de cloture"/>
-								<p:inputText id="txtCodJrnlOd" value="#{parametreComptaVew.jrnOD}">
-									<p:ajax event="blur" listener="#{parametreComptaVew.searchJournalOD()}"
-										update="txtLblJrnOdl"/>
-								</p:inputText>	
-												
-								<p:inputText id="txtLblJrnOdl" value="#{parametreComptaVew.libelleJrnOd}" readonly="true"/>
-							
-								<h:outputText value="Compte resultat"/>
-								<p:inputText id="txtRes" value="#{parametreComptaVew.cptRs}">
-									<p:ajax event="blur" listener="#{parametreComptaVew.searchCompteResultat()}"
-										update="txtLblRs"/>
-								</p:inputText>	
-												
-								<p:inputText id="txtLblRs" value="#{parametreComptaVew.libelleCptRs}" readonly="true"/>
-								
-							
-								<h:outputText value="Compte report A.N.D "/>
-								<p:inputText id="txtAnd" value="#{parametreComptaVew.cptAND}">
-									<p:ajax event="blur" listener="#{parametreComptaVew.searchCompteAND()}"
-										update="txtLblAnd"/>
-								</p:inputText>	
-												
-								<p:inputText id="txtLblAnd" value="#{parametreComptaVew.libelleCptAnd}" readonly="true"/>
-								
-									<h:outputText value="Compte report A.N.C "/>
-								<p:inputText id="txtAnc" value="#{parametreComptaVew.cptANC}">
-									<p:ajax event="blur" listener="#{parametreComptaVew.searchCompteANC()}"
-										update="txtLblAnc"/>
-								</p:inputText>	
-												
-								<p:inputText id="txtLblAnc" value="#{parametreComptaVew.libelleCptAnc}" readonly="true"/>
-								
-								
-							</p:panelGrid>
-							
-							
-							</div>
-							
-							
-					
 
-						<div class="ui-g-12 ui-fluid card">
-							<div class="ui-g-12 ui-md-1" />
-							<div class="ui-g-3">
-								<p:commandButton value="Enregistrer"
-									action="#{parametreComptaVew.save()}" icon="ui-icon-disk" update="frm"
-									style="border-radius:10px" id="btnSave" />
-							</div> 
-							<div class="ui-g-3">
-								<p:commandButton value="Supprimer"
-									action="#{parametreComptaVew.delete()}" icon="ui-icon-trash" id="btnDelete"
-									update="frm" styleClass="orange-btn" style="border-radius:10px">
-									<p:confirm header="Confirmation"
-										disabled="#{parametreComptaVew.disableMsg}"
-										message="Voulez vous vraiment supprimer ?"
-										icon="ui-icon-alert" />
-								</p:commandButton>
-							</div>
-							
-						</div>
-					</div>
+				<div class="card">
+
+
+					<p:panelGrid columns="3"
+						columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-6"
+						layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+						style="border:0px none; background-color:transparent;"
+						contentStyleClass="compact-grid">
+
+						<h:outputText value="Journl A.N" />
+						<p:inputText id="txtCodJrnl" value="#{parametreComptaVew.jrnAN}">
+							<p:ajax event="blur"
+								listener="#{parametreComptaVew.searchJournalAN()}"
+								update="txtLblJrnl" />
+						</p:inputText>
+
+						<p:inputText id="txtLblJrnl"
+							value="#{parametreComptaVew.libelleJrnAn}" readonly="true"/>
+
+
+						<h:outputText value="Journl de cloture" />
+						<p:inputText id="txtCodJrnlOd" value="#{parametreComptaVew.jrnOD}">
+							<p:ajax event="blur"
+								listener="#{parametreComptaVew.searchJournalOD()}"
+								update="txtLblJrnOdl" />
+						</p:inputText>
+
+						<p:inputText id="txtLblJrnOdl"
+							value="#{parametreComptaVew.libelleJrnOd}" readonly="true" />
+
+						<h:outputText value="Compte resultat" />
+						<p:inputText id="txtRes" value="#{parametreComptaVew.cptRs}">
+							<p:ajax event="blur"
+								listener="#{parametreComptaVew.searchCompteResultat()}"
+								update="txtLblRs" />
+						</p:inputText>
+
+						<p:inputText id="txtLblRs"
+							value="#{parametreComptaVew.libelleCptRs}" readonly="true" />
+
+
+						<h:outputText value="Compte report A.N.D " />
+						<p:inputText id="txtAnd" value="#{parametreComptaVew.cptAND}">
+							<p:ajax event="blur"
+								listener="#{parametreComptaVew.searchCompteAND()}"
+								update="txtLblAnd" />
+						</p:inputText>
+
+						<p:inputText id="txtLblAnd"
+							value="#{parametreComptaVew.libelleCptAnd}" readonly="true"
+							style="width:600px" />
+
+						<h:outputText value="Compte report A.N.C " />
+						<p:inputText id="txtAnc" value="#{parametreComptaVew.cptANC}">
+							<p:ajax event="blur"
+								listener="#{parametreComptaVew.searchCompteANC()}"
+								update="txtLblAnc" />
+						</p:inputText>
+
+						<p:inputText id="txtLblAnc"
+							value="#{parametreComptaVew.libelleCptAnc}" readonly="true"/>
+
+
+					</p:panelGrid>
+
 
 				</div>
+
+
+
+
+				<div class="card">
+					<p:panelGrid columns="3"
+						columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+						layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+						style="border:0px none; background-color:transparent;"
+						contentStyleClass="compact-grid">
+						<p:spacer />
+						<p:commandButton value="Enregistrer"
+							action="#{parametreComptaVew.save()}" icon="pi pi-save"
+							update="frm" style="border-radius:10px" id="btnSave" />
+
+						<p:commandButton value="Supprimer" icon="pi pi-trash"
+							styleClass="ui-button-danger" id="btnDelete" update="frm"
+							style="border-radius:10px"
+							onclick="PF('deleteDialog').show(); return false;" />
+
+					</p:panelGrid>
+				</div>
+
+
 			</h:form>
-			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
-				widgetVar="cd">
-				<p:commandButton value="Oui" type="button"
-					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-				<p:commandButton value="Non" type="button"
-					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-			</p:confirmDialog>
-			
-			
-		
-		
-		
-		
+			<h:form>
+				<p:confirmDialog id="deleteDialogId" widgetVar="deleteDialog"
+					header="Confirmation" message="Voulez-vous vraiment supprimer ?"
+					icon="pi pi-question-circle" showEffect="fade" hideEffect="fade">
+
+					<p:commandButton value="Oui" icon="pi pi-check-circle"
+						styleClass="ui-button-outlined ui-button-danger"
+						action="#{parametreComptaVew.delete()}" update=":frm"
+						oncomplete="PF('deleteDialog').hide();" />
+
+					<p:commandButton value="Non" type="button"
+						icon="pi pi-times-circle"
+						styleClass="ui-button-outlined ui-button-info"
+						onclick="PF('deleteDialog').hide();" />
+
+				</p:confirmDialog>
+
+			</h:form>
+
 		</body>
 	</ui:define>
 </ui:composition>

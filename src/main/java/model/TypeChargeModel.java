@@ -1,8 +1,12 @@
  package model;
  
- import entite.TypeCharge;
+ import entite.Compte;
+import entite.TypeCharge;
  import java.util.List;
- import org.hibernate.Criteria;
+
+import javax.persistence.Query;
+
+import org.hibernate.Criteria;
  import org.hibernate.Session;
  import org.hibernate.SessionFactory;
  import org.hibernate.criterion.Criterion;
@@ -77,25 +81,25 @@
      return tchg;
    }
  
+   @SuppressWarnings("unchecked")
+	public List<TypeCharge> getListCharge(SessionFactory factory,String libelle) {
+	     List<TypeCharge> listChrg = null;
+	 
+	     try { 
+	       Session session = factory.openSession();
+	       session.beginTransaction();
+	       Query query = session.createQuery("SELECT C from TypeCharge C ORDER BY C.codeChg ASC");
+	       
+	       listChrg = query.getResultList();
+	       session.getTransaction().commit();
+	       session.close();
+	     }
+	     catch (Exception e) {
+	       System.out.println(e.toString());
+	     } 
+	     return listChrg;
+		}
    
-   public List<TypeCharge> getListCharge(SessionFactory factory, String libelle) {
-     List<TypeCharge> list = null;
-     try {
-       Session session = factory.openSession();
-       session.beginTransaction();
-       Criteria cr = session.createCriteria(TypeCharge.class);
-       if (libelle != null && !libelle.equals(""))
-         cr.add((Criterion)Restrictions.like("libelle", libelle, MatchMode.ANYWHERE)); 
-       cr.addOrder(Order.asc("codeChg"));
-       
-       list = cr.list();
-       session.getTransaction().commit();
-       session.close();
-     } catch (Exception e) {
-       System.out.println(e.toString());
-     } 
-     return list;
-   }
  }
 
 

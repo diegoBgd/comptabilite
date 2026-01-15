@@ -50,7 +50,7 @@
     }
 }
 
-@media (max-width: 1280px) {
+@media (max-width: $tabletBreakpoint) {
     .exception-body {
         background-size: cover;
         text-align: center;
