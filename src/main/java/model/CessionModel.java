@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.query.Query;
@@ -76,15 +77,15 @@ public class CessionModel {
 	 
 	 @SuppressWarnings("unchecked")
 		public List<Cession> getListeCession(SessionFactory factory) {
-			List<Cession> list = null;
+			List<Cession> list = new ArrayList<Cession>();
 			Session session =null;
 			try {
 				 session = factory.openSession();
 				session.beginTransaction();
 
 				String sql = "SELECT C from Cession C ";
-				Query query = session.createQuery(sql);
-				list = query.getResultList();
+				Query<?> query = session.createQuery(sql);
+				list = (List<Cession>) query.getResultList();
 
 				session.getTransaction().commit();
 				session.close();

@@ -13,7 +13,7 @@
                 <div class="layout-menu-title">MENU</div>
                 <h:form id="menuform">
 
-                    <pa:menu rendered="false" activeParentOnly="true">
+                    <pa:menu rendered="true" activeParentOnly="true">
                        
                        <p:menuitem icon="pi pi-book" value="Dashboard"  outcome="/dashboard"/>
                        
@@ -32,6 +32,7 @@
                              <p:menuitem icon="fa fa-star" value="Centre coût" outcome="/centreCout" rendered="false"/>
                              <p:menuitem icon="pi pi-user-plus" value="Client" outcome="/client" />
                              <p:menuitem icon="pi pi-user-minus" value="Fournisseur / Bénéficiaire" outcome="/fournisseur" />
+                             <p:menuitem icon="pi pi-directions" value="Direction" outcome="/direction" />
                          </p:submenu>
 
                         <p:submenu label="Comptabilité générale" icon="pi pi-chart-pie" >
@@ -101,14 +102,7 @@
                              <p:menuitem icon="pi pi-id-card" value="Compte bancaire" outcome="/compteBancaire" />
 
                         </p:submenu>
-                        <p:submenu label="Ventes" icon="fa fa-gears" rendered="true">
-
-                            <p:menuitem icon="fa fa-star" value="Famille " outcome="/familleProduit" />
-                            <p:menuitem icon="fa fa-star" value="Sous famille" outcome="/sousFamilleProduit" />
-                            <p:menuitem icon="fa fa-star" value="Produit" outcome="/produit" />
-                            <p:menuitem icon="fa fa-star" value="Facturation" outcome="/facturation" />
-
-                        </p:submenu>
+                        
                         <p:submenu label="Encaissements" icon="pi pi-pound">
                             <p:menuitem icon="pi pi-shopping-bag" value="Entrée de fonds" outcome="/entreeFond" />
                             <p:menuitem icon="pi pi-envelope" value="Factures clients" outcome="/factureClient" />
@@ -126,7 +120,7 @@
 
                     </pa:menu>
                     
-                      <pa:menu rendered="true" activeParentOnly="true">
+                      <pa:menu rendered="false" activeParentOnly="true">
                      
                      <p:submenu label="Droits et utilisateurs" icon="pi pi-users">
                             <p:menuitem icon="pi pi-book" value="Droits"  outcome="/role"/>

@@ -27,13 +27,12 @@
 
 				<div class="card">
 
-					<p:panelGrid  columns="2" 
-								 columnClasses="ui-grid-col-2,ui-grid-col-2" 
-								 layout="grid"
-                 				 styleClass="ui-panelgrid-blank ui-fluid"
-                 				 style="border:0px none; background-color:transparent;"
-                 				 contentStyleClass="compact-grid">
-                 				 
+					<p:panelGrid columns="2"
+						columnClasses="ui-grid-col-2,ui-grid-col-2" layout="grid"
+						styleClass="ui-panelgrid-blank ui-fluid"
+						style="border:0px none; background-color:transparent;"
+						contentStyleClass="compact-grid">
+
 						<h:outputText value="Code" />
 						<p:inputText id="txtCode" value="#{userVew.code}"
 							autocomplete="off">
@@ -41,16 +40,15 @@
 								update="frm" />
 						</p:inputText>
 
-			
+
 
 					</p:panelGrid>
-					<p:panelGrid  columns="2" 
-								 columnClasses="ui-grid-col-2,ui-grid-col-8" 
-								 layout="grid"
-                 				 styleClass="ui-panelgrid-blank ui-fluid"
-                 				 style="border:0px none; background-color:transparent;"
-                 				 contentStyleClass="compact-grid">
-                 				 <h:outputText value="Nom et prénom" />
+					<p:panelGrid columns="2"
+						columnClasses="ui-grid-col-2,ui-grid-col-8" layout="grid"
+						styleClass="ui-panelgrid-blank ui-fluid"
+						style="border:0px none; background-color:transparent;"
+						contentStyleClass="compact-grid">
+						<h:outputText value="Nom et prénom" />
 						<p:inputText id="txtNom" value="#{userVew.nom}"
 							style="width:600px" autocomplete="off" />
 
@@ -66,44 +64,47 @@
 						<h:outputText value="E-Mail" />
 						<p:inputText id="txtMail" value="#{userVew.mail}"
 							style="width:600px" autocomplete="off" />
-                 		
-                 	</p:panelGrid>
-                 	<p:panelGrid  columns="4" 
-								 columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2" 
-								 layout="grid"
-                 				 styleClass="ui-panelgrid-blank ui-fluid"
-                 				 style="border:0px none; background-color:transparent;"
-                 				 contentStyleClass="compact-grid">
-                 				 <h:outputText value="Mot de passe" />
+
+					</p:panelGrid>
+					<p:panelGrid columns="4"
+						columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+						layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+						style="border:0px none; background-color:transparent;"
+						contentStyleClass="compact-grid">
+						<h:outputText value="Mot de passe" />
 						<p:password id="txtpwd" value="#{userVew.motPasse}"
-							redisplay="true" toggleMask="true">
+							redisplay="true">
 						</p:password>
 
 						<h:outputText value="Confirmer mot de passe" />
 						<p:password id="txtCfpwd" value="#{userVew.confirmPwd}"
-							redisplay="true" toggleMask="true">
+							redisplay="true" >
 							<p:ajax event="blur" listener="#{userVew.confirmPwd()}"
 								update="msg,btnSave" />
 						</p:password>
-                 					
-						
+				</p:panelGrid>
+					<p:panelGrid columns="2"
+					columnClasses="ui-grid-col-2,ui-grid-col-2"
+						layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+						style="border:0px none; background-color:transparent;"
+						contentStyleClass="compact-grid">
 						<p:outputLabel value="Actif" />
 						<p:selectBooleanCheckbox value="#{userVew.enable}" />
-                 		
-                 	</p:panelGrid>
+					
+					</p:panelGrid>
+					
 				</div>
 				<div class="card">
-					<p:panelGrid  columns="4" 
-								 columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2" 
-								 layout="grid"
-                 				 styleClass="ui-panelgrid-blank ui-fluid"
-                 				 style="border:0px none; background-color:transparent;"
-                 				 contentStyleClass="compact-grid">
-                 		<p:spacer/>
+					<p:panelGrid columns="4"
+						columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+						layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+						style="border:0px none; background-color:transparent;"
+						contentStyleClass="compact-grid">
+						<p:spacer />
 						<p:commandButton id="btnSave" icon="pi pi-save"
 							value="Enregistrer" action="#{userVew.saveUser()}" update=":frm"
 							style="border-radius:10px" disabled="#{userVew.disableSave}" />
-							
+
 						<p:commandButton id="btnDelete" icon="pi pi-trash"
 							styleClass="ui-button-danger" value="Supprimer"
 							style="border-radius:10px"

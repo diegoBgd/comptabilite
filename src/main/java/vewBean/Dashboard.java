@@ -1,13 +1,19 @@
 package vewBean;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
 
+import org.hibernate.SessionFactory;
 import org.primefaces.model.charts.ChartData;
 import org.primefaces.model.charts.bar.BarChartDataSet;
 import org.primefaces.model.charts.bar.BarChartModel;
@@ -18,6 +24,18 @@ import org.primefaces.model.charts.line.LineChartModel;
 import org.primefaces.model.charts.line.LineChartOptions;
 import org.primefaces.model.charts.pie.PieChartDataSet;
 import org.primefaces.model.charts.pie.PieChartModel;
+
+import entite.Encaissement;
+import entite.Exercice;
+import entite.ReglementClient;
+import entite.User;
+import model.EncaissementModel;
+import model.ExerciceModel;
+import model.ReglementClientModel;
+import model.UserModel;
+import persistances.DBConfiguration;
+import utils.HelperC;
+
 import org.primefaces.model.charts.axes.cartesian.CartesianScales;
 import org.primefaces.model.charts.axes.cartesian.linear.CartesianLinearAxes;
 
@@ -26,11 +44,19 @@ import org.primefaces.model.charts.axes.cartesian.linear.CartesianLinearAxes;
 public class Dashboard implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
-	private int ventesJour = 125400;
-	private int nombreClients = 45;
-	private int encaissements = 67000;
-	private int stockFaible = 12;
+	SessionFactory factory = DBConfiguration.getSessionFactory();
+	EncaissementModel encModel;
+	ReglementClientModel rcModel;
+	Exercice selectdExercice;
+	HttpSession session;
+	String exerCode;
+	String currUserCode;
+	User currentUser;
+	
+	private String encaissement;
+	private String decaissements;
+	//private int encaissements = 67000;
+	//private int stockFaible = 12;
 
 	private LineChartModel lineModel;
 	private LineChartModel areaModel;
@@ -40,20 +66,21 @@ public class Dashboard implements Serializable {
 
 	private List<Sale> lastSales;
 
-	public int getVentesJour() {
-		return ventesJour;
+
+	public String getEncaissement() {
+		return encaissement;
 	}
 
-	public int getNombreClients() {
-		return nombreClients;
+	public void setEncaissement(String encaissement) {
+		this.encaissement = encaissement;
 	}
 
-	public int getEncaissements() {
-		return encaissements;
+	public String getDecaissements() {
+		return decaissements;
 	}
 
-	public int getStockFaible() {
-		return stockFaible;
+	public void setDecaissements(String decaissements) {
+		this.decaissements = decaissements;
 	}
 
 	public LineChartModel getLineModel() {
@@ -82,6 +109,10 @@ public class Dashboard implements Serializable {
 
 	@PostConstruct
 	public void init() {
+		chargementSession();
+		encModel=new EncaissementModel();
+		rcModel=new ReglementClientModel();
+		getTotalEncaissement();
 		createLineModel();
 		createBarModel();
 		createDonutModel();
@@ -89,10 +120,33 @@ public class Dashboard implements Serializable {
 		areaModel = createAreaModel();
 		loadLastSales();
 	}
+	private void chargementSession() {
+		this.session = HelperC.getSession();
+		if (this.session != null) {
+			this.exerCode = (String) this.session.getAttribute("exercice");
+			this.currUserCode = (String) this.session.getAttribute("operateur");
+		
+			if (this.exerCode != null) {
+				this.selectdExercice = (new ExerciceModel()).getExercByCode(this.factory, this.exerCode);
+			}
+			if (this.currUserCode != null) {
+				this.currentUser = (new UserModel()).getUserByCode(this.factory, this.currUserCode);
+			}
+
+			if (this.currentUser == null || this.selectdExercice == null) {
+				try {
+					FacesContext.getCurrentInstance().getExternalContext().redirect("/comptabilite/login.xhtml");
+				} catch (IOException e) {
+
+					e.printStackTrace();
+				}
+			} 
+		}
+	}
 
 	// ====================== LINE CHART ======================
 	private void createLineModel() {
-		// Créer le modèle
+		// Crï¿½er le modï¿½le
 		lineModel = new LineChartModel();
 
 		// ChartData
@@ -107,7 +161,7 @@ public class Dashboard implements Serializable {
 		dataset.setTension(0.4); // arrondi
 
 		data.addChartDataSet(dataset);
-		data.setLabels(Arrays.asList("Jan", "Fév", "Mar", "Avr", "Mai", "Juin"));
+		data.setLabels(Arrays.asList("Jan", "Fï¿½v", "Mar", "Avr", "Mai", "Juin"));
 
 		lineModel.setData(data);
 
@@ -117,7 +171,7 @@ public class Dashboard implements Serializable {
 		// Axes
 		CartesianScales scales = new CartesianScales();
 		CartesianLinearAxes yAxes = new CartesianLinearAxes();
-		yAxes.setMin(0); // début à zéro
+		yAxes.setMin(0); // dï¿½but ï¿½ zï¿½ro
 		scales.addYAxesData(yAxes);
 
 		CartesianLinearAxes xAxes = new CartesianLinearAxes();
@@ -134,7 +188,7 @@ public class Dashboard implements Serializable {
 
 	// ====================== AREA CHART ======================
 	private LineChartModel createAreaModel() {
-		// Créer le modèle
+		// Crï¿½er le modï¿½le
 		LineChartModel model = new LineChartModel();
 
 		// ChartData
@@ -151,7 +205,7 @@ public class Dashboard implements Serializable {
 		dataset.setTension(0.4); // arrondi
 
 		data.addChartDataSet(dataset);
-		data.setLabels(Arrays.asList("Jan", "Fév", "Mar", "Avr", "Mai", "Juin"));
+		data.setLabels(Arrays.asList("Jan", "Fï¿½v", "Mar", "Avr", "Mai", "Juin"));
 
 		model.setData(data);
 
@@ -162,7 +216,7 @@ public class Dashboard implements Serializable {
 		CartesianScales scales = new CartesianScales();
 
 		CartesianLinearAxes yAxes = new CartesianLinearAxes();
-		yAxes.setMin(0); // début à zéro
+		yAxes.setMin(0); // dï¿½but ï¿½ zï¿½ro
 		scales.addYAxesData(yAxes);
 
 		CartesianLinearAxes xAxes = new CartesianLinearAxes();
@@ -188,7 +242,7 @@ public class Dashboard implements Serializable {
 
 		// DataSet
 		BarChartDataSet dataSet = new BarChartDataSet();
-		dataSet.setLabel("Ventes par catégorie");
+		dataSet.setLabel("Ventes par catï¿½gorie");
 		dataSet.setData(Arrays.asList(120, 90, 150, 200));
 
 		// Couleurs des barres
@@ -196,7 +250,7 @@ public class Dashboard implements Serializable {
 				"rgba(255, 206, 86, 0.8)", "rgba(75, 192, 192, 0.8)"));
 
 		data.addChartDataSet(dataSet);
-		data.setLabels(Arrays.asList("Alimentaire", "Boissons", "Électronique", "Autres"));
+		data.setLabels(Arrays.asList("Alimentaire", "Boissons", "ï¿½lectronique", "Autres"));
 
 		barModel.setData(data);
 
@@ -206,7 +260,7 @@ public class Dashboard implements Serializable {
 		// Axes
 		CartesianScales scales = new CartesianScales();
 		CartesianLinearAxes yAxes = new CartesianLinearAxes();
-		yAxes.setMin(0); // commencer à zéro
+		yAxes.setMin(0); // commencer ï¿½ zï¿½ro
 		scales.addYAxesData(yAxes);
 		options.setScales(scales);
 
@@ -240,7 +294,7 @@ public class Dashboard implements Serializable {
 		data.addChartDataSet(dataSet);
 
 		// Labels
-		data.setLabels(Arrays.asList("Électronique", "Vêtements", "Accessoires", "Maison", "Autres"));
+		data.setLabels(Arrays.asList("ï¿½lectronique", "Vï¿½tements", "Accessoires", "Maison", "Autres"));
 		donutModel.setData(data);
 
 	//	donutModel.setExtender("donutExtender");
@@ -293,6 +347,25 @@ public class Dashboard implements Serializable {
 		lastSales.add(new Sale("2025-01-05", "Client E", 76000));
 	}
 
+	private void getTotalEncaissement() {
+		List<Encaissement>listEnc=encModel.getListEncaissement(factory, selectdExercice.getId(), null, null, null);
+		List<ReglementClient> listRClt=rcModel.getListReglement(factory,  selectdExercice.getId(), null, null, null);
+		double montantEncaisse=0;
+		if(listEnc.size()>0)
+		{
+			for (Encaissement encaissement : listEnc) {
+				montantEncaisse+=encaissement.getMontantTTC().doubleValue();
+			}
+		}
+		if(listRClt.size()>0)
+		{
+			for (ReglementClient reglementClient : listRClt) {
+				//montantEncaisse+=reglementClient.getMontantTTC().doubleValue();
+			}
+		}
+		encaissement=HelperC.decimalNumber(montantEncaisse, 0, true);
+		
+	}
 	public static class Sale {
 		private String date;
 		private String client;
@@ -316,4 +389,5 @@ public class Dashboard implements Serializable {
 			return montant;
 		}
 	}
+	
 }

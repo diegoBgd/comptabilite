@@ -1,0 +1,80 @@
+/* =========================================================
+   custom.css — Contraste uniquement, sans casser Apollo
+   ========================================================= */
+
+/* ===== Fond de page : gris très subtil ===== */
+body {
+    background-color: #F5F5F5;
+}
+
+/* ===== Cartes / Panels : bordure + ombre, sans toucher au padding ===== */
+.ui-card,
+.ui-panel {
+    background-color: #ffffff;
+    border: 1px solid #e3e6ea;
+    /*box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);*/
+}
+
+/* ===== Champs : juste la bordure, pas le padding ===== */
+.ui-inputfield,
+.ui-inputtext,
+.ui-inputtextarea {
+    background-color: #ffffff;
+    border: 1px solid #ced4da;
+    color: #212529;
+}
+
+.ui-inputfield:focus,
+.ui-inputtext:focus,
+.ui-inputtextarea:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.15rem rgba(0, 123, 255, 0.2);
+}
+
+/* ===== Tableaux : UNIQUEMENT bordures et couleurs de fond ===== */
+.ui-datatable thead th {
+    background-color: #f1f3f5;
+    color: #212529;
+    border-bottom: 1px solid #ced4da;
+}
+
+.ui-datatable tbody td {
+    border-bottom: 1px solid #e9ecef;
+    color: #212529;
+}
+
+.ui-datatable tbody tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.ui-datatable tbody tr:hover {
+    background-color: #e7f1ff;
+}
+/* ===== Bordures visibles pour les DataTable ===== */
+
+/* Bordures sur toutes les cellules (header + body) */
+.ui-datatable thead th,
+.ui-datatable tbody td {
+    border: 1px solid #ced4da;
+}
+
+/* Bordure extérieure du tableau */
+.ui-datatable table {
+    border: 1px solid #ced4da;
+}
+
+/* Optionnel : en-tête avec bordure basse plus marquée */
+.ui-datatable thead th {
+    border-bottom: 2px solid #adb5bd;
+}
+
+/* Optionnel : lignes alternées pour meilleure lisibilité */
+.ui-datatable tbody tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+/* ===== Labels ===== */
+.ui-outputlabel,
+label {
+    color: #495057;
+    font-weight: 500;
+}

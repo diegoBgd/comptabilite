@@ -15,55 +15,55 @@ public class Constante implements Serializable {
 		String valeur = "";
 		switch (fx) {
 		case GestionAcces:
-			valeur = "Drois d'accès";
+			valeur = "Drois d'accÃ¨s";
 			break;
 		case ParametreGeneraux:
-			valeur = "Paramètres généraux";
+			valeur = "ParamÃ¨tres gÃ©nÃ©raux";
 			break;
 		case ParametreEfi:
-			valeur = "Paramétrage des états financiers";
+			valeur = "ParamÃ©trage des Ã©tats financiers";
 			break;
 		case Journal:
-			valeur = "Paramétrage des journaux";
+			valeur = "ParamÃ¨trage des journaux";
 			break;
 		case PlanComptable:
-			valeur = "Paramétrage du plan comptable";
+			valeur = "ParamÃ©trage du plan comptable";
 			break;
 		case SaisieEcritures:
-			valeur = "Saisie des écritures comptables";
+			valeur = "Saisie des Ã©critures comptables";
 			break;
 		case EditionEfi:
-			valeur = "Edition des états financiers";
+			valeur = "Edition des Ã©tats financiers";
 			break;
 		case EditionHistoriques:
-			valeur = "Editions des opérations comptables";
+			valeur = "Editions des opÃ©rations comptables";
 			break;
 		case SaisieImmo:
-			valeur = "Saisie des immobilisés";
+			valeur = "Saisie des immobilisÃ©s";
 			break;
 		case Amortissement:
-			valeur = "Gérer les amortissement";
+			valeur = "GÃ©rer les amortissement";
 			break;
 		case Cession:
 			valeur = "Cession des immo";
 			break;
 		case ParametrageFinance:
-			valeur = "Paramétrage des gestions financières";
+			valeur = "ParamÃ©trage des gestions financiÃ¨res";
 			break;
 		case EntreeFond:
-			valeur = "Saisie des entrées de fonds";
+			valeur = "Saisie des entrÃ©es de fonds";
 			break;
 		case ReglementClient:
-			valeur = "Saisie des règlement clients";
+			valeur = "Saisie des rÃ¨glement clients";
 			break;
 		case FactureFourn:
 			valeur = "Saisie des factures fournisseurs";
 			break;
 		case ReglementFournisseur:
-			valeur = "Saisie des règlements fournisseurs";
+			valeur = "Saisie des rÃ¨glements fournisseurs";
 			break;
 		case AutresDepenses:
-			valeur = "Autres dépenses";
+			valeur = "Autres dÃ©penses";
 			break;
 		}
 		return valeur;

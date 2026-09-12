@@ -19,28 +19,30 @@
         <div class="kpi-container">
             <div class="kpi-card bg-gradient-blue">
                 <i class="pi pi-shopping-cart kpi-icon"></i>
-                <div class="kpi-title">Total Ventes</div>
-                <div class="kpi-value">15 230</div>
+                <div class="kpi-title">Encaissements</div>
+                <div class="kpi-value">
+                <p:outputLabel class="kpi-value" value="#{dashboard.encaissement}"/>
+                </div>
                 <div class="kpi-trend text-green-300">+12% ce mois</div>
             </div>
 
             <div class="kpi-card bg-gradient-purple">
                 <i class="pi pi-users kpi-icon"></i>
-                <div class="kpi-title">Clients Actifs</div>
+                <div class="kpi-title">Dépenses</div>
                 <div class="kpi-value">340</div>
                 <div class="kpi-trend text-green-300">+5%</div>
             </div>
 
             <div class="kpi-card bg-gradient-orange">
                 <i class="pi pi-exclamation-triangle kpi-icon"></i>
-                <div class="kpi-title">Stock Faible</div>
+                <div class="kpi-title">Règlements clients</div>
                 <div class="kpi-value">12 articles</div>
                 <div class="kpi-trend text-red-300">À surveiller</div>
             </div>
 
             <div class="kpi-card bg-gradient-green">
                 <i class="pi pi-dollar kpi-icon"></i>
-                <div class="kpi-title">Chiffre d’affaires</div>
+                <div class="kpi-title">Règlements fournisseurs</div>
                 <div class="kpi-value">78 900</div>
                 <div class="kpi-trend text-green-300">+8%</div>
             </div>

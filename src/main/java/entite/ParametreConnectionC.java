@@ -91,41 +91,53 @@ public class ParametreConnectionC implements Serializable {
 				BufferedWriter bw = new BufferedWriter(fw);
 				bw.write(this.content);
 				bw.close();
-				msg = "OpÈration rÈussie !";
+				msg = "Op√©ration r√©ussie !";
 			} catch (Exception e) {
 
-				msg = "OpÈration ÈchouÈe=>" + e.getMessage();
+				msg = "Op√©ration √©chou√©e=>" + e.getMessage();
 			}
 		}
 		return msg;
 	}
 
 	public boolean readChaine() {
-		boolean ch = false;
-		try {
-			File file = new File(this.url);
-			this.content = "";
-
-			if (file.exists()) {
-
-				Scanner sc = new Scanner(file);
-
-				if (sc.hasNextLine()) {
-					this.content = sc.nextLine();
-				}
-				String[] info = this.content.split(" ");
-				setNomHost(info[0]);
-				setNomUtilisateur(info[1]);
-				setMotDePasse(info[2]);
-				setNomBaseDeDonnee(info[3]);
-				ch = true;
-			}
-
-		} catch (IOException e) {
-			ch = false;
-			e.printStackTrace();
-		}
-		return ch;
+	    boolean ch = false;
+	    try {
+	        File file = new File(this.url);
+	        this.content = "";
+	        
+	        if (!file.exists()) {
+	            // Cr√©er le dossier parent si n√©cessaire
+	            File parent = file.getParentFile();
+	            if (parent != null && !parent.exists()) {
+	                parent.mkdirs();
+	            }
+	            System.out.println("Fichier de connexion absent : " + this.url);
+	            return false;
+	        }
+	        
+	        try (Scanner sc = new Scanner(file)) {
+	            if (sc.hasNextLine()) {
+	                this.content = sc.nextLine().trim();
+	            }
+	        }
+	        
+	        if (this.content.isEmpty()) return false;
+	        
+	        String[] info = this.content.split("\\s+");
+	        if (info.length < 4) {
+	            System.err.println("Format invalide (4 champs attendus) : " + this.content);
+	            return false;
+	        }
+	        
+	        setNomHost(info[0]);
+	        setNomUtilisateur(info[1]);
+	        setMotDePasse(info[2]);
+	        setNomBaseDeDonnee(info[3]);
+	        ch = true;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return ch;
 	}
-
 }

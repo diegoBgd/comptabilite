@@ -11,11 +11,7 @@
  import org.hibernate.criterion.Restrictions;
  import org.hibernate.criterion.SimpleExpression;
  
- 
- 
- 
- 
- 
+
  public class DeviseModel
  {
    public void saveDevise(SessionFactory factory, Devise dev) {

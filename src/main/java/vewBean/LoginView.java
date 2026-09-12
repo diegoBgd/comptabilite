@@ -10,7 +10,6 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
@@ -108,27 +107,38 @@ public class LoginView implements Serializable {
 	@PostConstruct
 	public void initialize() {
 		
-		factory=DBConfiguration.getSessionFactory();
-		if(factory!=null)
-		{
-			desableLogin=false;
-		this.model = new UserModel();
-		this.listExerc = new ArrayList<>();
-		this.listExerc.add(new SelectItem(Integer.valueOf(0), ""));
-		this.userExist = this.model.isUserExist(this.factory);
-		List<Exercice> list = (new ExerciceModel()).getListExercice(this.factory);
-		if (list != null && list.size() > 0) {
-			for (Exercice ex : list) {
-				this.listExerc.add(new SelectItem(Integer.valueOf(ex.getId()), ex.getExCode()));
-
-			}
-		}
-		}
-		else{
-			desableLogin=true;
-			this.message = "Il y a un problËme de connexion ‡† la base de donnÈes! VÈrifiez les paramËtres de connexion!";
-		}
+		reloadConfiguration();
 	}
+	public void reloadConfiguration() {
+        factory = DBConfiguration.getSessionFactory();
+        
+        if (factory != null && !factory.isClosed()) {
+            desableLogin = false;
+            if (this.model == null) {
+                this.model = new UserModel();
+            }
+            if (this.listExerc == null) {
+                this.listExerc = new ArrayList<>();
+                this.listExerc.add(new SelectItem(0, ""));
+            }
+            if (this.listExerc.size() <= 1) {
+                this.userExist = this.model.isUserExist(this.factory);
+                List<Exercice> list = new ExerciceModel().getListExercice(this.factory);
+                if (list != null) {
+                    for (Exercice ex : list) {
+                        this.listExerc.add(new SelectItem(ex.getId(), ex.getExCode()));
+                    }
+                }
+            }
+            this.message = null;  // effacer le message d'erreur pr√©c√©dent
+        } else {
+            desableLogin = true;
+            this.message = "Il y a un probl√®me de connexion √† la base de donn√©es! "
+                          + "V√©rifiez les param√®tres de connexion!";
+        }
+    }
+    
+    // ... le reste inchang√©
 
 	public void changeExercice(ValueChangeEvent event) {
 		if (event != null && event.getNewValue()!=null) {
@@ -147,7 +157,7 @@ public class LoginView implements Serializable {
 		if (this.userExist) {
 
 			if (getCode().trim().equals("") || getPwd().trim().equals("")) {
-				HelperC.afficherMessage("Information", "Veuillez prÈciser votre code utilisateur et mot de passe !",
+				HelperC.afficherMessage("Information", "Veuillez pr√©ciser votre code utilisateur et mot de passe !",
 						FacesMessage.SEVERITY_ERROR);
 
 			} else {
@@ -165,7 +175,7 @@ public class LoginView implements Serializable {
 
 						if (getCodeExercice() == null || getCodeExercice().equals("")) {
 
-							HelperC.afficherMessage("Information", "Il prÈciser l'exercice!",
+							HelperC.afficherMessage("Information", "Il pr√©ciser l'exercice!",
 									FacesMessage.SEVERITY_ERROR);
 
 							return;
@@ -173,12 +183,12 @@ public class LoginView implements Serializable {
 						context.getExternalContext().redirect("/comptabilite/masterPage.jsf");
 					} else {
 
-						HelperC.afficherMessage("Avertissement", "EchÈc d'authentification",
+						HelperC.afficherMessage("Avertissement", "Echec d'authentification",
 								FacesMessage.SEVERITY_ERROR);
 					}
 				} else {
 
-					HelperC.afficherMessage("Information", "L'utilisateur n'est pas reconnu par le systËme!",
+					HelperC.afficherMessage("Information", "L'utilisateur n'est pas reconnu par le syst√®me!",
 							FacesMessage.SEVERITY_ERROR);
 				}
 
