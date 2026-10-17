@@ -1,0 +1,281 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/masterPage.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title">Paramétrage des rubriques</ui:define>
+	<ui:define name="head">
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/style.css" />
+	</ui:define>
+	<ui:define name="content">
+
+		<body>
+			<h:form id="frm"
+				onkeypress="if (event.keyCode == 13) { return false; }">
+				<p:blockUI block="frm" trigger="btnSave" />
+				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
+
+				<!-- ============================================================
+				     SÉLECTION DE L'ÉTAT
+				     ============================================================ -->
+				<div class="card">
+					<p:panelGrid columns="2"
+						columnClasses="ui-grid-col-2,ui-grid-col-4" layout="grid"
+						styleClass="ui-panelgrid-blank ui-fluid"
+						style="border:0px none; background-color:transparent;"
+						contentStyleClass="compact-grid">
+						<h:outputText value="État financier" />
+						<p:selectOneMenu value="#{etatFinanciersRubriqueVew.idEtat}"
+							converter="javax.faces.Long" id="chkEtat">
+							<f:selectItem itemLabel="-- Sélectionner l'état --"
+								itemValue="#{null}" noSelectionOption="true" />
+							<f:selectItems value="#{etatFinanciersRubriqueVew.listEtat}"
+								var="e" itemValue="#{e.idEtat}"
+								itemLabel="#{e.codeEtat} - #{e.libelleEtat}" />
+							<p:ajax update=":frm:chkEtat"
+								listener="#{etatFinanciersRubriqueVew.getSelectedEFiValue()}" />
+						</p:selectOneMenu>
+					</p:panelGrid>
+				</div>
+
+				<!-- ============================================================
+				     FORMULAIRE RUBRIQUE
+				     ============================================================ -->
+				<div class="card">
+					<p:panelGrid columns="2"
+						columnClasses="ui-grid-col-2,ui-grid-col-2" layout="grid"
+						styleClass="ui-panelgrid-blank ui-fluid"
+						style="border:0px none; background-color:transparent;"
+						contentStyleClass="compact-grid">
+						<h:outputText value="Référence" />
+						<p:inputText id="txtCd" value="#{etatFinanciersRubriqueVew.code}">
+							<p:ajax event="blur"
+								listener="#{etatFinanciersRubriqueVew.searchRubrique()}"
+								update=":frm" />
+						</p:inputText>
+					</p:panelGrid>
+
+					<p:panelGrid columns="2"
+						columnClasses="ui-grid-col-2,ui-grid-col-6" layout="grid"
+						styleClass="ui-panelgrid-blank ui-fluid"
+						style="border:0px none; background-color:transparent;"
+						contentStyleClass="compact-grid">
+						<h:outputText value="Libellé" />
+						<p:inputTextarea id="txtDsn"
+							value="#{etatFinanciersRubriqueVew.designation}" rows="1" />
+
+						<p:outputLabel value="Type de ligne" />
+						<p:selectOneMenu
+							value="#{etatFinanciersRubriqueVew.typeLigneSelectionne}"
+							autoWidth="false">
+							<f:selectItem itemLabel="-- Sélectionner le type de ligne --"
+								itemValue="#{null}" noSelectionOption="true" />
+							<f:selectItems
+								value="#{etatFinanciersRubriqueVew.listeTypesLigne}" var="tl"
+								itemValue="#{tl}" itemLabel="#{tl.libelle}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Type de calcul" />
+						<p:selectOneMenu
+							value="#{etatFinanciersRubriqueVew.typeCalculSelectionne}"
+							autoWidth="false">
+							<f:selectItem itemLabel="-- Sélectionner le type de calcul --"
+								itemValue="#{null}" noSelectionOption="true" />
+							<f:selectItems
+								value="#{etatFinanciersRubriqueVew.listeTypesCalcul}" var="tc"
+								itemValue="#{tc}" itemLabel="#{tc.libelle}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Type de valeur" />
+						<p:selectOneMenu
+							value="#{etatFinanciersRubriqueVew.typeValeurSelectionne}"
+							autoWidth="false">
+							<f:selectItem itemLabel="-- Sélectionner le type de valeur --"
+								itemValue="#{null}" noSelectionOption="true" />
+							<f:selectItems
+								value="#{etatFinanciersRubriqueVew.listeTypesValeur}" var="tv"
+								itemValue="#{tv}" itemLabel="#{tv.libelle}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Section" />
+						<p:selectOneMenu value="#{etatFinanciersRubriqueVew.section}"
+							autoWidth="false">
+							<f:selectItem itemLabel="" itemValue="" />
+							<f:selectItem itemLabel="ACTIF" itemValue="ACTIF" />
+							<f:selectItem itemLabel="PASSIF" itemValue="PASSIF" />
+							<f:selectItem itemLabel="A" itemValue="A" />
+							<f:selectItem itemLabel="B" itemValue="B" />
+							<f:selectItem itemLabel="C" itemValue="C" />
+							<f:selectItem itemLabel="D" itemValue="D" />
+						</p:selectOneMenu>
+
+
+						<p:outputLabel value="Niveau" />
+						<p:selectOneMenu value="#{etatFinanciersRubriqueVew.niveau}"
+							autoWidth="false">
+							<f:selectItem itemLabel="1" itemValue="1" />
+							<f:selectItem itemLabel="2" itemValue="2" />
+							<f:selectItem itemLabel="3" itemValue="3" />
+							<f:selectItem itemLabel="4" itemValue="4" />
+							<f:selectItem itemLabel="5" itemValue="5" />
+
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Formule" />
+						<p:inputText value="#{etatFinanciersRubriqueVew.formule}"
+							maxlength="500" placeholder="Ex: A01+A02-A03" />
+
+						<p:outputLabel value="Rubrique parente" />
+						<p:selectOneMenu id="chkRbParent"
+							value="#{etatFinanciersRubriqueVew.idRubriqueParent}"
+							converter="javax.faces.Long" autoWidth="false">
+							<f:selectItem itemLabel="-- Aucune --" itemValue="#{null}"
+								noSelectionOption="true" />
+							<f:selectItems
+								value="#{etatFinanciersRubriqueVew.listRubriqueParente}"
+								var="rp" itemValue="#{rp.idRubrique}"
+								itemLabel="#{rp.codeRubrique} - #{rp.libelleRubrique}" />
+							<p:ajax update=":frm:chkRbParent"
+								listener="#{etatFinanciersRubriqueVew.getSelectedParentValue()}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Ordre d'affichage" />
+						<p:inputText value="#{etatFinanciersRubriqueVew.ordreAffichage}" />
+
+						<p:outputLabel value="Signe" />
+						<p:selectOneMenu value="#{etatFinanciersRubriqueVew.signe}"
+							autoWidth="false">
+							<f:selectItem itemLabel="+1" itemValue="1" />
+							<f:selectItem itemLabel="-1" itemValue="-1" />
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Affiche amortissements" />
+						<p:selectBooleanCheckbox
+							value="#{etatFinanciersRubriqueVew.afficheAmortissements}" />
+
+						<p:outputLabel value="Visible" />
+						<p:selectBooleanCheckbox
+							value="#{etatFinanciersRubriqueVew.visible}" />
+
+						<p:outputLabel value="Imprimable" />
+						<p:selectBooleanCheckbox
+							value="#{etatFinanciersRubriqueVew.imprimable}" />
+					</p:panelGrid>
+				</div>
+
+				<!-- ============================================================
+				     TABLEAU DES RUBRIQUES
+				     ============================================================ -->
+				<div class="card">
+					<p:dataTable var="rub"
+						value="#{etatFinanciersRubriqueVew.listRubrique}" id="tbl"
+						emptyMessage="" selectionMode="single" rowIndexVar="idx"
+						selection="#{etatFinanciersRubriqueVew.selectedRubrique}"
+						rowKey="#{rub.idRubrique}" reflow="true" scrollable="true"
+						scrollHeight="250" size="small" showGridlines="true">
+
+						<p:ajax event="rowSelect"
+							listener="#{etatFinanciersRubriqueVew.getSelectedRubriqueValue()}"
+							update="frm" />
+
+						<p:column headerText="Ordre" width="7%">
+							<h:outputText value="#{rub.ordreAffichage}" />
+						</p:column>
+
+						<p:column headerText="Référence" width="10%">
+							<h:outputText value="#{rub.codeRubrique}" />
+						</p:column>
+
+						<p:column headerText="Libellé">
+							<h:outputText value="#{rub.libelleRubrique}" />
+						</p:column>
+
+						<p:column headerText="Type ligne" width="10%">
+							<h:outputText value="#{rub.typeLigne.libelle}" />
+						</p:column>
+
+						<p:column headerText="Type calcul" width="10%">
+							<h:outputText value="#{rub.typeCalcul.libelle}" />
+						</p:column>
+
+						<p:column headerText="Formule" width="15%">
+							<h:outputText value="#{rub.formule}" />
+						</p:column>
+
+						<p:column headerText="Visible" width="7%">
+							<h:outputText value="Oui" rendered="#{rub.visible}"
+								style="color:green" />
+							<h:outputText value="Non" rendered="#{not rub.visible}"
+								style="color:red" />
+						</p:column>
+						<p:column headerText="Actions"
+							style="width:8%; text-align:center;">
+							<!-- Bouton Monter -->
+							<p:commandButton icon="pi pi-arrow-up" title="Monter"
+								actionListener="#{etatFinanciersRubriqueVew.monter(rub)}"
+								update=":frm" process="@this"
+								disabled="#{etatFinanciersRubriqueVew.isPremiereLigne(idx)}"
+								style="margin-right: 5px,height:5px" styleClass="rounded-button  ui-button-flat" />
+
+							<!-- Bouton Descendre -->
+							<p:commandButton icon="pi pi-arrow-down" title="Descendre"
+								actionListener="#{etatFinanciersRubriqueVew.descendre(rub)}"
+								update=":frm" process="@this" styleClass="rounded-button  ui-button-flat" 
+								disabled="#{etatFinanciersRubriqueVew.isDerniereLigne(idx)}" />
+
+						</p:column>
+					</p:dataTable>
+				</div>
+
+				<!-- ============================================================
+				     BOUTONS D'ACTION
+				     ============================================================ -->
+				<div class="card">
+					<p:panelGrid columns="4"
+						columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+						layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+						style="border:0px none; background-color:transparent;"
+						contentStyleClass="compact-grid">
+						<p:spacer />
+						<p:commandButton value="Enregistrer" id="btnSave"
+							action="#{etatFinanciersRubriqueVew.save()}" icon="pi pi-save"
+							update="frm" style="border-radius:10px" />
+
+						<p:commandButton value="Supprimer" update="frm" id="btnDelete"
+							icon="pi pi-trash" styleClass="ui-button-danger"
+							style="border-radius:10px"
+							onclick="PF('deleteDialog').show(); return false;" />
+
+						<p:commandButton value="Initialiser" id="btnClean"
+							action="#{etatFinanciersRubriqueVew.initializeControl()}"
+							icon="pi pi-sync" styleClass="ui-button-secondary" update="frm"
+							style="border-radius:10px" />
+					</p:panelGrid>
+				</div>
+
+			</h:form>
+
+			<h:form>
+				<p:confirmDialog id="deleteDialogId" widgetVar="deleteDialog"
+					header="Confirmation" message="Voulez-vous vraiment supprimer ?"
+					icon="pi pi-question-circle" showEffect="fade" hideEffect="fade">
+
+					<p:commandButton value="Oui" icon="pi pi-check-circle"
+						styleClass="ui-button-outlined ui-button-danger"
+						action="#{etatFinanciersRubriqueVew.delete()}" update=":frm"
+						oncomplete="PF('deleteDialog').hide();" />
+
+					<p:commandButton value="Non" type="button"
+						icon="pi pi-times-circle"
+						styleClass="ui-button-outlined ui-button-info"
+						onclick="PF('deleteDialog').hide();" />
+
+				</p:confirmDialog>
+			</h:form>
+		</body>
+	</ui:define>
+</ui:composition>

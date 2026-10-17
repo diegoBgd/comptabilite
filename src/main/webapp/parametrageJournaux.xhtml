@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/masterPage.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title">Ecritures comptables</ui:define>
+	<ui:define name="head">
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/style.css" />
+	</ui:define>
+	<ui:define name="content">
+		<body>
+			<h:form id="frm"
+				onkeypress="if (event.keyCode == 13) { return false; }" >
+				<p:blockUI block="frm" trigger="" />
+				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-fluid contact-form">
+						<div class="ui-g-12 ui-fluid card no-margin">
+
+							<p:panelGrid columns="4" contentStyleClass="compact-grid"
+								columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-6,ui-grid-col-1"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								<h:outputText value="Journal" />
+								<p:inputText id="txtCd" value="#{parametreJournauxVew.codeJrnl}">
+									<p:ajax event="blur"
+										listener="#{parametreJournauxVew.searchJournal()}"
+										update="txtDsn" />
+								</p:inputText>
+								<p:inputText id="txtDsn"
+									value="#{parametreJournauxVew.libelleJrnl}" readonly="true" />
+
+								<p:commandButton icon="pi pi-search" style="border-radius:10px"
+									onclick="PF('dlgJrnl').show();" />
+							</p:panelGrid>
+							<p:panelGrid columns="2" contentStyleClass="compact-grid"
+								columnClasses="ui-grid-col-2,ui-grid-col-8" layout="grid"
+								styleClass="ui-panelgrid-blank"
+								style="border:0px none; background-color:transparent;">
+								<h:outputText value="Type d'opération" />
+								<p:selectOneMenu value="#{parametreJournauxVew.typeOperation}"
+									autoWidth="false">
+									<f:selectItem itemLabel="Entrée de fonds" itemValue="0" />
+									<f:selectItem itemLabel="Factures clients" itemValue="1" />
+									<f:selectItem itemLabel="Reglements clients" itemValue="2" />
+									<f:selectItem itemLabel="Factures fournisseurs" itemValue="3" />
+									<f:selectItem itemLabel="Reglements fournisseurs" itemValue="4" />
+									<f:selectItem itemLabel="Sortie de fonds" itemValue="5" />
+									<f:selectItem itemLabel="Amortissement" itemValue="6" />
+								</p:selectOneMenu>
+							</p:panelGrid>
+
+							
+						</div>
+
+						<div class="ui-g-12 ui-fluid card">
+							<p:dataTable var="ecr"
+								value="#{parametreJournauxVew.listParam}" id="tbl"
+								rowKey="#{prm.id}" reflow="true" rows="10" size="small" showGridlines="true"
+							    emptyMessage="" paginatorPosition="bottom">
+
+							<p:column headerText="Journal" width="5%">
+									<h:outputText value="#{prm.codeJrnl}" />
+								</p:column>
+								<p:column headerText="Opération" width="15%">
+									<h:outputText value="#{prm.typeOperation}" />
+								</p:column>
+								
+						
+							</p:dataTable>
+						</div>
+
+					</div>
+				</div>
+			</h:form>
+
+
+			<p:dialog widgetVar="dlgJrnl" header="Liste des journaux"
+				modal="true" appendTo="@(body)" width="600" responsive="true">
+				<h:form id="frmJrnl">
+
+					<div class="ui-g">
+						<div class="ui-g-12 ui-md-6 ui-lg-12 ui-fluid contact-form">
+							<p:panelGrid columns="3" contentStyleClass="compact-grid"
+								columnClasses="ui-grid-col-2,ui-grid-col-6,ui-grid-col-3"
+								layout="grid" styleClass="ui-panelgrid-blank"
+								style="background-color:transparent;">
+
+								<p:outputLabel value="Libellé" />
+								<p:inputText value="#{parametreJournauxVew.motRech}" />
+								<p:commandButton value="Rechercher" style="border-radius:10px"
+									action="#{parametreJournauxVew.chargerJournal()}"
+									update="tblJrnl" />
+
+							</p:panelGrid>
+
+							<p:dataTable value="#{parametreJournauxVew.listJournal}" var="jrn"
+								selectionMode="single" id="tblJrnl"
+								selection="#{parametreJournauxVew.selectedJrnl}"
+								rowKey="#{jrn.id}" reflow="true" scrollable="true"
+								scrollHeight="200" emptyMessage="" 
+								size="small" showGridlines="true">
+
+								<p:ajax event="rowSelect"
+									listener="#{parametreJournauxVew.getSelctedJournal()}"
+									update=":frm:txtCd,:frm:txtDsn" />
+
+								<p:column headerText="Reference" width="10%">
+									<h:outputText value="#{jrn.codeJrnl}" />
+								</p:column>
+
+								<p:column headerText="Libelle">
+									<h:outputText value="#{jrn.libelle}" />
+								</p:column>
+
+
+
+							</p:dataTable>
+
+
+						</div>
+					</div>
+				</h:form>
+			</p:dialog>
+		</body>
+	</ui:define>
+</ui:composition>

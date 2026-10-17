@@ -7,11 +7,6 @@
  import org.hibernate.criterion.Order;
  import org.hibernate.criterion.Restrictions;
  
- 
- 
- 
- 
- 
  public class ParametreImmoModel
  {
    public void saveParmImmo(SessionFactory factory, ParametreImmo pIm) {
@@ -42,8 +37,6 @@
      ss.close();
    }
  
- 
-   
    public ParametreImmo getParmImmo(SessionFactory factory) {
      ParametreImmo pIm = null;
      Session ss = null;

@@ -11,6 +11,6 @@
    <supported-locale>es</supported-locale>
    <supported-locale>fr</supported-locale>
    <supported-locale>fi</supported-locale>
-  </locale-config>
+  </locale-config> 
  </application>
 </faces-config>

@@ -31,10 +31,10 @@ public class AmortisementModel {
 
 			ss.getTransaction().commit();
 			ss.close();
-			msg = "Opération terminée";
+			msg = "OpÃ©ration terminÃ©e";
 		} catch (Exception e) {
 			System.out.println(e.toString());
-			msg = "Operation échouée ";
+			msg = "Operation Ã©chouÃ©e ";
 			ss.getTransaction().rollback();
 		}
 		return msg;

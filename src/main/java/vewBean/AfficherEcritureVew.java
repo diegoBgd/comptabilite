@@ -1,5 +1,6 @@
 package vewBean;
 
+import entite.Amortissement;
 import entite.Depense;
 import entite.Ecriture;
 import entite.Encaissement;
@@ -23,6 +24,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
+
+import model.AmortisementModel;
 import model.DepenseModel;
 import model.EncaissementModel;
 import model.ExerciceModel;
@@ -77,6 +80,8 @@ public class AfficherEcritureVew implements Serializable {
 	List<ReglementClient> listReglementClt;
 	List<ReglementFournisseur> listReglementFrn;
 	List<Depense> listSortieFnd;
+	List<Amortissement>listAmortissement;
+	
 	ParametreFinance prm;
 	
 	public List<Ecriture> getListeEcriture() {
@@ -354,6 +359,7 @@ public class AfficherEcritureVew implements Serializable {
 			chargerSortieFond();
 			break;
 		case 6:
+			chargerAmortissement();
 			break;
 		case 7:
 			break;
@@ -567,6 +573,36 @@ public class AfficherEcritureVew implements Serializable {
 		}
 		calculTotaux();
 	}
+	private void chargerAmortissement() {
+		this.listAmortissement = new ArrayList<>();
+		this.listAmortissement = (new AmortisementModel()).getListAmort(this.factory, this.selecetdExercice);
+		this.listeEcriture = new ArrayList<>();
+		Ecriture ecriture = null;
+		String compteDb="",compteCrd="",compteTxe="";
+		for (Amortissement amrt : this.listAmortissement) {
+
+			compteDb=amrt.getImmo().getCompteDotAmrt();
+			compteCrd=amrt.getImmo().getCompteAmrt();
+			
+			//dep.calculMontantTTC();
+			ecriture = createEcriture(compteDb, this.codeJrnl, "AMRT", "AMORTISSEMENT DES IMMO",
+					amrt.getAmortExercice(), selecetdExercice.getDateFin(), 0,TypeEcriture.amortissement);
+			this.listeEcriture.add(ecriture);
+			
+			ecriture = createEcriture(compteCrd, this.codeJrnl, "AMRT", "AMORTISSEMENT DES IMMO",
+					amrt.getAmortExercice(), selecetdExercice.getDateFin(), 1,TypeEcriture.amortissement);
+			this.listeEcriture.add(ecriture);
+		
+
+			
+		
+			}
+		calculTotaux();
+		}
+
+		
+	
+	
 	private void chargerSortieFond() {
 		this.listeEcriture = new ArrayList<>();
 		this.listDepense = (new DepenseModel()).getListDepense(this.factory, this.selecetdExercice.getId(),
@@ -643,4 +679,6 @@ public class AfficherEcritureVew implements Serializable {
 
 		return ecr;
 	}
+	
+
 }

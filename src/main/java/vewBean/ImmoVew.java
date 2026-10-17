@@ -498,7 +498,7 @@
    
    public void chargerImmo() {
      this.listImmo = this.model.getListImmo(this.factory, this.motRechImmo);
-     this.numMsg = String.valueOf(this.listImmo.size()) + " éléments trouvés";
+     this.numMsg = String.valueOf(this.listImmo.size()) + "Ã©lements trouvÃ©s";
    }
  
    
@@ -623,7 +623,7 @@
      }
      else {
        
-       HelperC.afficherAttention("Attention", "Il faut préciser le code de l'immo !");
+       HelperC.afficherAttention("Attention", "Il faut prï¿½ciser le code de l'immo !");
      } 
    }
    
@@ -659,7 +659,6 @@
      this.lblCptAmrt = "";
      this.lblCptDotAmrt = "";
      this.lblCptImmo = "";
- 
      this.disableMsg = true;
      this.listAmrt = null;
    }

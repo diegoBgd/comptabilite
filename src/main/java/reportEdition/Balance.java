@@ -228,7 +228,7 @@ public class Balance implements Serializable {
 			period+="  Date fin :"+HelperC.convertDate(dateFin);
 		
 		/*
-		 * if(!compteDeb.equals("")) cpte+=" Compte début : "+compteDeb;
+		 * if(!compteDeb.equals("")) cpte+=" Compte dÃ©but : "+compteDeb;
 		 * if(!compteFin.equals("")) cpte+="  Compte fin : "+compteFin;
 		 */
 		cell = HelperItext.getPdfCell(period,
@@ -261,6 +261,7 @@ public class Balance implements Serializable {
 
 	public void printBalancePdf() {
 		try {
+			String typeBalance="";
 			Image image = null;
 			Document doc = new Document(PageSize.A4.rotate());
 			ByteArrayOutputStream docMem = new ByteArrayOutputStream();
@@ -284,11 +285,19 @@ public class Balance implements Serializable {
 			switch (this.typeBalance) {
 			case 1:
 				doc.add((Element) getBalance4());
+				typeBalance="4_col";
 				break;
 
 			case 2:
 				doc.add((Element) getBalance6());
+				typeBalance="6_col";
 				break;
+			case 3:
+				doc.add((Element) getBalance8());
+				typeBalance="8_col";
+				break;
+				
+				
 			}
 
 			doc.close();
@@ -297,7 +306,7 @@ public class Balance implements Serializable {
 			HttpServletResponse res = (HttpServletResponse) context.getExternalContext().getResponse();
 			res.setHeader("Cache-Control", "Max-age=100");
 			res.setContentType("application/pdf");
-			res.setHeader("content-disposition", (new StringBuilder("online;filename=Balance.pdf")).toString());
+			res.setHeader("content-disposition", (new StringBuilder("online;filename=Balance_"+typeBalance+".pdf")).toString());
 			ServletOutputStream out = res.getOutputStream();
 			res.setContentLength(docMem.size());
 			docMem.writeTo((OutputStream) out);
@@ -318,6 +327,9 @@ public class Balance implements Serializable {
 
 		case 2:
 			printBalance6Excel();
+			break;
+		case 3:
+			printBalance8Excel();
 			break;
 		}
 	}
@@ -368,31 +380,31 @@ public class Balance implements Serializable {
 			tabInfo.addCell(cell);
 
 			p = new Paragraph();
-			p.add((Element) new Chunk("Libellé", FontFactory.getFont("Times", 10.0F, 1)));
+			p.add((Element) new Chunk("LibellÃ©", FontFactory.getFont("Times", 10.0F, 1)));
 			p.setAlignment(1);
 			cell = HelperItext.getCellule((Element) p, 1, 0, 7, 0, 0.5F, 3.0F, true);
 			tabInfo.addCell(cell);
 
 			p = new Paragraph();
-			p.add((Element) new Chunk("Débit", FontFactory.getFont("Times", 10.0F, 1)));
+			p.add((Element) new Chunk("DÃ©bit", FontFactory.getFont("Times", 10.0F, 1)));
 			p.setAlignment(1);
 			cell = HelperItext.getCellule((Element) p, 1, 0, 7, 0, 0.5F, 3.0F, true);
 			tabInfo.addCell(cell);
 
 			p = new Paragraph();
-			p.add((Element) new Chunk("Crédit ", FontFactory.getFont("Times", 10.0F, 1)));
+			p.add((Element) new Chunk("CrÃ©dit ", FontFactory.getFont("Times", 10.0F, 1)));
 			p.setAlignment(1);
 			cell = HelperItext.getCellule((Element) p, 1, 0, 7, 0, 0.5F, 3.0F, true);
 			tabInfo.addCell(cell);
 
 			p = new Paragraph();
-			p.add((Element) new Chunk("Débit", FontFactory.getFont("Times", 10.0F, 1)));
+			p.add((Element) new Chunk("DÃ©bit", FontFactory.getFont("Times", 10.0F, 1)));
 			p.setAlignment(1);
 			cell = HelperItext.getCellule((Element) p, 1, 0, 7, 0, 0.5F, 3.0F, true);
 			tabInfo.addCell(cell);
 
 			p = new Paragraph();
-			p.add((Element) new Chunk("Crédit ", FontFactory.getFont("Times", 10.0F, 1)));
+			p.add((Element) new Chunk("CrÃ©dit ", FontFactory.getFont("Times", 10.0F, 1)));
 			p.setAlignment(1);
 			cell = HelperItext.getCellule((Element) p, 1, 0, 15, 0, 0.5F, 3.0F, true);
 			tabInfo.addCell(cell);
@@ -587,43 +599,43 @@ public class Balance implements Serializable {
 			tabInfo.addCell(cell);
 
 			p = new Paragraph();
-			p.add((Element) new Chunk("Libellé", FontFactory.getFont("Times", 10.0F, 1)));
+			p.add((Element) new Chunk("LibellÃ©", FontFactory.getFont("Times", 10.0F, 1)));
 			p.setAlignment(1);
 			cell = HelperItext.getCellule((Element) p, 1, 0, 7, 0, 0.5F, 3.0F, true);
 			tabInfo.addCell(cell);
 
 			p = new Paragraph();
-			p.add((Element) new Chunk("Débit", FontFactory.getFont("Times", 10.0F, 1)));
+			p.add((Element) new Chunk("DÃ©bit", FontFactory.getFont("Times", 10.0F, 1)));
 			p.setAlignment(1);
 			cell = HelperItext.getCellule((Element) p, 1, 0, 7, 0, 0.5F, 3.0F, true);
 			tabInfo.addCell(cell);
 
 			p = new Paragraph();
-			p.add((Element) new Chunk("Crédit ", FontFactory.getFont("Times", 10.0F, 1)));
+			p.add((Element) new Chunk("CrÃ©dit ", FontFactory.getFont("Times", 10.0F, 1)));
 			p.setAlignment(1);
 			cell = HelperItext.getCellule((Element) p, 1, 0, 7, 0, 0.5F, 3.0F, true);
 			tabInfo.addCell(cell);
 
 			p = new Paragraph();
-			p.add((Element) new Chunk("Débit", FontFactory.getFont("Times", 10.0F, 1)));
+			p.add((Element) new Chunk("DÃ©bit", FontFactory.getFont("Times", 10.0F, 1)));
 			p.setAlignment(1);
 			cell = HelperItext.getCellule((Element) p, 1, 0, 7, 0, 0.5F, 3.0F, true);
 			tabInfo.addCell(cell);
 
 			p = new Paragraph();
-			p.add((Element) new Chunk("Crédit ", FontFactory.getFont("Times", 10.0F, 1)));
+			p.add((Element) new Chunk("CrÃ©dit ", FontFactory.getFont("Times", 10.0F, 1)));
 			p.setAlignment(1);
 			cell = HelperItext.getCellule((Element) p, 1, 0, 7, 0, 0.5F, 3.0F, true);
 			tabInfo.addCell(cell);
 
 			p = new Paragraph();
-			p.add((Element) new Chunk("Débit", FontFactory.getFont("Times", 10.0F, 1)));
+			p.add((Element) new Chunk("DÃ©bit", FontFactory.getFont("Times", 10.0F, 1)));
 			p.setAlignment(1);
 			cell = HelperItext.getCellule((Element) p, 1, 0, 7, 0, 0.5F, 3.0F, true);
 			tabInfo.addCell(cell);
 
 			p = new Paragraph();
-			p.add((Element) new Chunk("Crédit ", FontFactory.getFont("Times", 10.0F, 1)));
+			p.add((Element) new Chunk("CrÃ©dit ", FontFactory.getFont("Times", 10.0F, 1)));
 			p.setAlignment(1);
 			cell = HelperItext.getCellule((Element) p, 1, 0, 15, 0, 0.5F, 3.0F, true);
 			tabInfo.addCell(cell);
@@ -801,6 +813,315 @@ public class Balance implements Serializable {
 		return tabInfo;
 	}
 
+	private PdfPTable getBalance8() throws DocumentException {
+		PdfPTable tabInfo = new PdfPTable(10);
+		int[] widthsInfo = {7,25, 10, 10, 10, 10, 10, 10,10,10 };
+		tabInfo.setWidthPercentage(105.0F);
+		tabInfo.setWidths(widthsInfo);
+		Paragraph p = null;
+		PdfPCell cell = new PdfPCell();
+
+		double totDeb = 0.0D, totCrd = 0.0D, deb = 0.0D, crd = 0.0D, soldDb = 0.0D, soldCd = 0.0D;
+		double totSoldDb = 0.0D, totSoldCd = 0.0D, credEnt = 0.0D, debEntre = 0.0D;
+		double totCrdE = 0.0D, totDebE = 0.0D,result=0,cumulDeb=0,cumulCrd=0,totCumulDb=0,totCumulCrd=0;
+		boolean used=false;
+		chargerCompte();
+		chargerSoldeEntree();
+		chargerSoldePeriode();
+
+		if (this.listeCpte.size() > 0 && this.listSolde.size() > 0) {
+
+			
+			  p = new Paragraph(); p.add((Element) new Chunk("",
+			  FontFactory.getFont("Times", 10.0F, 1))); 
+			  p.setAlignment(1); 
+			  cell = HelperItext.getCellule((Element) p, 1, 0, 0, 2, 0.5F, 3.0F, true);
+			  tabInfo.addCell(cell);
+			 
+			p = new Paragraph();
+			p.add((Element) new Chunk("Solde d'entrÃ©e", FontFactory.getFont("Times", 10.0F, 1)));
+			p.setAlignment(1);
+			cell = HelperItext.getCellule((Element) p, 1, 0, 13, 2, 0.5F, 3.0F, true);
+			tabInfo.addCell(cell);
+
+			p = new Paragraph();
+			p.add((Element) new Chunk("Mouvement pÃ©riode", FontFactory.getFont("Times", 10.0F, 1)));
+			p.setAlignment(1);
+			cell = HelperItext.getCellule((Element) p, 1, 0, 9, 2, 0.5F, 3.0F, true);
+			tabInfo.addCell(cell);
+
+			p = new Paragraph();
+			p.add((Element) new Chunk("Cumul", FontFactory.getFont("Times", 10.0F, 1)));
+			p.setAlignment(1);
+			cell = HelperItext.getCellule((Element) p, 1, 0, 9, 2, 0.5F, 3.0F, true);
+			tabInfo.addCell(cell);
+
+			p = new Paragraph();
+			p.add((Element) new Chunk("Soldes", FontFactory.getFont("Times", 10.0F, 1)));
+			p.setAlignment(1);
+			cell = HelperItext.getCellule((Element) p, 1, 0, 9, 2, 0.5F, 3.0F, true);
+			tabInfo.addCell(cell);
+
+			p = new Paragraph();
+			p.add((Element) new Chunk("Compte", FontFactory.getFont("Times", 10.0F, 1)));
+			p.setAlignment(1);
+			cell = HelperItext.getCellule((Element) p, 1, 0, 7, 0, 0.5F, 3.0F, true);
+			tabInfo.addCell(cell);
+
+			p = new Paragraph();
+			p.add((Element) new Chunk("LibellÃ©", FontFactory.getFont("Times", 10.0F, 1)));
+			p.setAlignment(1);
+			cell = HelperItext.getCellule((Element) p, 1, 0, 7, 0, 0.5F, 3.0F, true);
+			tabInfo.addCell(cell);
+
+			p = new Paragraph();
+			p.add((Element) new Chunk("A.N DÃ©bit", FontFactory.getFont("Times", 10.0F, 1)));
+			p.setAlignment(1);
+			cell = HelperItext.getCellule((Element) p, 1, 0, 7, 0, 0.5F, 3.0F, true);
+			tabInfo.addCell(cell);
+
+			p = new Paragraph();
+			p.add((Element) new Chunk("A.N CrÃ©dit ", FontFactory.getFont("Times", 10.0F, 1)));
+			p.setAlignment(1);
+			cell = HelperItext.getCellule((Element) p, 1, 0, 7, 0, 0.5F, 3.0F, true);
+			tabInfo.addCell(cell);
+
+			p = new Paragraph();
+			p.add((Element) new Chunk("DÃ©bit", FontFactory.getFont("Times", 10.0F, 1)));
+			p.setAlignment(1);
+			cell = HelperItext.getCellule((Element) p, 1, 0, 7, 0, 0.5F, 3.0F, true);
+			tabInfo.addCell(cell);
+
+			p = new Paragraph();
+			p.add((Element) new Chunk("CrÃ©dit ", FontFactory.getFont("Times", 10.0F, 1)));
+			p.setAlignment(1);
+			cell = HelperItext.getCellule((Element) p, 1, 0, 7, 0, 0.5F, 3.0F, true);
+			tabInfo.addCell(cell);
+
+			p = new Paragraph();
+			p.add((Element) new Chunk("DÃ©bit", FontFactory.getFont("Times", 10.0F, 1)));
+			p.setAlignment(1);
+			cell = HelperItext.getCellule((Element) p, 1, 0, 7, 0, 0.5F, 3.0F, true);
+			tabInfo.addCell(cell);
+
+			p = new Paragraph();
+			p.add((Element) new Chunk("CrÃ©dit ", FontFactory.getFont("Times", 10.0F, 1)));
+			p.setAlignment(1);
+			cell = HelperItext.getCellule((Element) p, 1, 0, 7, 0, 0.5F, 3.0F, true);
+			tabInfo.addCell(cell);
+
+			p = new Paragraph();
+			p.add((Element) new Chunk("DÃ©bit", FontFactory.getFont("Times", 10.0F, 1)));
+			p.setAlignment(1);
+			cell = HelperItext.getCellule((Element) p, 1, 0, 7, 0, 0.5F, 3.0F, true);
+			tabInfo.addCell(cell);
+
+			p = new Paragraph();
+			p.add((Element) new Chunk("CrÃ©dit ", FontFactory.getFont("Times", 10.0F, 1)));
+			p.setAlignment(1);
+			cell = HelperItext.getCellule((Element) p, 1, 0, 15, 0, 0.5F, 3.0F, true);
+			tabInfo.addCell(cell);
+
+			tabInfo.setHeaderRows(2);
+
+			int j = 0;
+
+			for (Compte cpte : this.listeCpte) {
+				j++;
+
+				if(cpte.getCompteCod().contentEquals(resultAccount))
+				{
+					result=calculResultat();
+					if(result>0)
+						deb=result;
+					if(result<0)
+						crd=Math.abs(result);
+				}
+				else 
+				{
+				deb = getDebit(cpte.getCompteCod());
+				crd = getCredit(cpte.getCompteCod());
+				}
+				debEntre = getDebitEntree(cpte.getCompteCod());
+				credEnt = getCreditEntree(cpte.getCompteCod());
+
+				cumulDeb=deb + debEntre;
+				cumulCrd=crd+credEnt;
+				
+				if (cumulDeb > cumulCrd)
+					soldDb = cumulDeb-cumulCrd;
+				if (cumulCrd>cumulDeb) {
+					soldCd = cumulCrd-cumulDeb;
+				}
+				if (cumulCrd==cumulDeb) {
+
+					soldCd = 0.0D;
+					soldDb = 0.0D;
+				}
+
+				if (deb > 0.0D || crd > 0.0D || debEntre > 0.0D || credEnt > 0.0D||soldCd>0||soldDb>0) {
+
+					
+					p = new Paragraph();
+					p.add((Element) new Chunk(cpte.getCompteCod(), FontFactory.getFont("Times", 8.0F, 0)));
+					p.setAlignment(0);
+					cell = HelperItext.getCellule((Element) p, 1, 0, 6, 0, 0.5F, 3.0F, true);
+					tabInfo.addCell(cell);
+
+					p = new Paragraph();
+					p.add((Element) new Chunk(cpte.getLibelle(), FontFactory.getFont("Times", 8.0F, 0)));
+					p.setAlignment(0);
+					cell = HelperItext.getCellule((Element) p, 1, 0, 6, 0, 0.5F, 3.0F, true);
+					tabInfo.addCell(cell);
+
+					p = new Paragraph();
+					p.add((Element) new Chunk(HelperC.decimalNumber(debEntre, 0, true),
+							FontFactory.getFont("Times", 8.0F, 0)));
+					p.setAlignment(2);
+					cell = HelperItext.getCellule((Element) p, 1, 0, 6, 0, 0.5F, 3.0F, true);
+					tabInfo.addCell(cell);
+
+					p = new Paragraph();
+					p.add((Element) new Chunk(HelperC.decimalNumber(credEnt, 0, true),
+							FontFactory.getFont("Times", 8.0F, 0)));
+					p.setAlignment(2);
+					cell = HelperItext.getCellule((Element) p, 1, 2, 6, 0, 0.5F, 3.0F, true);
+					tabInfo.addCell(cell);
+
+					
+					p = new Paragraph();
+					p.add((Element) new Chunk(HelperC.decimalNumber(deb, 0, true),
+							FontFactory.getFont("Times", 8.0F, 0)));
+					p.setAlignment(2);
+					cell = HelperItext.getCellule((Element) p, 1, 0, 6, 0, 0.5F, 3.0F, true);
+					tabInfo.addCell(cell);
+
+					p = new Paragraph();
+					p.add((Element) new Chunk(HelperC.decimalNumber(crd, 0, true),
+							FontFactory.getFont("Times", 8.0F, 0)));
+					p.setAlignment(2);
+					cell = HelperItext.getCellule((Element) p, 1, 2, 6, 0, 0.5F, 3.0F, true);
+					tabInfo.addCell(cell);
+					
+
+					p = new Paragraph();
+					p.add((Element) new Chunk(HelperC.decimalNumber(cumulDeb, 0, true),
+							FontFactory.getFont("Times", 8.0F, 0)));
+					p.setAlignment(2);
+					cell = HelperItext.getCellule((Element) p, 1, 0, 6, 0, 0.5F, 3.0F, true);
+					tabInfo.addCell(cell);
+
+					p = new Paragraph();
+					p.add((Element) new Chunk(HelperC.decimalNumber(cumulCrd, 0, true),
+							FontFactory.getFont("Times", 8.0F, 0)));
+					p.setAlignment(2);
+					cell = HelperItext.getCellule((Element) p, 1, 2, 6, 0, 0.5F, 3.0F, true);
+					tabInfo.addCell(cell);
+
+					p = new Paragraph();
+					p.add((Element) new Chunk(HelperC.decimalNumber(soldDb, 0, true),
+							FontFactory.getFont("Times", 8.0F, 0)));
+					p.setAlignment(2);
+					cell = HelperItext.getCellule((Element) p, 1, 0, 6, 0, 0.5F, 3.0F, true);
+					tabInfo.addCell(cell);
+
+					p = new Paragraph();
+					p.add((Element) new Chunk(HelperC.decimalNumber(soldCd, 0, true),
+							FontFactory.getFont("Times", 8.0F, 0)));
+					p.setAlignment(2);
+					cell = HelperItext.getCellule((Element) p, 1, 0, 14, 0, 0.5F, 3.0F, true);
+					tabInfo.addCell(cell);
+					
+					if(compteUsed(cpte.getCompteCod(),listSolde))
+					{
+					totCrd += crd;
+					totDeb += deb;
+					used=true;
+					}
+					if(compteUsed(cpte.getCompteCod(),listSoldeAn))
+					{
+					totDebE += debEntre;
+					totCrdE += credEnt;
+					used=true;
+					}
+					if (used) {
+						totCumulCrd += cumulCrd;
+						totCumulDb += cumulDeb;
+						totSoldDb += soldDb;
+						totSoldCd += soldCd;
+					}
+				}
+				
+				
+				used=false;
+				deb = 0.0D;
+				crd = 0.0D;
+				debEntre = 0.0D;
+				credEnt = 0.0D;
+				soldCd = 0.0D;
+				soldDb = 0.0D;
+			}
+
+			p = new Paragraph();
+			p.add((Element) new Chunk("Total ", FontFactory.getFont("Times", 10.0F, 1)));
+			p.setAlignment(0);
+			cell = HelperItext.getCellule((Element) p, 1, 0, 6, 2, 0.5F, 3.0F, true);
+			tabInfo.addCell(cell);
+
+			p = new Paragraph();
+			p.add((Element) new Chunk(HelperC.decimalNumber(totDebE, 0, true), FontFactory.getFont("Times", 10.0F, 1)));
+			p.setAlignment(2);
+			cell = HelperItext.getCellule((Element) p, 1, 0, 6, 0, 0.5F, 3.0F, true);
+			tabInfo.addCell(cell);
+
+			p = new Paragraph();
+			p.add((Element) new Chunk(HelperC.decimalNumber(totCrdE, 0, true), FontFactory.getFont("Times", 10.0F, 1)));
+			p.setAlignment(2);
+			cell = HelperItext.getCellule((Element) p, 1, 2, 6, 0, 0.5F, 3.0F, true);
+			tabInfo.addCell(cell);
+
+			p = new Paragraph();
+			p.add((Element) new Chunk(HelperC.decimalNumber(totDeb, 0, true), FontFactory.getFont("Times", 10.0F, 1)));
+			p.setAlignment(2);
+			cell = HelperItext.getCellule((Element) p, 1, 0, 6, 0, 0.5F, 3.0F, true);
+			tabInfo.addCell(cell);
+
+			p = new Paragraph();
+			p.add((Element) new Chunk(HelperC.decimalNumber(totCrd, 0, true), FontFactory.getFont("Times", 10.0F, 1)));
+			p.setAlignment(2);
+			cell = HelperItext.getCellule((Element) p, 1, 2, 6, 0, 0.5F, 3.0F, true);
+			tabInfo.addCell(cell);
+			
+			p = new Paragraph();
+			p.add((Element) new Chunk(HelperC.decimalNumber(totCumulDb, 0, true), FontFactory.getFont("Times", 10.0F, 1)));
+			p.setAlignment(2);
+			cell = HelperItext.getCellule((Element) p, 1, 0, 6, 0, 0.5F, 3.0F, true);
+			tabInfo.addCell(cell);
+
+			p = new Paragraph();
+			p.add((Element) new Chunk(HelperC.decimalNumber(totCumulCrd, 0, true), FontFactory.getFont("Times", 10.0F, 1)));
+			p.setAlignment(2);
+			cell = HelperItext.getCellule((Element) p, 1, 2, 6, 0, 0.5F, 3.0F, true);
+			tabInfo.addCell(cell);
+
+			p = new Paragraph();
+			p.add((Element) new Chunk(HelperC.decimalNumber(totSoldDb, 0, true),
+					FontFactory.getFont("Times", 10.0F, 1)));
+			p.setAlignment(2);
+			cell = HelperItext.getCellule((Element) p, 1, 0, 6, 0, 0.5F, 3.0F, true);
+			tabInfo.addCell(cell);
+
+			p = new Paragraph();
+			p.add((Element) new Chunk(HelperC.decimalNumber(totSoldCd, 0, true),
+					FontFactory.getFont("Times", 10.0F, 1)));
+			p.setAlignment(2);
+			cell = HelperItext.getCellule((Element) p, 1, 2, 14, 0, 0.5F, 3.0F, true);
+			tabInfo.addCell(cell);
+		}
+
+		return tabInfo;
+	}
+	
 	private void printBalance4Excel() {
 		HSSFWorkbook wb = new HSSFWorkbook();
 		HSSFSheet sheet = wb.createSheet("Balance4c");
@@ -832,27 +1153,27 @@ public class Balance implements Serializable {
 			cellStyle.setFillPattern((short) 1);
 			row.getCell(0).setCellStyle(cellStyle);
 
-			row.createCell(1).setCellValue("Libellé");
+			row.createCell(1).setCellValue("LibellÃ©");
 			cellStyle.setFillForegroundColor((short) 13);
 			cellStyle.setFillPattern((short) 1);
 			row.getCell(1).setCellStyle(cellStyle);
 
-			row.createCell(2).setCellValue("Débit");
+			row.createCell(2).setCellValue("DÃ©bit");
 			cellStyle.setFillForegroundColor((short) 13);
 			cellStyle.setFillPattern((short) 1);
 			row.getCell(2).setCellStyle(cellStyle);
 
-			row.createCell(3).setCellValue("Crédit");
+			row.createCell(3).setCellValue("CrÃ©dit");
 			cellStyle.setFillForegroundColor((short) 13);
 			cellStyle.setFillPattern((short) 1);
 			row.getCell(3).setCellStyle(cellStyle);
 
-			row.createCell(4).setCellValue("solde débiteur ");
+			row.createCell(4).setCellValue("solde dÃ©biteur ");
 			cellStyle.setFillForegroundColor((short) 13);
 			cellStyle.setFillPattern((short) 1);
 			row.getCell(4).setCellStyle(cellStyle);
 
-			row.createCell(5).setCellValue("Solde créditeur");
+			row.createCell(5).setCellValue("Solde crÃ©diteur");
 			cellStyle.setFillForegroundColor((short) 13);
 			cellStyle.setFillPattern((short) 1);
 			row.getCell(5).setCellStyle(cellStyle);
@@ -1011,37 +1332,37 @@ public class Balance implements Serializable {
 			cellStyle.setFillPattern((short) 1);
 			row.getCell(0).setCellStyle(cellStyle);
 
-			row.createCell(1).setCellValue("Libellé");
+			row.createCell(1).setCellValue("LibellÃ©");
 			cellStyle.setFillForegroundColor((short) 13);
 			cellStyle.setFillPattern((short) 1);
 			row.getCell(1).setCellStyle(cellStyle);
 
-			row.createCell(2).setCellValue("Entrée Débit");
+			row.createCell(2).setCellValue("EntrÃ©e DÃ©bit");
 			cellStyle.setFillForegroundColor((short) 13);
 			cellStyle.setFillPattern((short) 1);
 			row.getCell(2).setCellStyle(cellStyle);
 
-			row.createCell(3).setCellValue("Entrée Crédit");
+			row.createCell(3).setCellValue("EntrÃ©e CrÃ©dit");
 			cellStyle.setFillForegroundColor((short) 13);
 			cellStyle.setFillPattern((short) 1);
 			row.getCell(3).setCellStyle(cellStyle);
 
-			row.createCell(4).setCellValue("Mouvement Débit");
+			row.createCell(4).setCellValue("Mouvement DÃ©bit");
 			cellStyle.setFillForegroundColor((short) 13);
 			cellStyle.setFillPattern((short) 1);
 			row.getCell(4).setCellStyle(cellStyle);
 
-			row.createCell(5).setCellValue("Mouvement Crédit");
+			row.createCell(5).setCellValue("Mouvement CrÃ©dit");
 			cellStyle.setFillForegroundColor((short) 13);
 			cellStyle.setFillPattern((short) 1);
 			row.getCell(5).setCellStyle(cellStyle);
 
-			row.createCell(6).setCellValue("solde débiteur ");
+			row.createCell(6).setCellValue("solde dÃ©biteur ");
 			cellStyle.setFillForegroundColor((short) 13);
 			cellStyle.setFillPattern((short) 1);
 			row.getCell(6).setCellStyle(cellStyle);
 
-			row.createCell(7).setCellValue("Solde créditeur");
+			row.createCell(7).setCellValue("Solde crÃ©diteur");
 			cellStyle.setFillForegroundColor((short) 13);
 			cellStyle.setFillPattern((short) 1);
 			row.getCell(7).setCellStyle(cellStyle);
@@ -1203,6 +1524,273 @@ public class Balance implements Serializable {
 			e.printStackTrace();
 		}
 	}
+	
+	private void printBalance8Excel() {
+		HSSFWorkbook wb = new HSSFWorkbook();
+		HSSFSheet sheet = wb.createSheet("Balance8c");
+		HSSFRow row = null;
+		HSSFCellStyle cellStyle = null;
+		HSSFCellStyle style = null, style1 = null;
+
+		cellStyle = wb.createCellStyle();
+		cellStyle.setFillForegroundColor((short) 29);
+		cellStyle.setFillPattern((short) 1);
+
+		style = wb.createCellStyle();
+
+		style.setDataFormat(HSSFDataFormat.getBuiltinFormat("#,##0"));
+
+		chargerCompte();
+		chargerSoldePeriode();
+		chargerSoldeEntree();
+
+		double totDeb = 0.0D, totCrd = 0.0D, deb = 0.0D, crd = 0.0D, soldDb = 0.0D, soldCd = 0.0D;
+		double totSoldDb = 0.0D, totSoldCd = 0.0D, credEnt = 0.0D, debEntre = 0.0D;
+		double totCrdE = 0.0D, totDebE = 0.0D,result=0,cumulDeb=0,cumulCrd=0,totCumulDb=0,totCumulCrd=0;
+
+		boolean used=false;
+
+		if (this.listeCpte.size() > 0 && this.listSolde.size() > 0) {
+
+			row = sheet.createRow(0);
+
+			row.createCell(0).setCellValue("Compte");
+			cellStyle.setFillForegroundColor((short) 13);
+			cellStyle.setFillPattern((short) 1);
+			row.getCell(0).setCellStyle(cellStyle);
+
+			row.createCell(1).setCellValue("LibellÃ©");
+			cellStyle.setFillForegroundColor((short) 13);
+			cellStyle.setFillPattern((short) 1);
+			row.getCell(1).setCellStyle(cellStyle);
+
+			row.createCell(2).setCellValue("EntrÃ©e DÃ©bit");
+			cellStyle.setFillForegroundColor((short) 13);
+			cellStyle.setFillPattern((short) 1);
+			row.getCell(2).setCellStyle(cellStyle);
+
+			row.createCell(3).setCellValue("EntrÃ©e CrÃ©dit");
+			cellStyle.setFillForegroundColor((short) 13);
+			cellStyle.setFillPattern((short) 1);
+			row.getCell(3).setCellStyle(cellStyle);
+
+			row.createCell(4).setCellValue("Mouvement DÃ©bit");
+			cellStyle.setFillForegroundColor((short) 13);
+			cellStyle.setFillPattern((short) 1);
+			row.getCell(4).setCellStyle(cellStyle);
+
+			row.createCell(5).setCellValue("Mouvement CrÃ©dit");
+			cellStyle.setFillForegroundColor((short) 13);
+			cellStyle.setFillPattern((short) 1);
+			row.getCell(5).setCellStyle(cellStyle);
+			
+			row.createCell(6).setCellValue("Cumul DÃ©bit");
+			cellStyle.setFillForegroundColor((short) 13);
+			cellStyle.setFillPattern((short) 1);
+			row.getCell(6).setCellStyle(cellStyle);
+
+			row.createCell(7).setCellValue("Cumul CrÃ©dit");
+			cellStyle.setFillForegroundColor((short) 13);
+			cellStyle.setFillPattern((short) 1);
+			row.getCell(7).setCellStyle(cellStyle);
+
+			row.createCell(8).setCellValue("solde dÃ©biteur ");
+			cellStyle.setFillForegroundColor((short) 13);
+			cellStyle.setFillPattern((short) 1);
+			row.getCell(8).setCellStyle(cellStyle);
+
+			row.createCell(9).setCellValue("Solde crÃ©diteur");
+			cellStyle.setFillForegroundColor((short) 13);
+			cellStyle.setFillPattern((short) 1);
+			row.getCell(9).setCellStyle(cellStyle);
+
+			int i = 0;
+
+			for (Compte cpte : this.listeCpte) {
+
+				if(cpte.getCompteCod().contentEquals(resultAccount))
+				{
+					result=calculResultat();
+					if(result>0)
+						deb=result;
+					if(result<0)
+						crd=Math.abs(result);
+				}
+				else 
+				{
+				deb = getDebit(cpte.getCompteCod());
+				crd = getCredit(cpte.getCompteCod());
+				}
+				debEntre = getDebitEntree(cpte.getCompteCod());
+				credEnt = getCreditEntree(cpte.getCompteCod());
+
+				cumulDeb=deb + debEntre;
+				cumulCrd=crd+credEnt;
+				
+				if (cumulDeb > cumulCrd)
+					soldDb = cumulDeb-cumulCrd;
+				if (cumulCrd>cumulDeb) {
+					soldCd = cumulCrd-cumulDeb;
+				}
+				if (cumulCrd==cumulDeb) {
+
+					soldCd = 0.0D;
+					soldDb = 0.0D;
+				}
+
+				if (deb > 0.0D || crd > 0.0D || debEntre > 0.0D || credEnt > 0.0D||soldCd>0||soldDb>0) {
+
+					i++;
+					row = sheet.createRow(i);
+					HSSFCell cellE = null;
+
+					row.createCell(0).setCellValue(cpte.getCompteCod());
+
+					row.createCell(1).setCellValue(cpte.getLibelle());
+
+					row.createCell(2).setCellValue(debEntre);
+					cellE = row.getCell(2);
+					cellE.setCellType(0);
+					row.getCell(2).setCellStyle(style);
+
+					row.createCell(3).setCellValue(credEnt);
+					cellE = row.getCell(3);
+					cellE.setCellType(0);
+					row.getCell(3).setCellStyle(style);
+
+					row.createCell(4).setCellValue(deb);
+					cellE = row.getCell(4);
+					cellE.setCellType(0);
+					row.getCell(4).setCellStyle(style);
+
+					row.createCell(5).setCellValue(crd);
+					cellE = row.getCell(5);
+					cellE.setCellType(0);
+					row.getCell(5).setCellStyle(style);
+
+					row.createCell(6).setCellValue(cumulDeb);
+					cellE = row.getCell(6);
+					cellE.setCellType(0);
+					row.getCell(6).setCellStyle(style);
+
+					row.createCell(7).setCellValue(cumulCrd);
+					cellE = row.getCell(7);
+					cellE.setCellType(0);
+					row.getCell(7).setCellStyle(style);
+					
+					row.createCell(8).setCellValue(soldDb);
+					cellE = row.getCell(8);
+					cellE.setCellType(0);
+					row.getCell(8).setCellStyle(style);
+
+					row.createCell(9).setCellValue(soldCd);
+					cellE = row.getCell(9);
+					cellE.setCellType(0);
+					row.getCell(9).setCellStyle(style);
+
+					if(compteUsed(cpte.getCompteCod(),listSolde))
+					{
+					totCrd += crd;
+					totDeb += deb;
+					used=true;
+				
+					}
+					if(compteUsed(cpte.getCompteCod(),listSoldeAn))
+					{
+					totDebE += debEntre;
+					totCrdE += credEnt;
+					used=true;
+					}
+					
+					if(used)
+					{
+						totCumulCrd+=cumulCrd;
+						totCumulDb+=cumulDeb;
+						totSoldDb += soldDb;
+						totSoldCd += soldCd;
+						
+					}
+				}
+				deb = 0.0D;
+				crd = 0.0D;
+				debEntre = 0.0D;
+				credEnt = 0.0D;
+				soldCd = 0.0D;
+				soldDb = 0.0D;
+				cumulCrd=0;
+				cumulDeb=0;
+				
+				used=false;
+			}
+
+			HSSFCell cellT = null;
+			style1 = wb.createCellStyle();
+			style1.setDataFormat(HSSFDataFormat.getBuiltinFormat("#,##0"));
+			style1.setFillForegroundColor((short) 22);
+			style1.setFillPattern((short) 1);
+
+			row = sheet.createRow(i + 1);
+			row.createCell(0).setCellValue("TOTAL :");
+			sheet.addMergedRegion(new CellRangeAddress(i + 1, i + 1, 0, 1));
+			row.getCell(0).setCellStyle(style1);
+
+			row.createCell(2).setCellValue(totDebE);
+			cellT = row.getCell(2);
+			cellT.setCellType(0);
+			row.getCell(2).setCellStyle(style1);
+
+			row.createCell(3).setCellValue(totCrdE);
+			cellT = row.getCell(3);
+			cellT.setCellType(0);
+			row.getCell(3).setCellStyle(style1);
+
+			row.createCell(4).setCellValue(totDeb);
+			cellT = row.getCell(4);
+			cellT.setCellType(0);
+			row.getCell(4).setCellStyle(style1);
+
+			row.createCell(5).setCellValue(totCrd);
+			cellT = row.getCell(5);
+			cellT.setCellType(0);
+			row.getCell(5).setCellStyle(style1);
+
+			row.createCell(6).setCellValue(totCumulDb);
+			cellT = row.getCell(6);
+			cellT.setCellType(0);
+			row.getCell(6).setCellStyle(style1);
+
+			row.createCell(7).setCellValue(totCumulCrd);
+			cellT = row.getCell(7);
+			cellT.setCellType(0);
+			row.getCell(7).setCellStyle(style1);
+
+			
+			row.createCell(8).setCellValue(totSoldDb);
+			cellT = row.getCell(8);
+			cellT.setCellType(0);
+			row.getCell(8).setCellStyle(style1);
+
+			row.createCell(9).setCellValue(totSoldCd);
+			cellT = row.getCell(9);
+			cellT.setCellType(0);
+			row.getCell(9).setCellStyle(style1);
+		}
+		FacesContext context = FacesContext.getCurrentInstance();
+		HttpServletResponse res = (HttpServletResponse) context.getExternalContext().getResponse();
+		res.setContentType("application/vnd.ms-excel");
+		res.setHeader("Content-disposition", "attachment;filename=balance8.xls");
+
+		try {
+			ServletOutputStream out = res.getOutputStream();
+			wb.write((OutputStream) out);
+			out.flush();
+			out.close();
+			FacesContext.getCurrentInstance().responseComplete();
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
+	}
 
 	public void chargerCompte() {
 		listeCpte=null;
@@ -1229,6 +1817,7 @@ public class Balance implements Serializable {
 		String cpt = "";
 		switch (typeAffichage) {
 		case 1:
+			if(listSolde!=null && listSolde.size()>0)
 			for (Object[] ob : this.listSolde) {
 				cpt = ob[0].toString();
 
@@ -1240,6 +1829,7 @@ public class Balance implements Serializable {
 			break;
 
 		case 2:
+			if(listSolde!=null && listSolde.size()>0)
 			for (Object[] ob : this.listSolde) {
 				cpt = ob[0].toString();
 
@@ -1261,6 +1851,7 @@ public class Balance implements Serializable {
 		String cpt = "";
 		switch (typeAffichage) {
 		case 1:
+			if(listSoldeAn!=null && listSoldeAn.size()>0)
 			for (Object[] ob : this.listSoldeAn) {
 				cpt = ob[0].toString();
 				if (cpt.startsWith(compte)) {
@@ -1271,6 +1862,7 @@ public class Balance implements Serializable {
 			}
 			break;
 		case 2:
+			if(listSoldeAn!=null && listSoldeAn.size()>0)
 			for (Object[] ob : this.listSoldeAn) {
 				cpt = ob[0].toString();
 				if (cpt.equals(compte)) {
@@ -1323,6 +1915,7 @@ public class Balance implements Serializable {
 		String cpt = "";
 		switch (typeAffichage) {
 		case 1:
+			if(listSoldeAn!=null && listSoldeAn.size()>0)
 			for (Object[] ob : this.listSoldeAn) {
 				cpt = ob[0].toString();
 
@@ -1334,6 +1927,7 @@ public class Balance implements Serializable {
 			}
 			break;
 		case 2:
+			if(listSoldeAn!=null && listSoldeAn.size()>0)
 			for (Object[] ob : this.listSoldeAn) {
 				cpt = ob[0].toString();
 
@@ -1351,7 +1945,7 @@ public class Balance implements Serializable {
 	
 	private boolean compteUsed(String cpt, List<Object[]>list) {
 		boolean used = false;
-		
+		if(list!=null && list.size()>0)
 		for (Object[] ob : list) {
 			if (cpt.equals(ob[0].toString())) {
 				used = true;

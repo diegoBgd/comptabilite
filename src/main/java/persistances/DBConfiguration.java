@@ -92,6 +92,9 @@ public class DBConfiguration {
             config.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
             config.setProperty("hibernate.hbm2ddl.auto", "update");
             config.setProperty("show_sql", "false");
+            //config.setProperty("hibernate.show_sql", "true");
+           // config.setProperty("hibernate.format_sql", "true");
+            config.setProperty("hibernate.use_sql_comments", "true");
             config.setProperty("hibernate.temp.use_jdbc_metadata_defaults", "false");
             
             // C3P0
@@ -128,7 +131,14 @@ public class DBConfiguration {
 			    config.addAnnotatedClass(Direction.class);
 			    config.addAnnotatedClass(Departement.class);
 			    config.addAnnotatedClass(Service.class);
-            
+			    config.addAnnotatedClass(ParametreImmo.class);
+			    config.addAnnotatedClass(EtatFinanciers.class);
+			    config.addAnnotatedClass(EtatFinanciersCompte.class);
+			    config.addAnnotatedClass(EtatFinanciersRubrique.class);
+			    config.addAnnotatedClass(EtatFinanciersStyleLigne.class);
+			    config.addAnnotatedClass(MappingInclusion.class);
+			    config.addAnnotatedClass(MappingExclusion.class);
+			    
             StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
                     .applySettings(config.getProperties())
                     .build();

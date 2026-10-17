@@ -175,6 +175,17 @@
 			<artifactId>all-themes</artifactId>
 			<version>1.0.11</version>
 		</dependency>
+		<dependency>
+			<groupId>net.objecthunter</groupId>
+			<artifactId>exp4j</artifactId>
+			<version>0.4.8</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>5.4.32.Final</version>
+		</dependency>
+		
 	</dependencies>
 
 	<build>

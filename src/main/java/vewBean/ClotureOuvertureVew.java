@@ -247,7 +247,7 @@ public class ClotureOuvertureVew implements Serializable {
 							
 							disableMsg=true;
 							disableBtn=true;
-							FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Attention : ", "L'exercice "+selecetdExercice.getExCode()+" est déjà ouvert"));
+							FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Attention : ", "L'exercice "+selecetdExercice.getExCode()+" est dÃ©jÃ  ouvert"));
 							disableMsg=false;	
 						}
 						else {
@@ -258,7 +258,7 @@ public class ClotureOuvertureVew implements Serializable {
 								{
 									disableMsg=true;
 									disableBtn=true;
-									FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Attention : ", "L'exercice "+exercicePrcd.getExCode()+" n'est pas clôturé"));
+									FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Attention : ", "L'exercice "+exercicePrcd.getExCode()+" n'est pas clÃ´turÃ©"));
 									
 								}
 							}
@@ -281,7 +281,7 @@ public class ClotureOuvertureVew implements Serializable {
 						
 						disableMsg=true;
 						disableBtn=true;
-						FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Attention : ", "L'exercice "+selecetdExercice.getExCode()+" est déjà clôturé"));
+						FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Attention : ", "L'exercice "+selecetdExercice.getExCode()+" est dÃ©jÃ  clÃ´turÃ©"));
 							
 					}
 					else {
@@ -322,7 +322,7 @@ public class ClotureOuvertureVew implements Serializable {
 		calculTotaux();
 		}
 		else {
-		message="L'exercice précédent n'est pas parametré";
+		message="L'exercice prÃ©cÃ©dent n'est pas parametrÃ©";
 		}
 	}
 
@@ -451,9 +451,9 @@ public class ClotureOuvertureVew implements Serializable {
 				cloture.setTypeOperation("C");
 				this.message = this.model.saveOpenClosePeriod(this.factory, this.listEcriture, cloture);
 			} else
-				message = "Le journal n'est pas équilibré";
+				message = "Le journal n'est pas Ã©quilibrÃ©";
 		} else
-			message = "La liste des écritures est vide";
+			message = "La liste des Ã©critures est vide";
 	}
 	public void saveOuverture() {
 		if (this.listEcriture != null && this.listEcriture.size() > 0) {
@@ -468,9 +468,9 @@ public class ClotureOuvertureVew implements Serializable {
 				this.message = this.model.saveOpenClosePeriod(this.factory, this.listEcriture, ouverture);
 			}
 			else
-				message = "Le journal n'est pas équilibré";
+				message = "Le journal n'est pas Ã©quilibrÃ©";
 		} else
-			message = "La liste des écritures est vide";
+			message = "La liste des Ã©critures est vide";
 	}
 	public void annuler() {
 	

@@ -1,185 +1,216 @@
-<ui:composition
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:p="http://primefaces.org/ui"
-    xmlns:pa="http://primefaces.org/apollo">
-
-    
-    <div class="layout-menu-container">
-        <div class="nano">
-            <div class="nano-content menu-scroll-content">
-                <div class="layout-menu-title">MENU</div>
-                <h:form id="menuform">
-
-                    <pa:menu rendered="true" activeParentOnly="true">
-                       
-                       <p:menuitem icon="pi pi-book" value="Dashboard"  outcome="/dashboard"/>
-                       
-                        <p:submenu label="Droits des utilisateurs" icon="pi pi-users">
-                            <p:menuitem icon="pi pi-book" value="Droits"  outcome="/role"/>
-                            <p:menuitem icon="pi pi-user" value="Utilisateurs" outcome="/utilisateur"/>
-                        </p:submenu>
-
-                         <p:submenu label="Paramètres généraux" icon="pi pi-cog" >
-                            <p:menuitem icon="pi pi-calendar" value="Exercice"
-                                outcome="/exercice" />
-                             <p:menuitem icon="pi pi-dollar" value="Devise" outcome="/devise" />
-                             <p:menuitem icon="pi pi-arrows-h" value="Type de dépense" outcome="/typeCharge" />
-                             <p:menuitem icon="pi pi-shopping-bag" value="Type de recettes" outcome="/typeRecette"/>
-                             <p:menuitem icon="pi pi-percentage" value="Taxe" outcome="/taxe" />
-                             <p:menuitem icon="fa fa-star" value="Centre coût" outcome="/centreCout" rendered="false"/>
-                             <p:menuitem icon="pi pi-user-plus" value="Client" outcome="/client" />
-                             <p:menuitem icon="pi pi-user-minus" value="Fournisseur / Bénéficiaire" outcome="/fournisseur" />
-                             <p:menuitem icon="pi pi-directions" value="Direction" outcome="/direction" />
-                         </p:submenu>
-
-                        <p:submenu label="Comptabilité générale" icon="pi pi-chart-pie" >
-                            <p:submenu label="Paramétrage" icon="pi pi-cog">
-
-                            <p:menuitem icon="pi pi-inbox" value="Paramètres spécifiques"
-                                outcome="/parametreCompta" />
-                            <p:menuitem icon="pi pi-briefcase" value="Etats financiers"
-                                outcome="/etatFinancier" />
-                            <p:menuitem icon="pi pi-table" value="Rubriques des E-financiers"
-                                outcome="/parametrageEF" />
-                            <p:menuitem icon="pi pi-folder" value="Journal" outcome="/journal" />
-                            <p:menuitem icon="pi pi-list" value="Plan comptable"
-                                outcome="/planComptable" />
-                        </p:submenu>
-                        <p:submenu label="Opérations comptables" icon="pi pi-wallet">
-                            <p:menuitem icon="pi pi-user-edit"
-                                value="Ecritures comptables" outcome="/ecritureComptable" />
-                            <p:menuitem icon="pi pi-file" value="Edition du journal"
-                                outcome="/editionJournal" />
-                            <p:menuitem icon="pi pi-calendar-times" value="Historique du compte"
-                                outcome="/editionCompte" />
-                            <p:menuitem icon="pi pi-plus" value="Soldes d'un compte"
-                                outcome="/editionSoldeCompte" />
-                            <p:menuitem icon="pi pi-box" value="Soldes des journaux"
-                                outcome="/editionSoldeJournal" />
-                            <p:menuitem icon="pi pi-book" value="Grand livre"
-                                outcome="/editionGrandLivre" />
-                            <p:menuitem icon="pi pi-circle" value="Balance"
-                                outcome="/editionBalance" />
-                            <p:menuitem icon="pi pi-building" value="Etats financiers"
-                                outcome="/editionEtatFinancier" />
-                        </p:submenu>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pa="http://primefaces.org/apollo">
 
 
-                        <p:submenu label="Utilitaires" icon="pi pi-sun">
-                            <p:menuitem icon="pi pi-tags" value="Corriger écritures"
-                                outcome="/correctionEcriture" />
-                            <p:menuitem icon="pi pi-folder-open" value="Ouverture"
-                                outcome="/ouverture" />
-                            <p:menuitem icon="pi pi-lock" value="Clôture" outcome="/cloture" />
+	<div class="layout-menu-container">
+		<div class="nano">
+			<div class="nano-content menu-scroll-content">
+				<div class="layout-menu-title">MENU</div>
+				<h:form id="menuform">
 
-                            <p:menuitem icon="pi pi-replay"
-                                value="Annuler:clôture-ouverture" outcome="/annulation" />
-                        </p:submenu>
-                        </p:submenu>
-                        <p:submenu label="Immobilisation" icon="pi pi-car"
-                            rendered="true">
-                            <p:menuitem icon="pi pi-ellipsis-v" value="Parametrage"
-                                outcome="/parametreImmo" />
-                            <p:menuitem icon="pi pi-info-circle" value="Saisie des immo"
-                                outcome="/saisieImmo" />
-                            <p:menuitem icon="pi pi-clock" value="Amortissements"
-                                outcome="/amortissement" />
-                            <p:menuitem icon="pi pi-table" value="Liste des immo"
-                                outcome="/listImmo" />
-                            <p:menuitem icon="pi pi-calendar-minus" value="Cession des immo"
-                                outcome="/cession" />
-                            <p:menuitem icon="pi pi-table" value="Liste des cessions"
-                                outcome="/listCession" />
-                        </p:submenu>
+					<pa:menu rendered="true" activeParentOnly="true">
 
-                        <p:submenu label="Finances" icon="pi pi-money-bill">
-                        <p:submenu label="Parametrage" icon="pi pi-cog">
-                            <p:menuitem icon="pi pi-hashtag" value="Comptes specifiques " outcome="/parametreFinance" />
-                            <p:menuitem icon="pi pi-building" value="Banque" outcome="/banque" />
-                             <p:menuitem icon="pi pi-id-card" value="Compte bancaire" outcome="/compteBancaire" />
+						<p:menuitem icon="pi pi-book" value="Dashboard"
+							outcome="/dashboard" />
 
-                        </p:submenu>
-                        
-                        <p:submenu label="Encaissements" icon="pi pi-pound">
-                            <p:menuitem icon="pi pi-shopping-bag" value="Entrée de fonds" outcome="/entreeFond" />
-                            <p:menuitem icon="pi pi-envelope" value="Factures clients" outcome="/factureClient" />
-                            <p:menuitem icon="pi pi-check" value="Règlement client" outcome="/reglementClient" />
-                            <p:menuitem icon="pi pi-list" value="Liste encaissements" outcome="/listEncaissement" />
+						<p:submenu label="Droits des utilisateurs" icon="pi pi-users">
+							<p:menuitem icon="pi pi-book" value="Droits" outcome="/role" />
+							<p:menuitem icon="pi pi-user" value="Utilisateurs"
+								outcome="/utilisateur" />
+						</p:submenu>
 
-                        </p:submenu>
-                        <p:submenu label="Dépenses" icon="pi pi-sort-amount-down">
-                            <p:menuitem icon="pi pi-dollar" value="Sortie de fonds" outcome="/sortieFond"/>
-                            <p:menuitem icon="pi pi-map" value="Factures fournisseurs" outcome="/factureFournisseur" />
-                            <p:menuitem icon="pi pi-check-circle" value="Règlements fournisseurs" outcome="/reglementFournisseur" />
-                            </p:submenu>
-                        <p:menuitem icon="pi pi-folder-open" value="Ecritures comptables" outcome="/ecritures" />
-                        </p:submenu>
+						<p:submenu label="Paramètres généraux" icon="pi pi-cog">
+							<p:menuitem icon="pi pi-calendar" value="Exercice"
+								outcome="/exercice" />
+							<p:menuitem icon="pi pi-dollar" value="Devise" outcome="/devise" />
+							<p:menuitem icon="pi pi-arrows-h" value="Type de dépense"
+								outcome="/typeCharge" />
+							<p:menuitem icon="pi pi-shopping-bag" value="Type de recettes"
+								outcome="/typeRecette" />
+							<p:menuitem icon="pi pi-percentage" value="Taxe" outcome="/taxe" />
+							<p:menuitem icon="fa fa-star" value="Centre coût"
+								outcome="/centreCout" rendered="false" />
+							<p:menuitem icon="pi pi-user-plus" value="Client"
+								outcome="/client" />
+							<p:menuitem icon="pi pi-user-minus"
+								value="Fournisseur / Bénéficiaire" outcome="/fournisseur" />
+							<p:menuitem icon="pi pi-directions" value="Direction"
+								outcome="/direction" rendered="false" />
+						</p:submenu>
 
-                    </pa:menu>
-                    
-                      <pa:menu rendered="false" activeParentOnly="true">
-                     
-                     <p:submenu label="Droits et utilisateurs" icon="pi pi-users">
-                            <p:menuitem icon="pi pi-book" value="Droits"  outcome="/role"/>
-                            <p:menuitem icon="pi pi-user" value="Utilisateurs" outcome="/utilisateur"/>
-                        </p:submenu>
-                      
-                         <p:submenu label="Paramétrage" icon="pi pi-cog">
+						<p:submenu label="Comptabilité générale" icon="pi pi-chart-pie">
+							<p:submenu label="Paramétrage" icon="pi pi-cog">
 
-						    <p:menuitem icon="pi pi-calendar" value="Exercice"
-                                outcome="/exercice" />
-                            <p:menuitem icon="pi pi-inbox" value="Paramètres spécifiques"
-                                outcome="/parametreCompta" />
-                            <p:menuitem icon="pi pi-briefcase" value="Etats financiers"
-                                outcome="/etatFinancier" />
-                            <p:menuitem icon="pi pi-table" value="Rubriques des E-financiers"
-                                outcome="/parametrageEF" />
-                            <p:menuitem icon="pi pi-folder" value="Journal" outcome="/journal" />
-                            <p:menuitem icon="pi pi-list" value="Plan comptable"
-                                outcome="/planComptable" />
-                        </p:submenu>
-                        <p:submenu label="Opérations comptables" icon="pi pi-wallet">
-                            <p:menuitem icon="pi pi-user-edit"
-                                value="Ecritures comptables" outcome="/ecritureComptable" />
-                            <p:menuitem icon="pi pi-file" value="Edition du journal"
-                                outcome="/editionJournal" />
-                            <p:menuitem icon="pi pi-calendar-times" value="Historique du compte"
-                                outcome="/editionCompte" />
-                            <p:menuitem icon="pi pi-plus" value="Soldes d'un compte"
-                                outcome="/editionSoldeCompte" />
-                            <p:menuitem icon="pi pi-box" value="Soldes des journaux"
-                                outcome="/editionSoldeJournal" />
-                            <p:menuitem icon="pi pi-book" value="Grand livre"
-                                outcome="/editionGrandLivre" />
-                            <p:menuitem icon="pi pi-circle" value="Balance"
-                                outcome="/editionBalance" />
-                            <p:menuitem icon="pi pi-building" value="Etats financiers"
-                                outcome="/editionEtatFinancier" />
-                        </p:submenu>
+								<p:menuitem icon="pi pi-inbox" value="Paramètres spécifiques"
+									outcome="/parametreCompta" />
+								<p:menuitem icon="pi pi-briefcase" value="Etats financiers"
+									outcome="/etatFinanciers" />
+								<p:menuitem icon="pi pi-table"
+									value="Rubriques des E-financiers" outcome="/parametrageEF" />
+								<p:menuitem icon="pi pi-table"
+									value="Rubriques" outcome="/etatFinanciersRubrique" />
+								<p:menuitem icon="pi pi-table"
+									value="Mapping" outcome="/etatFinanciersCompte" />
+								<p:menuitem icon="pi pi-table"
+									value="Styles d'affichage" outcome="/etatFinanciersStyle" />
+								
+							</p:submenu>
+							<p:submenu label="Opérations comptables" icon="pi pi-wallet">
+								<p:menuitem icon="pi pi-folder" value="Journal"
+									outcome="/journal" />
+								<p:menuitem icon="pi pi-list" value="Plan comptable"
+									outcome="/planComptable" />
+								<p:menuitem icon="pi pi-user-edit" value="Ecritures comptables"
+									outcome="/ecritureComptable" />
+								<p:menuitem icon="pi pi-file" value="Edition du journal"
+									outcome="/editionJournal" />
+								<p:menuitem icon="pi pi-calendar-times"
+									value="Historique du compte" outcome="/editionCompte" />
+								<p:menuitem icon="pi pi-plus" value="Soldes d'un compte"
+									outcome="/editionSoldeCompte" />
+								<p:menuitem icon="pi pi-box" value="Soldes des journaux"
+									outcome="/editionSoldeJournal" />
+								<p:menuitem icon="pi pi-book" value="Grand livre"
+									outcome="/editionGrandLivre" />
+								<p:menuitem icon="pi pi-circle" value="Balance"
+									outcome="/editionBalance" />
+								<p:menuitem icon="pi pi-building" value="Etats financiers"
+									outcome="/editionEtatFinancier" />
+								<p:menuitem icon="pi pi-building" value="Etats financiers"
+									outcome="/restitution" />
+							</p:submenu>
 
 
-                        <p:submenu label="Utilitaires" icon="pi pi-sun">
-                            <p:menuitem icon="pi pi-tags" value="Corriger écritures"
-                                outcome="/correctionEcriture" />
-                            <p:menuitem icon="pi pi-folder-open" value="Ouverture"
-                                outcome="/ouverture" />
-                            <p:menuitem icon="pi pi-lock" value="Clôture" outcome="/cloture" />
+							<p:submenu label="Utilitaires" icon="pi pi-sun">
+								<p:menuitem icon="pi pi-tags" value="Corriger écritures"
+									outcome="/correctionEcriture" />
+								<p:menuitem icon="pi pi-folder-open" value="Ouverture"
+									outcome="/ouverture" />
+								<p:menuitem icon="pi pi-lock" value="Clôture" outcome="/cloture" />
 
-                            <p:menuitem icon="pi pi-replay"
-                                value="Annuler:clôture-ouverture" outcome="/annulation" />
-                                
-                            
-                        </p:submenu>
-                       
-                      </pa:menu>
+								<p:menuitem icon="pi pi-replay"
+									value="Annuler:clôture-ouverture" outcome="/annulation" />
+							</p:submenu>
+						</p:submenu>
+						<p:submenu label="Immobilisation" icon="pi pi-car" rendered="true">
+							<p:menuitem icon="pi pi-ellipsis-v" value="Parametrage"
+								outcome="/parametreImmo" />
+							<p:menuitem icon="pi pi-info-circle" value="Saisie des immo"
+								outcome="/saisieImmo" />
+							<p:menuitem icon="pi pi-clock" value="Amortissements"
+								outcome="/amortissement" />
+							<p:menuitem icon="pi pi-table" value="Liste des immo"
+								outcome="/listImmo" />
+							<p:menuitem icon="pi pi-calendar-minus" value="Cession des immo"
+								outcome="/cession" />
+							<p:menuitem icon="pi pi-table" value="Liste des cessions"
+								outcome="/listCession" />
+						</p:submenu>
 
-                </h:form>
+						<p:submenu label="Finances" icon="pi pi-money-bill">
+							<p:submenu label="Parametrage" icon="pi pi-cog">
+								<p:menuitem icon="pi pi-hashtag" value="Comptes specifiques "
+									outcome="/parametreFinance" />
+								<p:menuitem icon="pi pi-hashtag" value="Journaux et opérations "
+									outcome="/parametrageJournaux" />
+								<p:menuitem icon="pi pi-building" value="Banque"
+									outcome="/banque" />
+								<p:menuitem icon="pi pi-id-card" value="Compte bancaire"
+									outcome="/compteBancaire" />
 
-                <div class="nano-scroll-footer" />
-            </div>
-        </div>
-    </div>
+							</p:submenu>
+
+							<p:submenu label="Encaissements" icon="pi pi-pound">
+								<p:menuitem icon="pi pi-shopping-bag" value="Entrée de fonds"
+									outcome="/entreeFond" />
+								<p:menuitem icon="pi pi-envelope" value="Factures clients"
+									outcome="/factureClient" />
+								<p:menuitem icon="pi pi-check" value="Règlement client"
+									outcome="/reglementClient" />
+								<p:menuitem icon="pi pi-list" value="Liste encaissements"
+									outcome="/listEncaissement" />
+
+							</p:submenu>
+							<p:submenu label="Dépenses" icon="pi pi-sort-amount-down">
+								<p:menuitem icon="pi pi-dollar" value="Sortie de fonds"
+									outcome="/sortieFond" />
+								<p:menuitem icon="pi pi-map" value="Factures fournisseurs"
+									outcome="/factureFournisseur" />
+								<p:menuitem icon="pi pi-check-circle"
+									value="Règlements fournisseurs" outcome="/reglementFournisseur" />
+							</p:submenu>
+							<p:menuitem icon="pi pi-folder-open" value="Ecritures comptables"
+								outcome="/ecritures" />
+						</p:submenu>
+
+					</pa:menu>
+
+					<pa:menu rendered="false" activeParentOnly="true">
+
+						<p:submenu label="Droits et utilisateurs" icon="pi pi-users">
+							<p:menuitem icon="pi pi-book" value="Droits" outcome="/role" />
+							<p:menuitem icon="pi pi-user" value="Utilisateurs"
+								outcome="/utilisateur" />
+						</p:submenu>
+
+						<p:submenu label="Paramétrage" icon="pi pi-cog">
+
+							<p:menuitem icon="pi pi-calendar" value="Exercice"
+								outcome="/exercice" />
+							<p:menuitem icon="pi pi-inbox" value="Paramètres spécifiques"
+								outcome="/parametreCompta" />
+							<p:menuitem icon="pi pi-briefcase" value="Etats financiers"
+								outcome="/etatFinancier" />
+							<p:menuitem icon="pi pi-table" value="Rubriques des E-financiers"
+								outcome="/parametrageEF" />
+							<p:menuitem icon="pi pi-folder" value="Journal"
+								outcome="/journal" />
+							<p:menuitem icon="pi pi-list" value="Plan comptable"
+								outcome="/planComptable" />
+						</p:submenu>
+						<p:submenu label="Opérations comptables" icon="pi pi-wallet">
+							<p:menuitem icon="pi pi-user-edit" value="Ecritures comptables"
+								outcome="/ecritureComptable" />
+							<p:menuitem icon="pi pi-file" value="Edition du journal"
+								outcome="/editionJournal" />
+							<p:menuitem icon="pi pi-calendar-times"
+								value="Historique du compte" outcome="/editionCompte" />
+							<p:menuitem icon="pi pi-plus" value="Soldes d'un compte"
+								outcome="/editionSoldeCompte" />
+							<p:menuitem icon="pi pi-box" value="Soldes des journaux"
+								outcome="/editionSoldeJournal" />
+							<p:menuitem icon="pi pi-book" value="Grand livre"
+								outcome="/editionGrandLivre" />
+							<p:menuitem icon="pi pi-circle" value="Balance"
+								outcome="/editionBalance" />
+							<p:menuitem icon="pi pi-building" value="Etats financiers"
+								outcome="/editionEtatFinancier" />
+						</p:submenu>
+
+
+						<p:submenu label="Utilitaires" icon="pi pi-sun">
+							<p:menuitem icon="pi pi-tags" value="Corriger écritures"
+								outcome="/correctionEcriture" />
+							<p:menuitem icon="pi pi-folder-open" value="Ouverture"
+								outcome="/ouverture" />
+							<p:menuitem icon="pi pi-lock" value="Clôture" outcome="/cloture" />
+
+							<p:menuitem icon="pi pi-replay" value="Annuler:clôture-ouverture"
+								outcome="/annulation" />
+
+
+						</p:submenu>
+
+					</pa:menu>
+
+				</h:form>
+
+				<div class="nano-scroll-footer" />
+			</div>
+		</div>
+	</div>
 </ui:composition>

@@ -34,7 +34,7 @@ public class Ecriture implements Serializable {
 	@Temporal(TemporalType.DATE)
 	@Column(name = "date_operation")
 	private Date dateOperation;
-	@Column(name = "exerice_id")
+	@Column(name = "exercice_id")
 	private int idExercise;
 	@Column(name = "type_operation")
 	@Enumerated(EnumType.STRING)

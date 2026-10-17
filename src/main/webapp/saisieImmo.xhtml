@@ -331,7 +331,7 @@
 		</p:dialog>
 		
 		<p:dialog widgetVar="dlgImmo" header="Liste des immobilisés"
-			modal="true" appendTo="@(body)" width="1200" responsive="true">
+			modal="true" appendTo="@(body)" width="800" responsive="true">
 			<h:form id="frmDep">
 
 				<div class="ui-g">
@@ -362,7 +362,7 @@
 									update=":frm" />
 
 								
-								<p:column headerText="Code immo"  width="15%">
+								<p:column headerText="Code immo"  width="10%">
 									<h:outputText value="#{im.codeImmo}"/>
 								</p:column>
 								
@@ -374,7 +374,7 @@
 									<h:outputText value="#{im.compteImmo}"/>
 								</p:column>
 								
-								<p:column headerText="Valeur d'acquisition"  width="10%">
+								<p:column headerText="Valeur d'acquisition"  width="15%">
 									<h:outputText value="#{im.printAcqValue}"  style="float:right"/>
 								</p:column>
 								

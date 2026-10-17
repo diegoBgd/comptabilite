@@ -88,6 +88,9 @@ public class ParametreConnectionB implements Serializable {
         // 🔑 RÉINITIALISER la SessionFactory avec la nouvelle config
         DBConfiguration.resetSessionFactory();
         
+        FacesContext.getCurrentInstance().getExternalContext()
+        .getSessionMap().put("reloadConfig", Boolean.TRUE);
+        
         if (DBConfiguration.getSessionFactory() != null) {
             this.infoMsg += " Connexion à la base établie !";
             this.testSuccess = true;

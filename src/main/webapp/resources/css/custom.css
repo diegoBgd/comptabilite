@@ -1,80 +1,144 @@
 /* =========================================================
-   custom.css — Contraste uniquement, sans casser Apollo
+   custom.css — Thème Apollo : contraste et lisibilité
    ========================================================= */
 
-/* ===== Fond de page : gris très subtil ===== */
+
+/* =========================================================
+   1. FOND DE PAGE
+   ========================================================= */
 body {
-    background-color: #F5F5F5;
+    background-color: #E4E8ED !important;
 }
 
-/* ===== Cartes / Panels : bordure + ombre, sans toucher au padding ===== */
-.ui-card,
-.ui-panel {
-    background-color: #ffffff;
-    border: 1px solid #e3e6ea;
-    /*box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);*/
+
+/* =========================================================
+   2. CARTES ET PANELS
+   ========================================================= */
+body .ui-card,
+body .ui-panel {
+    background-color: #ffffff !important;
+    border: 1px solid #d1d5db !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08) !important;
 }
 
-/* ===== Champs : juste la bordure, pas le padding ===== */
-.ui-inputfield,
-.ui-inputtext,
-.ui-inputtextarea {
-    background-color: #ffffff;
-    border: 1px solid #ced4da;
+body .ui-card .ui-card-title,
+body .ui-panel .ui-panel-title {
+    color: #1a1d21 !important;
+}
+
+
+/* =========================================================
+   3. CHAMPS DE SAISIE
+   ========================================================= */
+body .ui-inputfield,
+body .ui-inputtext,
+body .ui-inputtextarea,
+body .ui-selectonemenu,
+body .ui-password {
+    background-color: #ffffff !important;
+    border: 1px solid #adb5bd !important;
+    color: #212529 !important;
+}
+
+body .ui-inputfield:focus,
+body .ui-inputtext:focus,
+body .ui-inputtextarea:focus,
+body .ui-selectonemenu:focus-within {
+    border-color: #1BC5D4 !important;
+    box-shadow: 0 0 0 0.15rem rgba(27, 197, 212, 0.25) !important;
+    outline: 0 !important;
+}
+
+body .ui-inputfield::placeholder,
+body .ui-inputtext::placeholder {
+    color: #adb5bd !important;
+    opacity: 1;
+}
+
+
+/* =========================================================
+   4. DATATABLE — BORDURES ET COULEURS DE BASE
+   ========================================================= */
+body .ui-datatable table {
+    border: 1px solid #adb5bd !important;
+}
+
+body .ui-datatable thead th {
+    background-color: #e9ecef !important;
+    color: #212529 !important;
+    border: 1px solid #adb5bd !important;
+}
+
+body .ui-datatable tbody td {
+    border: 1px solid #adb5bd !important;
+    color: #212529 !important;
+}
+
+body .ui-datatable tbody tr:nth-child(even) {
+    background-color: #f8f9fa !important;
+}
+
+body .ui-datatable tbody tr:nth-child(odd) {
+    background-color: #ffffff !important;
+}
+
+/* Survol d'une ligne non sélectionnée */
+body .ui-datatable tbody tr:hover {
+    background-color: rgba(27, 197, 212, 0.10) !important;  /* cyan très clair */
+}
+
+
+/* =========================================================
+   5. LABELS DE FORMULAIRE
+   ========================================================= */
+body .ui-outputlabel,
+body form label {
     color: #212529;
-}
-
-.ui-inputfield:focus,
-.ui-inputtext:focus,
-.ui-inputtextarea:focus {
-    border-color: #80bdff;
-    box-shadow: 0 0 0 0.15rem rgba(0, 123, 255, 0.2);
-}
-
-/* ===== Tableaux : UNIQUEMENT bordures et couleurs de fond ===== */
-.ui-datatable thead th {
-    background-color: #f1f3f5;
-    color: #212529;
-    border-bottom: 1px solid #ced4da;
-}
-
-.ui-datatable tbody td {
-    border-bottom: 1px solid #e9ecef;
-    color: #212529;
-}
-
-.ui-datatable tbody tr:nth-child(even) {
-    background-color: #f8f9fa;
-}
-
-.ui-datatable tbody tr:hover {
-    background-color: #e7f1ff;
-}
-/* ===== Bordures visibles pour les DataTable ===== */
-
-/* Bordures sur toutes les cellules (header + body) */
-.ui-datatable thead th,
-.ui-datatable tbody td {
-    border: 1px solid #ced4da;
-}
-
-/* Bordure extérieure du tableau */
-.ui-datatable table {
-    border: 1px solid #ced4da;
-}
-
-/* Optionnel : en-tête avec bordure basse plus marquée */
-.ui-datatable thead th {
-    border-bottom: 2px solid #adb5bd;
-}
-
-/* Optionnel : lignes alternées pour meilleure lisibilité */
-.ui-datatable tbody tr:nth-child(even) {
-    background-color: #f8f9fa;
-}
-/* ===== Labels ===== */
-.ui-outputlabel,
-label {
-    color: #495057;
     font-weight: 500;
+}
+
+
+/* =========================================================
+   6. SÉLECTION DE LIGNE — Cyan Apollo
+   ========================================================= */
+
+/* Ligne sélectionnée */
+body .ui-datatable tbody tr.ui-state-highlight,
+body .ui-datatable tbody tr.ui-selected,
+body .ui-datatable tbody tr[aria-selected="true"] {
+    background-color: #1BC5D4 !important;
+    color: #ffffff !important;
+}
+
+/* Cellules de la ligne sélectionnée */
+body .ui-datatable tbody tr.ui-state-highlight td,
+body .ui-datatable tbody tr.ui-selected td,
+body .ui-datatable tbody tr[aria-selected="true"] td {
+    background-color: #1BC5D4 !important;
+    color: #ffffff !important;
+    border-color: #17A2B8 !important;
+}
+
+/* Survol d'une ligne déjà sélectionnée */
+body .ui-datatable tbody tr.ui-state-highlight:hover,
+body .ui-datatable tbody tr.ui-selected:hover,
+body .ui-datatable tbody tr[aria-selected="true"]:hover {
+    background-color: #17A2B8 !important;
+    color: #ffffff !important;
+}
+
+body .ui-datatable tbody tr.ui-state-highlight:hover td,
+body .ui-datatable tbody tr.ui-selected:hover td,
+body .ui-datatable tbody tr[aria-selected="true"]:hover td {
+    background-color: #17A2B8 !important;
+    color: #ffffff !important;
+    border-color: #138496 !important;
+}
+
+
+/* =========================================================
+   7. MESSAGES / GROWL
+   ========================================================= */
+body .ui-growl-message {
+    color: #212529 !important;
 }

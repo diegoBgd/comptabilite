@@ -1,0 +1,320 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/masterPage.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title">Paramétrage des comptes par rubrique</ui:define>
+	<ui:define name="head">
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/style.css" />
+	</ui:define>
+	<ui:define name="content">
+
+		<body>
+			<h:form id="frm"
+				onkeypress="if (event.keyCode == 13) { return false; }">
+				<p:blockUI block="frm" trigger="btnSave" />
+				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
+
+				<!-- ============================================================
+				     SÉLECTION ÉTAT + RUBRIQUE
+				     ============================================================ -->
+				<div class="card">
+					<p:panelGrid columns="4"
+						columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+						layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+						style="border:0px none; background-color:transparent;"
+						contentStyleClass="compact-grid">
+
+						<h:outputText value="État financier" />
+						<p:selectOneMenu value="#{etatFinanciersCompteVew.idEtat}"
+							converter="javax.faces.Long" autoWidth="false">
+							<f:selectItem itemLabel="-- Sélectionner l'état --"
+								itemValue="#{null}" noSelectionOption="true" />
+							<f:selectItems value="#{etatFinanciersCompteVew.listEtat}"
+								var="e" itemValue="#{e.idEtat}"
+								itemLabel="#{e.codeEtat} - #{e.libelleEtat}" />
+							<p:ajax update=":frm"
+								listener="#{etatFinanciersCompteVew.getSelectedEFiValue()}" />
+						</p:selectOneMenu>
+
+						<h:outputText value="Rubrique" />
+						<p:selectOneMenu value="#{etatFinanciersCompteVew.idRubrique}"
+							converter="javax.faces.Long" autoWidth="false">
+							<f:selectItem itemLabel="-- Sélectionner la rubrique --"
+								itemValue="#{null}" noSelectionOption="true" />
+							<f:selectItems value="#{etatFinanciersCompteVew.listRubrique}"
+								var="r" itemValue="#{r.idRubrique}"
+								itemLabel="#{r.codeRubrique} - #{r.libelleRubrique}" />
+							<p:ajax update=":frm"
+								listener="#{etatFinanciersCompteVew.getSelectedRubriqueValue()}" />
+						</p:selectOneMenu>
+
+					</p:panelGrid>
+				</div>
+
+				<!-- ============================================================
+				     FORMULAIRE RÈGLE DE MAPPING
+				     ============================================================ -->
+				<div class="card">
+					<p:panelGrid columns="4"
+						columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+						layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+						style="border:0px none; background-color:transparent;"
+						contentStyleClass="compact-grid">
+
+						<h:outputText value="Libellé de la règle" />
+						<p:inputText value="#{etatFinanciersCompteVew.libelleRegle}"
+							maxlength="200" />
+
+						<h:outputText value="Type de mouvement" />
+						<p:selectOneMenu
+							value="#{etatFinanciersCompteVew.typeMouvementSelectionne}"
+							autoWidth="false">
+							<f:selectItem itemLabel="-- Sélectionner --" itemValue="#{null}"
+								noSelectionOption="true" />
+							<f:selectItems
+								value="#{etatFinanciersCompteVew.listeTypesMouvement}" var="tm"
+								itemValue="#{tm}" itemLabel="#{tm.libelle}" />
+						</p:selectOneMenu>
+
+						<h:outputText value="Nature de valeur" />
+						<p:selectOneMenu
+							value="#{etatFinanciersCompteVew.natureValeurSelectionnee}"
+							autoWidth="false">
+							<f:selectItem itemLabel="-- Sélectionner --" itemValue="#{null}"
+								noSelectionOption="true" />
+							<f:selectItems
+								value="#{etatFinanciersCompteVew.listeNaturesValeur}" var="nv"
+								itemValue="#{nv}" itemLabel="#{nv.libelle}" />
+						</p:selectOneMenu>
+
+						<h:outputText value="Coefficient" />
+						<p:inputText value="#{etatFinanciersCompteVew.coefficient}" />
+
+						<h:outputText value="Condition SQL (optionnel)" />
+						<p:inputText value="#{etatFinanciersCompteVew.conditionSql}"
+							maxlength="500" />
+
+						<h:outputText value="Ordre" />
+						<p:inputText value="#{etatFinanciersCompteVew.ordre}" />
+
+					</p:panelGrid>
+				</div>
+
+				<!-- ============================================================
+				     INCLUSIONS
+				     ============================================================ -->
+				<div class="card">
+					<h:outputText value="Inclusions (plages de comptes à inclure)"
+						style="font-weight:bold; font-size:14px;" />
+					<br />
+					<br />
+
+					<p:panelGrid columns="5"
+						columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+						layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+						style="border:0px none; background-color:transparent;"
+						contentStyleClass="compact-grid">
+
+						<h:outputText value="Compte début" />
+						<p:inputText
+							value="#{etatFinanciersCompteVew.nouvelleInclusionDebut}"
+							maxlength="20" />
+
+						<h:outputText value="Compte fin" />
+						<p:inputText
+							value="#{etatFinanciersCompteVew.nouvelleInclusionFin}"
+							maxlength="20" />
+
+						<p:commandButton value="Ajouter" icon="pi pi-plus"
+							actionListener="#{etatFinanciersCompteVew.ajouterInclusion()}"
+							update=":frm" style="border-radius:10px" process="@form" />
+
+					</p:panelGrid>
+
+					<p:dataTable var="inc"
+						value="#{etatFinanciersCompteVew.listInclusionsEnCours}"
+						id="tblInc" emptyMessage="Aucune inclusion" reflow="true"
+						scrollable="true" scrollHeight="150" size="small"
+						showGridlines="true">
+
+						<p:column headerText="Compte début" width="30%">
+							<h:outputText value="#{inc.compteDebut}" />
+						</p:column>
+
+						<p:column headerText="Compte fin" width="30%">
+							<h:outputText value="#{inc.compteFin}" />
+						</p:column>
+
+						<p:column headerText="Type" width="20%">
+							<h:outputText value="#{inc.typePlage}" />
+						</p:column>
+
+						<p:column headerText="Action" width="20%">
+							<p:commandButton icon="pi pi-trash"
+								actionListener="#{etatFinanciersCompteVew.supprimerInclusion(inc)}"
+								update=":frm" styleClass="rounded-button ui-button-danger ui-button-flat" />
+						</p:column>
+
+					</p:dataTable>
+				</div>
+
+				<!-- ============================================================
+				     EXCLUSIONS
+				     ============================================================ -->
+				<div class="card">
+					<h:outputText value="Exclusions (plages de comptes à exclure)"
+						style="font-weight:bold; font-size:14px;" />
+					<br />
+					<br />
+
+					<p:panelGrid columns="7"
+						columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+						layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+						style="border:0px none; background-color:transparent;"
+						contentStyleClass="compact-grid">
+
+						<h:outputText value="Compte début" />
+						<p:inputText
+							value="#{etatFinanciersCompteVew.nouvelleExclusionDebut}"
+							maxlength="20" />
+
+						<h:outputText value="Compte fin" />
+						<p:inputText
+							value="#{etatFinanciersCompteVew.nouvelleExclusionFin}"
+							maxlength="20" />
+
+						<h:outputText value="Motif" />
+						<p:inputText
+							value="#{etatFinanciersCompteVew.nouvelleExclusionMotif}"
+							maxlength="200" />
+
+						<p:commandButton value="Ajouter" icon="pi pi-plus"
+							actionListener="#{etatFinanciersCompteVew.ajouterExclusion()}"
+							update=":frm" style="border-radius:10px" process="@form" />
+
+					</p:panelGrid>
+
+					<p:dataTable var="exc"
+						value="#{etatFinanciersCompteVew.listExclusionsEnCours}"
+						id="tblExc" emptyMessage="Aucune exclusion" reflow="true"
+						scrollable="true" scrollHeight="150" size="small"
+						showGridlines="true">
+
+						<p:column headerText="Compte début" width="20%">
+							<h:outputText value="#{exc.compteDebut}" />
+						</p:column>
+
+						<p:column headerText="Compte fin" width="20%">
+							<h:outputText value="#{exc.compteFin}" />
+						</p:column>
+
+						<p:column headerText="Motif" width="40%">
+							<h:outputText value="#{exc.motif}" />
+						</p:column>
+
+						<p:column headerText="Action" width="20%">
+							<p:commandButton icon="pi pi-trash"
+								actionListener="#{etatFinanciersCompteVew.supprimerExclusion(exc)}"
+								update=":frm" styleClass="rounded-button ui-button-danger ui-button-flat" />
+						</p:column>
+
+					</p:dataTable>
+				</div>
+
+				<!-- ============================================================
+				     BOUTONS D'ACTION
+				     ============================================================ -->
+				<div class="card">
+					<p:panelGrid columns="4"
+						columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+						layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+						style="border:0px none; background-color:transparent;"
+						contentStyleClass="compact-grid">
+						<p:spacer />
+						<p:commandButton value="Enregistrer" id="btnSave"
+							action="#{etatFinanciersCompteVew.save()}" icon="pi pi-save"
+							update=":frm" style="border-radius:10px" />
+
+						<p:commandButton value="Supprimer" update=":frm" id="btnDelete"
+							icon="pi pi-trash" styleClass="ui-button-danger"
+							style="border-radius:10px"
+							onclick="PF('deleteDialog').show(); return false;" />
+
+						<p:commandButton value="Initialiser" id="btnClean"
+							action="#{etatFinanciersCompteVew.initializeControl()}"
+							icon="pi pi-sync" styleClass="ui-button-secondary" update=":frm"
+							style="border-radius:10px" />
+					</p:panelGrid>
+				</div>
+
+				<!-- ============================================================
+				     TABLEAU DES RÈGLES EXISTANTES
+				     ============================================================ -->
+				<div class="card">
+					<h:outputText value="Règles existantes pour cette rubrique"
+						style="font-weight:bold; font-size:14px;" />
+					<br />
+					<br />
+
+					<p:dataTable var="m" value="#{etatFinanciersCompteVew.listMapping}"
+						id="tblMap" emptyMessage="Aucune règle pour cette rubrique"
+						selectionMode="single"
+						selection="#{etatFinanciersCompteVew.selectedMapping}"
+						rowKey="#{m.idMapping}" reflow="true" scrollable="true"
+						scrollHeight="250" size="small" showGridlines="true">
+
+						<p:ajax event="rowSelect"
+							listener="#{etatFinanciersCompteVew.getSelectedMappingValue()}"
+							update=":frm" />
+
+						<p:column headerText="Libellé" width="35%">
+							<h:outputText value="#{m.libelleRegle}" />
+						</p:column>
+
+						<p:column headerText="Type mvt" width="12%">
+							<h:outputText value="#{m.typeMouvement.libelle}" />
+						</p:column>
+
+						<p:column headerText="Nature" width="12%">
+							<h:outputText value="#{m.natureValeur.libelle}" />
+						</p:column>
+
+						<p:column headerText="Coef" width="8%">
+							<h:outputText value="#{m.coefficient}" />
+						</p:column>
+
+						<p:column headerText="Ordre" width="8%">
+							<h:outputText value="#{m.ordre}" />
+						</p:column>
+
+					</p:dataTable>
+				</div>
+
+			</h:form>
+
+			<h:form>
+				<p:confirmDialog id="deleteDialogId" widgetVar="deleteDialog"
+					header="Confirmation"
+					message="Voulez-vous vraiment supprimer cette règle ?"
+					icon="pi pi-question-circle" showEffect="fade" hideEffect="fade">
+
+					<p:commandButton value="Oui" icon="pi pi-check-circle"
+						styleClass="ui-button-outlined ui-button-danger"
+						action="#{etatFinanciersCompteVew.delete()}" update=":frm"
+						oncomplete="PF('deleteDialog').hide();" />
+
+					<p:commandButton value="Non" type="button"
+						icon="pi pi-times-circle"
+						styleClass="ui-button-outlined ui-button-info"
+						onclick="PF('deleteDialog').hide();" />
+
+				</p:confirmDialog>
+			</h:form>
+		</body>
+	</ui:define>
+</ui:composition>

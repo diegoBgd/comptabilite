@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/masterPage.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title">Restitution des états financiers</ui:define>
+	<ui:define name="head">
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/style.css" />
+		<style type="text/css">
+.table-etat {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.table-etat th {
+	background-color: #f2f2f2;
+	padding: 6px;
+	font-weight: bold;
+	border-bottom: 2px solid #000;
+	text-align: left;
+}
+
+.table-etat th.montant {
+	text-align: right;
+}
+
+.table-etat td {
+	padding: 4px 6px;
+	border-bottom: 1px solid #e0e0e0;
+}
+
+.table-etat td.montant {
+	text-align: right;
+	font-family: monospace;
+}
+</style>
+	</ui:define>
+	<ui:define name="content">
+
+		<body>
+			<h:form id="frm">
+				<p:blockUI block="frm" trigger="btnCalculer" />
+				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
+
+				<!-- ============================================================
+				     SÉLECTION
+				     ============================================================ -->
+				<div class="card">
+					<p:panelGrid columns="2"
+						columnClasses="ui-grid-col-2,ui-grid-col-6"
+						layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+						style="border:0px none; background-color:transparent;"
+						contentStyleClass="compact-grid">
+
+						<h:outputText value="État financier" />
+						<p:selectOneMenu value="#{restitutionVew.idEtat}"
+							converter="javax.faces.Long" autoWidth="false">
+							<f:selectItem itemLabel="-- Sélectionner --" itemValue="#{null}"
+								noSelectionOption="true" />
+							<f:selectItems value="#{restitutionVew.listEtat}" var="e"
+								itemValue="#{e.idEtat}"
+								itemLabel="#{e.codeEtat} - #{e.libelleEtat}" />
+							<p:ajax update=":frm"
+								listener="#{restitutionVew.getSelectedEFiValue()}" />
+						</p:selectOneMenu>
+
+				
+					
+
+						
+					</p:panelGrid>
+					<p:panelGrid columns="3"
+						columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+						layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+						style="border:0px none; background-color:transparent;"
+						contentStyleClass="compact-grid">
+						<p:spacer/>
+						<p:commandButton value="Calculer" id="btnCalculer"
+							action="#{restitutionVew.calculer()}" icon="pi pi-refresh"
+							update=":frm" style="border-radius:10px" />
+
+						<p:commandButton value="Imprimer" icon="pi pi-print"
+							onclick="window.print(); return false;"
+							style="border-radius:10px" styleClass="ui-button-secondary" />
+							
+					</p:panelGrid>
+				</div>
+
+				<!-- ============================================================
+				     OPTIONS D'AFFICHAGE
+				     ============================================================ -->
+				<div class="card">
+					<p:panelGrid columns="4"
+						columnClasses="ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,ui-grid-col-1"
+						layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+						style="border:0px none; background-color:transparent;"
+						contentStyleClass="compact-grid">
+						<h:outputText value="Afficher N-1" />
+						<p:selectBooleanCheckbox value="#{restitutionVew.afficherN1}">
+							<p:ajax update=":frm"
+								listener="#{restitutionVew.recalculerColonnes()}" />
+						</p:selectBooleanCheckbox>
+
+						<h:outputText value="Afficher la variation" />
+						<p:selectBooleanCheckbox
+							value="#{restitutionVew.afficherVariation}">
+							<p:ajax update=":frm"
+								listener="#{restitutionVew.recalculerColonnes()}" />
+						</p:selectBooleanCheckbox>
+					</p:panelGrid>
+				</div>
+
+				<!-- ============================================================
+				     TABLEAU DYNAMIQUE
+				     ============================================================ -->
+				<div class="card">
+					<h:outputText value="Tableau de restitution"
+						style="font-weight:bold; font-size:14px;" />
+					<br />
+					<br />
+
+					<p:dataTable var="l" value="#{restitutionVew.lignes}" id="tbl"
+						emptyMessage="Aucune donnée à afficher" reflow="true" size="small"
+						showGridlines="false" styleClass="table-etat">
+
+						<!-- Colonne LIBELLÉ (toujours présente) -->
+						<p:column style="width:50%">
+							<div style="#{restitutionVew.getCssFor(l)}">
+								<h:outputText value="#{l.libelle}" />
+							</div>
+						</p:column>
+
+						<!-- Colonnes dynamiques -->
+						<p:columns value="#{restitutionVew.colonnes}" var="col"
+							columnIndexVar="idx"
+							style="width:#{col.largeur}%; text-align:right;">
+							<f:facet name="header">
+								<h:outputText value="#{col.libelle}" />
+							</f:facet>
+							<div style="#{restitutionVew.getCssFor(l)}">
+								<h:outputText value="#{l.getMontant(col.code)}"
+									rendered="#{restitutionVew.isLigneMontant(l)}">
+									<f:convertNumber pattern="#,##0" />
+								</h:outputText>
+							</div>
+						</p:columns>
+
+					</p:dataTable>
+				</div>
+
+			</h:form>
+		</body>
+	</ui:define>
+</ui:composition>

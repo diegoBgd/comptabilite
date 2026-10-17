@@ -117,11 +117,9 @@ public class LoginView implements Serializable {
             if (this.model == null) {
                 this.model = new UserModel();
             }
-            if (this.listExerc == null) {
+            if (this.listExerc == null || this.listExerc.isEmpty()) {
                 this.listExerc = new ArrayList<>();
                 this.listExerc.add(new SelectItem(0, ""));
-            }
-            if (this.listExerc.size() <= 1) {
                 this.userExist = this.model.isUserExist(this.factory);
                 List<Exercice> list = new ExerciceModel().getListExercice(this.factory);
                 if (list != null) {
@@ -130,16 +128,28 @@ public class LoginView implements Serializable {
                     }
                 }
             }
-            this.message = null;  // effacer le message d'erreur précédent
+            this.message = null;
         } else {
             desableLogin = true;
             this.message = "Il y a un problème de connexion à la base de données! "
                           + "Vérifiez les paramètres de connexion!";
         }
     }
+
     
     // ... le reste inchangé
 
+	public void checkAndReload() {
+        FacesContext fc = FacesContext.getCurrentInstance();
+        HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
+        if (session == null) return;
+        
+        Boolean needReload = (Boolean) session.getAttribute("reloadConfig");
+        if (Boolean.TRUE.equals(needReload)) {
+            session.removeAttribute("reloadConfig");
+            reloadConfiguration();
+        }
+    }
 	public void changeExercice(ValueChangeEvent event) {
 		if (event != null && event.getNewValue()!=null) {
 

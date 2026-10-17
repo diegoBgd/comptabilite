@@ -1,0 +1,244 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/masterPage.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title">Paramétrage des styles</ui:define>
+	<ui:define name="head">
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/style.css" />
+	</ui:define>
+	<ui:define name="content">
+
+		<body>
+			<h:form id="frm"
+				onkeypress="if (event.keyCode == 13) { return false; }">
+				<p:blockUI block="frm" trigger="btnSave" />
+				<p:growl id="msg" life="21600" showDetail="true" sticky="false" />
+
+				<!-- ============================================================
+				     RECHERCHE PAR CODE
+				     ============================================================ -->
+				<div class="card">
+					<p:panelGrid columns="2"
+						columnClasses="ui-grid-col-2,ui-grid-col-2" layout="grid"
+						styleClass="ui-panelgrid-blank ui-fluid"
+						style="border:0px none; background-color:transparent;"
+						contentStyleClass="compact-grid">
+						<h:outputText value="Type de ligne" />
+						<p:inputText id="txtCd"
+							value="#{etatFinanciersStyleLigneVew.code}"
+							placeholder="TIT, ST, RUB, AGR, TOT, SOL, SEP, CTRL">
+							<p:ajax event="blur"
+								listener="#{etatFinanciersStyleLigneVew.searchStyle()}"
+								update=":frm" />
+						</p:inputText>
+					</p:panelGrid>
+				</div>
+
+				<!-- ============================================================
+				     FORMULAIRE STYLE
+				     ============================================================ -->
+				<div class="card">
+					<p:panelGrid columns="4"
+						columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+						layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+						style="border:0px none; background-color:transparent;"
+						contentStyleClass="compact-grid">
+
+						<h:outputText value="Type de ligne *" />
+						<p:selectOneMenu
+							value="#{etatFinanciersStyleLigneVew.typeLigneSelectionne}"
+							autoWidth="false">
+							<f:selectItem itemLabel="-- Sélectionner --" itemValue="#{null}"
+								noSelectionOption="true" />
+							<f:selectItems
+								value="#{etatFinanciersStyleLigneVew.listeTypesLigne}" var="tl"
+								itemValue="#{tl}" itemLabel="#{tl.libelle}" />
+						</p:selectOneMenu>
+
+						<h:outputText value="Taille police" />
+						<p:inputText value="#{etatFinanciersStyleLigneVew.taillePolice}" />
+
+						<h:outputText value="Couleur texte" />
+						<p:inputText value="#{etatFinanciersStyleLigneVew.couleurTexte}"
+							placeholder="#000000" />
+
+						<h:outputText value="Couleur fond" />
+						<p:inputText value="#{etatFinanciersStyleLigneVew.couleurFond}"
+							placeholder="#FFFFFF" />
+
+						<h:outputText value="Alignement" />
+						<p:selectOneMenu
+							value="#{etatFinanciersStyleLigneVew.alignementSelectionne}"
+							autoWidth="false">
+							<f:selectItem itemLabel="-- Sélectionner --" itemValue="#{null}"
+								noSelectionOption="true" />
+							<f:selectItems
+								value="#{etatFinanciersStyleLigneVew.listeAlignements}" var="al"
+								itemValue="#{al}" itemLabel="#{al.libelle}" />
+						</p:selectOneMenu>
+
+						<h:outputText value="Bordure haut" />
+						<p:selectOneMenu
+							value="#{etatFinanciersStyleLigneVew.bordureHautSelectionnee}"
+							autoWidth="false">
+							<f:selectItem itemLabel="-- Sélectionner --" itemValue="#{null}"
+								noSelectionOption="true" />
+							<f:selectItems
+								value="#{etatFinanciersStyleLigneVew.listeBordures}" var="b"
+								itemValue="#{b}" itemLabel="#{b.libelle}" />
+						</p:selectOneMenu>
+
+						<h:outputText value="Bordure bas" />
+						<p:selectOneMenu
+							value="#{etatFinanciersStyleLigneVew.bordureBasSelectionnee}"
+							autoWidth="false">
+							<f:selectItem itemLabel="-- Sélectionner --" itemValue="#{null}"
+								noSelectionOption="true" />
+							<f:selectItems
+								value="#{etatFinanciersStyleLigneVew.listeBordures}" var="b"
+								itemValue="#{b}" itemLabel="#{b.libelle}" />
+						</p:selectOneMenu>
+
+						<h:outputText value="Indentation (niveaux)" />
+						<p:inputText value="#{etatFinanciersStyleLigneVew.indentation}" />
+
+					</p:panelGrid>
+
+					<p:panelGrid columns="6"
+						columnClasses="ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,ui-grid-col-1,ui-grid-col-2,ui-grid-col-1"
+						layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+						style="border:0px none; background-color:transparent;"
+						contentStyleClass="compact-grid">
+
+						<h:outputText value="Gras" />
+						<p:selectBooleanCheckbox
+							value="#{etatFinanciersStyleLigneVew.gras}" />
+
+						<h:outputText value="Italique" />
+						<p:selectBooleanCheckbox
+							value="#{etatFinanciersStyleLigneVew.italique}" />
+
+						<h:outputText value="Souligné" />
+						<p:selectBooleanCheckbox
+							value="#{etatFinanciersStyleLigneVew.souligne}" />
+
+						<h:outputText value="Majuscule" />
+						<p:selectBooleanCheckbox
+							value="#{etatFinanciersStyleLigneVew.majuscule}" />
+
+						<h:outputText value="Saut page avant" />
+						<p:selectBooleanCheckbox
+							value="#{etatFinanciersStyleLigneVew.sautPageAvant}" />
+					</p:panelGrid>
+				</div>
+
+				<!-- ============================================================
+				     TABLEAU DES STYLES
+				     ============================================================ -->
+				<div class="card">
+					<p:dataTable var="s"
+						value="#{etatFinanciersStyleLigneVew.listStyle}" id="tbl"
+						emptyMessage="Aucun style" selectionMode="single"
+						selection="#{etatFinanciersStyleLigneVew.selectedStyle}"
+						rowKey="#{s.idStyle}" reflow="true" scrollable="true"
+						scrollHeight="250" size="small" showGridlines="true">
+
+						<p:ajax event="rowSelect"
+							listener="#{etatFinanciersStyleLigneVew.getSelectedStyleValue()}"
+							update=":frm" />
+
+						<p:column headerText="Type" width="10%">
+							<h:outputText value="#{s.typeLigne}" />
+						</p:column>
+
+						<p:column headerText="Gras" width="7%">
+							<h:outputText value="Oui" rendered="#{s.gras}" />
+							<h:outputText value="Non" rendered="#{not s.gras}" />
+						</p:column>
+
+						<p:column headerText="Majuscule" width="10%">
+							<h:outputText value="Oui" rendered="#{s.majuscule}" />
+							<h:outputText value="Non" rendered="#{not s.majuscule}" />
+						</p:column>
+
+						<p:column headerText="Taille" width="8%">
+							<h:outputText value="#{s.taillePolice}" />
+						</p:column>
+
+						<p:column headerText="Couleur texte" width="12%">
+							<h:outputText value="#{s.couleurTexte}" />
+						</p:column>
+
+						<p:column headerText="Couleur fond" width="12%">
+							<h:outputText value="#{s.couleurFond}" />
+						</p:column>
+
+						<p:column headerText="Alignement" width="10%">
+							<h:outputText value="#{s.alignement.libelle}" />
+						</p:column>
+
+						<p:column headerText="Bordures" width="15%">
+							<h:outputText
+								value="H: #{s.bordureHaut.libelle} / B: #{s.bordureBas.libelle}" />
+						</p:column>
+
+						<p:column headerText="Indent." width="8%">
+							<h:outputText value="#{s.indentation}" />
+						</p:column>
+					</p:dataTable>
+				</div>
+
+				<!-- ============================================================
+				     BOUTONS D'ACTION
+				     ============================================================ -->
+				<div class="card">
+					<p:panelGrid columns="4"
+						columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+						layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+						style="border:0px none; background-color:transparent;"
+						contentStyleClass="compact-grid">
+						<p:spacer />
+						<p:commandButton value="Enregistrer" id="btnSave"
+							action="#{etatFinanciersStyleLigneVew.save()}" icon="pi pi-save"
+							update=":frm" style="border-radius:10px" />
+
+						<p:commandButton value="Supprimer" update=":frm" id="btnDelete"
+							icon="pi pi-trash" styleClass="ui-button-danger"
+							style="border-radius:10px"
+							onclick="PF('deleteDialog').show(); return false;" />
+
+						<p:commandButton value="Initialiser" id="btnClean"
+							action="#{etatFinanciersStyleLigneVew.initializeControl()}"
+							icon="pi pi-sync" styleClass="ui-button-secondary" update=":frm"
+							style="border-radius:10px" />
+					</p:panelGrid>
+				</div>
+
+			</h:form>
+
+			<h:form>
+				<p:confirmDialog id="deleteDialogId" widgetVar="deleteDialog"
+					header="Confirmation"
+					message="Voulez-vous vraiment supprimer ce style ?"
+					icon="pi pi-question-circle" showEffect="fade" hideEffect="fade">
+
+					<p:commandButton value="Oui" icon="pi pi-check-circle"
+						styleClass="ui-button-outlined ui-button-danger"
+						action="#{etatFinanciersStyleLigneVew.delete()}" update=":frm"
+						oncomplete="PF('deleteDialog').hide();" />
+
+					<p:commandButton value="Non" type="button"
+						icon="pi pi-times-circle"
+						styleClass="ui-button-outlined ui-button-info"
+						onclick="PF('deleteDialog').hide();" />
+
+				</p:confirmDialog>
+			</h:form>
+		</body>
+	</ui:define>
+</ui:composition>

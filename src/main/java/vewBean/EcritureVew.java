@@ -520,7 +520,7 @@ public void setCheckClose(boolean checkClose) {
 					disableSave=true;
 					disableMsg=true;
 					checkClose=true;
-					 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Attention", "Aucune saisie comptable n'est possible car l'exercice "+selecetdExercice.getExCode()+" est déjà clôturé"));
+					 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Attention", "Aucune saisie comptable n'est possible car l'exercice "+selecetdExercice.getExCode()+" est dÃ©jÃ  clÃ©turÃ©"));
 				}
 			}
 			if (this.currUserCode != null) {
@@ -809,10 +809,10 @@ public void setCheckClose(boolean checkClose) {
 				model.saveEcriture(this.factory, listeSaisie,listDelete);
 				initializeAll();
 			} else {
-				HelperC.afficherAttention("Attention", "Le journal n'est  équilibré !");
+				HelperC.afficherAttention("Attention", "Le journal n'est  Ã©quilibrÃ© !");
 			}
 		} else {
-			HelperC.afficherAttention("Attention", "Il faut ajouter les écritures !");
+			HelperC.afficherAttention("Attention", "Il faut ajouter les Ã©critures !");
 		}
 	}
 
@@ -900,28 +900,28 @@ public void setCheckClose(boolean checkClose) {
 
 		if (dateOp == null) {
 
-			HelperC.afficherAttention("Attention", "Il faut préciser la date de l'opération !");
+			HelperC.afficherAttention("Attention", "Il faut prÃ©ciser la date de l'opÃ©ration !");
 			return;
 		}
 		if (this.selectedJrnl == null) {
 
-			HelperC.afficherAttention("Attention", "Il faut préciser le journal !");
+			HelperC.afficherAttention("Attention", "Il faut prÃ©ciser le journal !");
 			return;
 		}
 		if (this.selectedCpte == null) {
 
-			HelperC.afficherAttention("Attention", "Il faut préciser le compte comptable !");
+			HelperC.afficherAttention("Attention", "Il faut prÃ©ciser le compte comptable !");
 			return;
 		}
 
 		if(!this.selectedCpte.isCompteDetail())
 		{
-			HelperC.afficherAttention("Attention", "Ce compte ne peut pas être utilisé pour une opération comptable !");
+			HelperC.afficherAttention("Attention", "Ce compte ne peut pas Ãªtre utilisÃ© pour une opÃ©ration comptable !");
 			return;
 		}
 		if(isCompteUsed(codeCpt))
 		{
-			HelperC.afficherAttention("Attention", "Ce compte ne peut pas être utilisé encore dans ces écritures !");
+			HelperC.afficherAttention("Attention", "Ce compte ne peut pas Ãªtre utilisÃ© encore dans ces Ã©critures !");
 			return;
 		}
 		if (selectedEcriture == null)
@@ -1036,17 +1036,17 @@ public void setCheckClose(boolean checkClose) {
 
 		if (this.selectedEcriture.getDateOperation() == null) {
 
-			HelperC.afficherAttention("Attention", "Il faut préciser la date de l'opération !");
+			HelperC.afficherAttention("Attention", "Il faut prÃ©ciser la date de l'opÃ©ration !");
 			return;
 		}
 		if (this.selectedJrnl == null) {
 
-			HelperC.afficherAttention("Attention", "Il faut préciser le journal !");
+			HelperC.afficherAttention("Attention", "Il faut prÃ©ciser le journal !");
 			return;
 		}
 		if (this.selectedCpte == null) {
 
-			HelperC.afficherAttention("Attention", "Il faut préciser le compte comptable !");
+			HelperC.afficherAttention("Attention", "Il faut prÃ©ciser le compte comptable !");
 			return;
 		}
 		if (this.selectedEcriture.getId() == 0) {
